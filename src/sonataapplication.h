@@ -4,7 +4,6 @@
 #include <QGuiApplication>
 #include <QQuickView>
 
-#include <Sonata/Spotify>
 #include "navigation/navigation.h"
 #include "sonataplayer.h"
 #include "uistatemanagement.h"

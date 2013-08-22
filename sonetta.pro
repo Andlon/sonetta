@@ -24,6 +24,7 @@ QML_IMPORT_PATH += "$$PWD/qml/modules"
 
 include("dependencies/spotinetta/link.pri")
 
+
 HEADERS += \
     src/navigation/navigation.h \
     src/navigation/navigationnativeeventfilter.h \
