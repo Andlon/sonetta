@@ -1,0 +1,3 @@
+[submodule "dependencies/spotinetta"]
+	path = dependencies/spotinetta
+	url = https://github.com/Andlon/spotinetta.git
