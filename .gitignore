@@ -1,0 +1,64 @@
+# Ignore build, debug and release dirs
+build/
+debug/
+release/
+
+# Ignore documentation. Use doxygen to generate fresh docs instead
+doc/
+
+# Ignore makefile. Use qmake to generate a fresh one instead
+Makefile
+Makefile*
+
+# Ignore libspotify
+libspotify/
+
+# Ignore appkey
+appkey.c
+
+# Ignore Qt Creator files
+*.pro.user
+*.pro.user*
+*.pro~
+resources.qrc.save
+
+# Ignore autosave files (typically suffixed by ~)
+*~
+
+# Visual studio stuff
+*.pdb
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db

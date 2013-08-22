@@ -1,0 +1,5 @@
+- Redesign UI
+- Reimplement key navigation with remote control support
+- The code is extremely bloated and convoluted as a result of using
+PIMPL and a factory to create objects. When time, perhaps reimplement all objects using sp_session_userdata() to retrieve session instead.
+- All spotify objects are somewhat similar in that they (atleast in Sonata) have very similar copy constructors, assignment operators and isValid(), isLoaded() methods. Perhaps metaprogramming can be used to create a common base class despite the differences in libspotify functions being used?

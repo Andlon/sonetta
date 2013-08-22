@@ -1,0 +1,3 @@
+Very dark background: "#151515"
+Dark background: "#202020"
+Slightly lighter bakground: "#292929"
