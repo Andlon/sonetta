@@ -33,7 +33,6 @@ HEADERS += \
     src/playlistmodel.h \
     src/playlistcontainermodel.h \
     src/quickartistsynopsis.h \
-    src/quicklinker.h \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
     src/models/albumlistmodel.h \
@@ -57,7 +56,6 @@ SOURCES += \
     src/playlistcontainermodel.cpp \
     appkey.c \
     src/quickartistsynopsis.cpp \
-    src/quicklinker.cpp \
     src/models/abstracttrackcollectionmodel.cpp \
     src/models/abstractalbumcollectionmodel.cpp \
     src/models/albumlistmodel.cpp \

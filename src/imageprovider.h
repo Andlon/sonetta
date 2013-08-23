@@ -1,5 +1,4 @@
-#ifndef SPOTIFYIMAGEPROVIDER_H
-#define SPOTIFYIMAGEPROVIDER_H
+#pragma once
 
 #include <QObject>
 #include <QQuickImageProvider>
@@ -30,5 +29,3 @@ private slots:
 private:
     QVector<SyncWatcherPair> m_pairs;
 };
-
-#endif // SPOTIFYIMAGEPROVIDER_H
