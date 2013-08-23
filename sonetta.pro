@@ -29,7 +29,6 @@ HEADERS += \
     src/navigation/navigation.h \
     src/navigation/navigationnativeeventfilter.h \
     src/navigation/lircremote.h \
-    src/sonataquickview.h \
     src/quicktrackinfo.h \
     src/playlistmodel.h \
     src/playlistcontainermodel.h \
@@ -52,7 +51,6 @@ SOURCES += \
     src/navigation/navigation.cpp \
     src/navigation/navigationnativeeventfilter.cpp \
     src/navigation/lircremote.cpp \
-    src/sonataquickview.cpp \
     src/main.cpp \
     src/quicktrackinfo.cpp \
     src/playlistmodel.cpp \
