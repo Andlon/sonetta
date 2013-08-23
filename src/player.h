@@ -7,8 +7,6 @@
 
 #include <Spotinetta/Spotinetta>
 
-#include "../appkey.c"
-
 #include "navigation/navigation.h"
 
 namespace Sonetta {
@@ -23,7 +21,6 @@ class Player : public QObject
 
 public:
     explicit Player(Spotinetta::Session * session, QObject *parent = 0);
-    ~Player();
 
     bool shuffle() const;
     bool repeat() const;
@@ -31,8 +28,6 @@ public:
 
     void setShuffle(bool enable);
     void setRepeat(bool enable);
-
-
     
 signals:
     void shuffleChanged();
@@ -49,7 +44,6 @@ public slots:
     void next();
 
 private:
-
     QPointer<Spotinetta::Session>   m_session;
     QQueue<Spotinetta::Track>       m_explicitQueue;
     Spotinetta::TrackWatcher *      m_watcher;

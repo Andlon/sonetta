@@ -21,7 +21,7 @@ SonataApplication::SonataApplication(int &argc, char **argv)
 {
     m_spotify = new SpotifySession(g_appkey, g_appkey_size, this);
     m_player = new SonataPlayer(m_spotify, this);
-    m_ui = new UiStateManagement(this);
+    m_ui = new UiStateCoordinator(this);
 }
 
 SonataApplication::~SonataApplication()
@@ -32,7 +32,7 @@ SonataApplication::~SonataApplication()
 int SonataApplication::start()
 {
     qmlRegisterUncreatableType<SonataPlayer>("sonata", 0, 1, "Sonata", "Can not instantiate Player from QML");
-    qmlRegisterUncreatableType<UiStateManagement>("sonata", 0, 1, "UiStateManagement", "Can not instantiate UiStateManagement from QML.");
+    qmlRegisterUncreatableType<UiStateCoordinator>("sonata", 0, 1, "UiStateManagement", "Can not instantiate UiStateManagement from QML.");
     qmlRegisterUncreatableType<SpotifySession>("sonata", 0, 1, "Spotify", "Can not instantiate Sonata Spotify from QML.");
 
     qmlRegisterType<Navigation>("sonata", 0, 1, "Navigation");

@@ -1,20 +1,16 @@
-#ifndef UISTATEMANAGEMENT_H
-#define UISTATEMANAGEMENT_H
+#pragma once
 
 #include <QObject>
 #include <QVariant>
 #include <QVector>
 #include <QQmlPropertyMap>
 
+namespace Sonetta {
 /**
- * @brief Facilitates management of UI states and visual style information.
- *
- *
- *
+ * @brief Facilitates coordination of UI states and visual style information with the QML frontend.
  */
 
-
-class UiStateManagement : public QObject
+class UiStateCoordinator : public QObject
 {
     Q_OBJECT
 
@@ -36,7 +32,7 @@ public:
         None
     };
 
-    explicit UiStateManagement(QObject *parent = 0);
+    explicit UiStateCoordinator(QObject *parent = 0);
 
     QVariant state() const;
 
@@ -76,4 +72,4 @@ private:
     QQmlPropertyMap * m_misc;
 };
 
-#endif // UISTATEMANAGEMENT_H
+}

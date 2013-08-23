@@ -1,9 +1,11 @@
-#include "uistatemanagement.h"
-#include <QVariantMap>
+#include "uistatecoordinator.h"
 
+#include <QVariantMap>
 #include <QDebug>
 
-UiStateManagement::UiStateManagement(QObject *parent) :
+namespace Sonetta {
+
+UiStateCoordinator::UiStateCoordinator(QObject *parent) :
     QObject(parent), m_currentStateIndex(-1)
 {
     m_fonts = new QQmlPropertyMap(this);
@@ -11,7 +13,7 @@ UiStateManagement::UiStateManagement(QObject *parent) :
     m_misc = new QQmlPropertyMap(this);
 }
 
-QVariant UiStateManagement::state() const
+QVariant UiStateCoordinator::state() const
 {
     if (m_states.isEmpty())
         return QVariantMap();
@@ -19,7 +21,7 @@ QVariant UiStateManagement::state() const
     return m_states.at(m_currentStateIndex);
 }
 
-void UiStateManagement::pushState(const QVariant &state)
+void UiStateCoordinator::pushState(const QVariant &state)
 {
     ++m_currentStateIndex;
     int removeCount = m_states.count() - m_currentStateIndex;
@@ -29,7 +31,7 @@ void UiStateManagement::pushState(const QVariant &state)
     emit stateChanged(Forward);
 }
 
-void UiStateManagement::initState(const QVariant &state)
+void UiStateCoordinator::initState(const QVariant &state)
 {
     if (m_states.isEmpty())
     {
@@ -39,7 +41,7 @@ void UiStateManagement::initState(const QVariant &state)
     }
 }
 
-void UiStateManagement::resetState(const QVariant &state, Direction direction)
+void UiStateCoordinator::resetState(const QVariant &state, Direction direction)
 {
     m_currentStateIndex = 0;
     m_states.clear();
@@ -48,17 +50,17 @@ void UiStateManagement::resetState(const QVariant &state, Direction direction)
     emit stateChanged(direction);
 }
 
-bool UiStateManagement::hasPreviousState() const
+bool UiStateCoordinator::hasPreviousState() const
 {
     return m_currentStateIndex > 0;
 }
 
-bool UiStateManagement::hasNextState() const
+bool UiStateCoordinator::hasNextState() const
 {
     return m_currentStateIndex < m_states.count() - 1;
 }
 
-void UiStateManagement::nextState()
+void UiStateCoordinator::nextState()
 {
     if (hasNextState())
     {
@@ -67,7 +69,7 @@ void UiStateManagement::nextState()
     }
 }
 
-void UiStateManagement::previousState()
+void UiStateCoordinator::previousState()
 {
     if (hasPreviousState())
     {
@@ -76,7 +78,7 @@ void UiStateManagement::previousState()
     }
 }
 
-void UiStateManagement::setColorProperties(const QVariant &colors)
+void UiStateCoordinator::setColorProperties(const QVariant &colors)
 {
     if (colors.type() == QVariant::Map)
     {
@@ -97,7 +99,7 @@ void UiStateManagement::setColorProperties(const QVariant &colors)
     }
 }
 
-void UiStateManagement::setFontProperties(const QVariant &fonts)
+void UiStateCoordinator::setFontProperties(const QVariant &fonts)
 {
     if (fonts.type() == QVariant::Map)
     {
@@ -118,7 +120,7 @@ void UiStateManagement::setFontProperties(const QVariant &fonts)
     }
 }
 
-void UiStateManagement::setMiscProperties(const QVariant &misc)
+void UiStateCoordinator::setMiscProperties(const QVariant &misc)
 {
     if (misc.type() == QVariant::Map)
     {
@@ -139,25 +141,19 @@ void UiStateManagement::setMiscProperties(const QVariant &misc)
     }
 }
 
-QObject * UiStateManagement::colors() const
+QObject * UiStateCoordinator::colors() const
 {
     return m_colors;
 }
 
-QObject * UiStateManagement::fonts() const
+QObject * UiStateCoordinator::fonts() const
 {
     return m_fonts;
 }
 
-QObject * UiStateManagement::misc() const
+QObject * UiStateCoordinator::misc() const
 {
     return m_misc;
 }
 
-
-
-
-
-
-
-
+}

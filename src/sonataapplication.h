@@ -27,7 +27,7 @@ private:
     SonataPlayer * m_player;
     SpotifySession * m_spotify;
 
-    UiStateManagement * m_ui;
+    UiStateCoordinator * m_ui;
 
 };
 
