@@ -5,7 +5,7 @@
 
 namespace Sonetta {
 
-UiStateCoordinator::UiStateCoordinator(QObject *parent) :
+UIStateCoordinator::UIStateCoordinator(QObject *parent) :
     QObject(parent), m_currentStateIndex(-1)
 {
     m_fonts = new QQmlPropertyMap(this);
@@ -13,7 +13,7 @@ UiStateCoordinator::UiStateCoordinator(QObject *parent) :
     m_misc = new QQmlPropertyMap(this);
 }
 
-QVariant UiStateCoordinator::state() const
+QVariant UIStateCoordinator::state() const
 {
     if (m_states.isEmpty())
         return QVariantMap();
@@ -21,7 +21,7 @@ QVariant UiStateCoordinator::state() const
     return m_states.at(m_currentStateIndex);
 }
 
-void UiStateCoordinator::pushState(const QVariant &state)
+void UIStateCoordinator::pushState(const QVariant &state)
 {
     ++m_currentStateIndex;
     int removeCount = m_states.count() - m_currentStateIndex;
@@ -31,7 +31,7 @@ void UiStateCoordinator::pushState(const QVariant &state)
     emit stateChanged(Forward);
 }
 
-void UiStateCoordinator::initState(const QVariant &state)
+void UIStateCoordinator::initState(const QVariant &state)
 {
     if (m_states.isEmpty())
     {
@@ -41,7 +41,7 @@ void UiStateCoordinator::initState(const QVariant &state)
     }
 }
 
-void UiStateCoordinator::resetState(const QVariant &state, Direction direction)
+void UIStateCoordinator::resetState(const QVariant &state, Direction direction)
 {
     m_currentStateIndex = 0;
     m_states.clear();
@@ -50,17 +50,17 @@ void UiStateCoordinator::resetState(const QVariant &state, Direction direction)
     emit stateChanged(direction);
 }
 
-bool UiStateCoordinator::hasPreviousState() const
+bool UIStateCoordinator::hasPreviousState() const
 {
     return m_currentStateIndex > 0;
 }
 
-bool UiStateCoordinator::hasNextState() const
+bool UIStateCoordinator::hasNextState() const
 {
     return m_currentStateIndex < m_states.count() - 1;
 }
 
-void UiStateCoordinator::nextState()
+void UIStateCoordinator::nextState()
 {
     if (hasNextState())
     {
@@ -69,7 +69,7 @@ void UiStateCoordinator::nextState()
     }
 }
 
-void UiStateCoordinator::previousState()
+void UIStateCoordinator::previousState()
 {
     if (hasPreviousState())
     {
@@ -78,7 +78,7 @@ void UiStateCoordinator::previousState()
     }
 }
 
-void UiStateCoordinator::setColorProperties(const QVariant &colors)
+void UIStateCoordinator::setColorProperties(const QVariant &colors)
 {
     if (colors.type() == QVariant::Map)
     {
@@ -99,7 +99,7 @@ void UiStateCoordinator::setColorProperties(const QVariant &colors)
     }
 }
 
-void UiStateCoordinator::setFontProperties(const QVariant &fonts)
+void UIStateCoordinator::setFontProperties(const QVariant &fonts)
 {
     if (fonts.type() == QVariant::Map)
     {
@@ -120,7 +120,7 @@ void UiStateCoordinator::setFontProperties(const QVariant &fonts)
     }
 }
 
-void UiStateCoordinator::setMiscProperties(const QVariant &misc)
+void UIStateCoordinator::setMiscProperties(const QVariant &misc)
 {
     if (misc.type() == QVariant::Map)
     {
@@ -141,17 +141,17 @@ void UiStateCoordinator::setMiscProperties(const QVariant &misc)
     }
 }
 
-QObject * UiStateCoordinator::colors() const
+QObject * UIStateCoordinator::colors() const
 {
     return m_colors;
 }
 
-QObject * UiStateCoordinator::fonts() const
+QObject * UIStateCoordinator::fonts() const
 {
     return m_fonts;
 }
 
-QObject * UiStateCoordinator::misc() const
+QObject * UIStateCoordinator::misc() const
 {
     return m_misc;
 }

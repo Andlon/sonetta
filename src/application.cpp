@@ -1,9 +1,9 @@
-#include "sonataapplication.h"
-#include "sonataquickview.h"
+#include "application.h"
 
 #include <QtQml>
 #include <QScreen>
 #include <QKeyEvent>
+#include <QQuickView>
 
 #include "playlistcontainermodel.h"
 #include "playlistmodel.h"
@@ -16,38 +16,44 @@
 #include "models/albumlistmodel.h"
 #include "models/albumbrowsemodel.h"
 
-SonataApplication::SonataApplication(int &argc, char **argv)
+namespace sp = Spotinetta;
+
+namespace Sonetta {
+
+Application::Application(int &argc, char **argv)
     :   QGuiApplication(argc, argv), m_view(0), m_nav(0)
 {
-    m_spotify = new SpotifySession(g_appkey, g_appkey_size, this);
-    m_player = new SonataPlayer(m_spotify, this);
-    m_ui = new UiStateCoordinator(this);
+    sp::SessionConfig config;
+    config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
+
+    m_session = new sp::Session(config, this);
+    m_player = new Player(m_spotify, this);
+    m_ui = new UIStateCoordinator(this);
 }
 
-SonataApplication::~SonataApplication()
+Application::~Application()
 {
     delete m_view;
 }
 
-int SonataApplication::start()
+int Application::run()
 {
-    qmlRegisterUncreatableType<SonataPlayer>("sonata", 0, 1, "Sonata", "Can not instantiate Player from QML");
-    qmlRegisterUncreatableType<UiStateCoordinator>("sonata", 0, 1, "UiStateManagement", "Can not instantiate UiStateManagement from QML.");
-    qmlRegisterUncreatableType<SpotifySession>("sonata", 0, 1, "Spotify", "Can not instantiate Sonata Spotify from QML.");
+    qmlRegisterUncreatableType<Player>("sonetta", 0, 1, "Player", "Can not instantiate Player from QML");
+    qmlRegisterUncreatableType<UIStateCoordinator>("sonetta", 0, 1, "UIStateCoordinator", "Can not instantiate UIStateCoordinator from QML.");
 
-    qmlRegisterType<Navigation>("sonata", 0, 1, "Navigation");
+    qmlRegisterType<Navigation>("sonetta", 0, 1, "Navigation");
     qmlRegisterType<NavigationAttached>();
-    qmlRegisterUncreatableType<QuickNavEvent>("sonata", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
+    qmlRegisterUncreatableType<QuickNavEvent>("sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
 
-    qmlRegisterType<PlaylistContainerModel>("sonata", 0, 1, "PlaylistContainerModel");
-    qmlRegisterType<PlaylistModel>("sonata", 0, 1, "PlaylistModel");
-    qmlRegisterType<AlbumListModel>("sonata", 0, 1, "AlbumListModel");
-    qmlRegisterType<AlbumBrowseModel>("sonata", 0, 1, "AlbumBrowseModel");
-    qmlRegisterType<QuickTrackInfo>("sonata", 0, 1, "TrackInfo");
-    qmlRegisterType<QuickArtistSynopsis>("sonata", 0, 1, "ArtistSynopsis");
-    qmlRegisterType<QuickSearch>("sonata", 0, 1, "SpotifySearch");
+    qmlRegisterType<PlaylistContainerModel>("sonetta", 0, 1, "PlaylistContainerModel");
+    qmlRegisterType<PlaylistModel>("sonetta", 0, 1, "PlaylistModel");
+    qmlRegisterType<AlbumListModel>("sonetta", 0, 1, "AlbumListModel");
+    qmlRegisterType<AlbumBrowseModel>("sonetta", 0, 1, "AlbumBrowseModel");
+    qmlRegisterType<QuickTrackInfo>("sonetta", 0, 1, "TrackInfo");
+    qmlRegisterType<QuickArtistSynopsis>("sonetta", 0, 1, "ArtistSynopsis");
+    qmlRegisterType<QuickSearch>("sonetta", 0, 1, "Search");
 
-    qmlRegisterSingletonType<QuickLinker>("sonata", 0, 1, "Linker", QuickLinkerSingletonProvider);
+    qmlRegisterSingletonType<QuickLinker>("sonetta", 0, 1, "Linker", QuickLinkerSingletonProvider);
 
     if (!m_spotify->createSession())
     {
@@ -56,7 +62,7 @@ int SonataApplication::start()
     }
 
     m_nav = new Navigation(this);
-    m_view = new SonataQuickView;
+    m_view = new QQuickView;
 
     QString applicationDir = applicationDirPath();
 
@@ -81,7 +87,7 @@ int SonataApplication::start()
     return exec();
 }
 
-bool SonataApplication::notify(QObject *receiver, QEvent *event)
+bool Application::notify(QObject *receiver, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress)
     {
@@ -96,4 +102,6 @@ bool SonataApplication::notify(QObject *receiver, QEvent *event)
     }
 
     return QGuiApplication::notify(receiver, event);
+}
+
 }

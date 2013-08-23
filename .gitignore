@@ -24,6 +24,7 @@ resources.qrc.save
 
 # Ignore autosave files (typically suffixed by ~)
 *~
+*.autosave
 
 # Visual studio stuff
 *.pdb

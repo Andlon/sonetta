@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-    SonataApplication sonata(argc, argv);
+    Application sonata(argc, argv);
     Sonata::registerMetaTypes();
 
     return sonata.start();

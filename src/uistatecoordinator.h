@@ -10,7 +10,7 @@ namespace Sonetta {
  * @brief Facilitates coordination of UI states and visual style information with the QML frontend.
  */
 
-class UiStateCoordinator : public QObject
+class UIStateCoordinator : public QObject
 {
     Q_OBJECT
 
@@ -32,7 +32,7 @@ public:
         None
     };
 
-    explicit UiStateCoordinator(QObject *parent = 0);
+    explicit UIStateCoordinator(QObject *parent = 0);
 
     QVariant state() const;
 
