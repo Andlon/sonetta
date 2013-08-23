@@ -29,7 +29,6 @@ HEADERS += \
     src/navigation/navigation.h \
     src/navigation/navigationnativeeventfilter.h \
     src/navigation/lircremote.h \
-    src/sonataplayer.h \
     src/sonataapplication.h \
     src/uistatemanagement.h \
     src/sonataquickview.h \
@@ -47,12 +46,12 @@ HEADERS += \
     src/models/tracklistmodel.h \
     src/models/abstractartistcollectionmodel.h \
     src/models/artistlistmodel.h \
+    src/player.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
     src/navigation/navigationnativeeventfilter.cpp \
     src/navigation/lircremote.cpp \
-    src/sonataplayer.cpp \
     src/sonataapplication.cpp \
     src/sonataquickview.cpp \
     src/uistatemanagement.cpp \
@@ -72,6 +71,7 @@ SOURCES += \
     src/models/tracklistmodel.cpp \
     src/models/abstractartistcollectionmodel.cpp \
     src/models/artistlistmodel.cpp \
+    src/player.cpp
 
 OTHER_FILES += \
     qml/sonata2/main.qml \
