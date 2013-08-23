@@ -4,10 +4,21 @@
 #include <QEvent>
 #include <QCoreApplication>
 
-#include <Sonata/SpLink>
-#include <Sonata/SpImage>
-
 #include <QDebug>
+
+namespace sp = Spotinetta;
+
+struct ImageDataSync {
+    ImageDataSync() : isLoaded(0) { }
+    QAtomicInt isLoaded;
+    QByteArray data;
+    QString uri;
+};
+
+struct SyncWatcherPair {
+    ImageDataSync * sync;
+    QPointer<sp::ImageWatcher> watcher;
+};
 
 class SyncEvent : public QEvent {
 public:
@@ -21,19 +32,19 @@ private:
 
 
 
-SpotifyImageProvider::SpotifyImageProvider(QObject *parent) :
+ImageProvider::ImageProvider(QObject *parent) :
     QObject(parent), QQuickImageProvider(QQmlImageProviderBase::Image, QQmlImageProviderBase::ForceAsynchronousImageLoading)
 {
 }
 
-void SpotifyImageProvider::customEvent(QEvent *event)
+void ImageProvider::customEvent(QEvent *event)
 {
     if (event->type() == QEvent::User)
     {
         SyncEvent * syncEvent = static_cast<SyncEvent *>(event);
         ImageDataSync * sync = syncEvent->sync();
 
-        SpLink link(sync->uri);
+        sp::Image link(sync->uri);
 
         if (link.type() != Spotify::ImageLink)
         {
@@ -41,7 +52,7 @@ void SpotifyImageProvider::customEvent(QEvent *event)
             sync->isLoaded.store(1);
         }
 
-        SpImage image = SpLink(sync->uri).image();
+        sp::Image image = SpLink(sync->uri).image();
 
         if (image.isLoaded() || !image.isValid())
         {
@@ -50,21 +61,21 @@ void SpotifyImageProvider::customEvent(QEvent *event)
         }
         else
         {
-            SpImageWatcher * watcher = new SpImageWatcher(this);
+            sp::ImageWatcher * watcher = new sp::ImageWatcher(this);
             watcher->setImage(image);
             connect(watcher, SIGNAL(dataChanged()),
                     this, SLOT(handleImageUpdated()));
 
             SyncWatcherPair pair;
             pair.sync = sync;
-            pair.watcher = QPointer<SpImageWatcher>(watcher);
+            pair.watcher = QPointer<sp::ImageWatcher>(watcher);
 
             m_pairs.append(pair);
         }
     }
 }
 
-QImage SpotifyImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
+QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     ImageDataSync sync;
     sync.uri = id;
@@ -87,7 +98,7 @@ QImage SpotifyImageProvider::requestImage(const QString &id, QSize *size, const 
         return image;
 }
 
-void SpotifyImageProvider::handleImageUpdated()
+void ImageProvider::handleImageUpdated()
 {
     QVector<SyncWatcherPair>::Iterator i = m_pairs.begin();
     while (i != m_pairs.end())

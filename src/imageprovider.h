@@ -10,27 +10,15 @@
 #include <QAtomicInt>
 #include <QPointer>
 
-#include <Sonata/SpImageWatcher>
+#include <Spotinetta/Spotinetta>
 
-struct ImageDataSync {
-    ImageDataSync() : isLoaded(0) { }
-    QAtomicInt isLoaded;
-    QByteArray data;
-    QString uri;
-};
+struct SyncWatcherPair;
 
-struct SyncWatcherPair {
-    ImageDataSync * sync;
-    QPointer<SpImageWatcher> watcher;
-};
-
-
-
-class SpotifyImageProvider : public QObject, public QQuickImageProvider
+class ImageProvider : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 public:
-    explicit SpotifyImageProvider(QObject *parent = 0);
+    explicit ImageProvider(const Spotinetta::Session * session, QObject *parent = 0);
 
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
     

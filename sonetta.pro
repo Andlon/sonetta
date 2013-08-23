@@ -35,7 +35,6 @@ HEADERS += \
     src/playlistcontainermodel.h \
     src/quickartistsynopsis.h \
     src/quicklinker.h \
-    src/spotifyimageprovider.h \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
     src/models/albumlistmodel.h \
@@ -46,7 +45,8 @@ HEADERS += \
     src/models/artistlistmodel.h \
     src/player.h \
     src/uistatecoordinator.h \
-    src/application.h
+    src/application.h \
+    src/imageprovider.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -60,7 +60,6 @@ SOURCES += \
     appkey.c \
     src/quickartistsynopsis.cpp \
     src/quicklinker.cpp \
-    src/spotifyimageprovider.cpp \
     src/models/abstracttrackcollectionmodel.cpp \
     src/models/abstractalbumcollectionmodel.cpp \
     src/models/albumlistmodel.cpp \
@@ -71,7 +70,8 @@ SOURCES += \
     src/models/artistlistmodel.cpp \
     src/player.cpp \
     src/uistatecoordinator.cpp \
-    src/application.cpp
+    src/application.cpp \
+    src/imageprovider.cpp
 
 OTHER_FILES += \
     qml/sonata2/main.qml \
