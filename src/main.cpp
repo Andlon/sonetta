@@ -4,13 +4,12 @@
 #include <QQmlContext>
 #include <QDebug>
 
-#include "sonataapplication.h"
+#include "application.h"
 
 
 int main(int argc, char *argv[])
 {
-    Application sonata(argc, argv);
-    Sonata::registerMetaTypes();
+    Sonetta::Application sonetta(argc, argv);
 
-    return sonata.start();
+    return sonetta.run();
 }

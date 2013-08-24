@@ -47,7 +47,7 @@ signals:
     void queryChanged();
 
 private slots:
-    void handleSearchLoaded();
+    void onSearchLoaded();
 
 private:
     void performSearch(const QString &query, int trackDelta,
@@ -66,8 +66,8 @@ private:
     AlbumListModel *    m_albumModel;
     ArtistListModel *   m_artistModel;
 
-    QObject * m_spotifySession;
-    Spotinetta::SearchWatcher * m_watcher;
+    QPointer<Spotinetta::Session>   m_session;
+    Spotinetta::SearchWatcher *     m_watcher;
 };
 
 }

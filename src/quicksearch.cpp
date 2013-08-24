@@ -1,5 +1,6 @@
 #include "quicksearch.h"
 
+#include "utilities/session.h"
 
 #include <QDebug>
 
@@ -8,16 +9,20 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 QuickSearch::QuickSearch(QObject *parent) :
-    QObject(parent), m_watcher(new sp::SearchWatcher),
+    QObject(parent),
     m_trackOffset(0), m_artistOffset(0),
     m_playlistOffset(0), m_albumOffset(0)
 {
+    m_session = getCurrentSession();
+    Q_ASSERT(m_session != nullptr);
+
+    m_watcher = new sp::SearchWatcher(m_session, this);
     m_trackModel = new TrackListModel(this);
     m_albumModel = new AlbumListModel(this);
     m_artistModel = new ArtistListModel(this);
 
     connect(m_watcher, &sp::SearchWatcher::loaded,
-            this, &QuickSearch::handleSearchLoaded);
+            this, &QuickSearch::onSearchLoaded);
 
     // Set defaults
     m_albumDelta = 8;
@@ -29,22 +34,20 @@ QuickSearch::QuickSearch(QObject *parent) :
 void QuickSearch::performSearch(const QString &query, int trackDelta,
                                 int albumDelta, int artistDelta, int playlistDelta)
 {
-    sp::Session * session = qobject_cast<sp::otifySession *>(m_spotifySession);
-
-    if (session)
+    if (!m_session.isNull())
     {
-        sp::Search search = session->search(query, m_trackOffset, trackDelta,
+        sp::Search search = m_session->createSearch(query, m_trackOffset, trackDelta,
                                           m_albumOffset, albumDelta,
                                           m_artistOffset, artistDelta,
                                           m_playlistOffset, playlistDelta,
-                                          sp::otify::StandardSearch);
-        m_watcher->setSearch(search);
+                                          sp::Search::Type::Standard);
+        m_watcher->watch(search);
     }
 }
 
 void QuickSearch::search(const QString &query)
 {
-    if (query != m_watcher->search().query())
+    if (query != m_watcher->watched().query())
     {
         connect(m_trackModel, &TrackListModel::needMore,
                 this, &QuickSearch::fetchMoreTracks, Qt::UniqueConnection);
@@ -69,12 +72,12 @@ void QuickSearch::search(const QString &query)
 
 QString QuickSearch::query() const
 {
-    return m_watcher->search().query();
+    return m_watcher->watched().query();
 }
 
-void QuickSearch::handleSearchLoaded()
+void QuickSearch::onSearchLoaded()
 {
-    sp::Search search = m_watcher->search();
+    sp::Search search = m_watcher->watched();
 
     m_albumOffset += search.albumCount();
     m_trackOffset += search.trackCount();
@@ -114,20 +117,20 @@ void QuickSearch::handleSearchLoaded()
 
 void QuickSearch::fetchMoreTracks()
 {
-    if (m_watcher->search().isLoaded())
-        performSearch(m_watcher->search().query(), m_trackDelta, 0, 0, 0);
+    if (m_watcher->watched().isLoaded())
+        performSearch(m_watcher->watched().query(), m_trackDelta, 0, 0, 0);
 }
 
 void QuickSearch::fetchMoreAlbums()
 {
-    if (m_watcher->search().isLoaded())
-        performSearch(m_watcher->search().query(), 0, m_albumDelta, 0, 0);
+    if (m_watcher->watched().isLoaded())
+        performSearch(m_watcher->watched().query(), 0, m_albumDelta, 0, 0);
 }
 
 void QuickSearch::fetchMoreArtists()
 {
-    if (m_watcher->search().isLoaded())
-        performSearch(m_watcher->search().query(), 0, 0, m_artistDelta, 0);
+    if (m_watcher->watched().isLoaded())
+        performSearch(m_watcher->watched().query(), 0, 0, m_artistDelta, 0);
 }
 
 }

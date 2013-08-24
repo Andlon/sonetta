@@ -30,7 +30,6 @@ HEADERS += \
     src/navigation/navigationnativeeventfilter.h \
     src/navigation/lircremote.h \
     src/quicktrackinfo.h \
-    src/quickartistsynopsis.h \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
     src/models/albumlistmodel.h \
@@ -42,7 +41,8 @@ HEADERS += \
     src/player.h \
     src/uistatecoordinator.h \
     src/application.h \
-    src/imageprovider.h
+    src/imageprovider.h \
+    src/utilities/session.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -51,7 +51,6 @@ SOURCES += \
     src/main.cpp \
     src/quicktrackinfo.cpp \
     appkey.c \
-    src/quickartistsynopsis.cpp \
     src/models/abstracttrackcollectionmodel.cpp \
     src/models/abstractalbumcollectionmodel.cpp \
     src/models/albumlistmodel.cpp \
