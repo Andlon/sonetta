@@ -1,8 +1,9 @@
-#ifndef ABSTRACTTRACKCOLLECTIONMODEL_H
-#define ABSTRACTTRACKCOLLECTIONMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
-#include <Sonata/SpTrack>
+#include <Spotinetta/Spotinetta>
+
+namespace Sonetta {
 
 /*!
  * \brief The AbstractTrackCollectionModel class defines common roleNames and
@@ -35,7 +36,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
 
 protected:
-    virtual SpTrack getTrackAt(int index) const = 0;
+    virtual Spotinetta::Track getTrackAt(int index) const = 0;
     virtual int getTrackCount() const = 0;
 
     void updateTrackData(int first, int last = -1);
@@ -47,4 +48,4 @@ private:
     Q_DISABLE_COPY(AbstractTrackCollectionModel)
 };
 
-#endif // ABSTRACTTRACKCOLLECTIONMODEL_H
+}

@@ -1,60 +1,58 @@
 #include "abstracttrackcollectionmodel.h"
-#include <Sonata/SpAlbum>
-#include <Sonata/SpArtist>
 #include <QStringList>
 
-class ModelRoleNames : public QHash<int, QByteArray> {
-public:
-    ModelRoleNames() {
-        insert(AbstractTrackCollectionModel::TrackRole, "track");
-        insert(AbstractTrackCollectionModel::ArtistsRole, "artists");
-        insert(AbstractTrackCollectionModel::AlbumRole, "album");
-        insert(AbstractTrackCollectionModel::IsLoadedRole, "isLoaded");
-        insert(AbstractTrackCollectionModel::IsValidRole, "isValid");
-        insert(AbstractTrackCollectionModel::NameRole, "name");
-        insert(AbstractTrackCollectionModel::ArtistNamesRole, "artistNames");
-        insert(AbstractTrackCollectionModel::AlbumNameRole, "albumName");
-        insert(AbstractTrackCollectionModel::DurationRole, "duration");
-        insert(AbstractTrackCollectionModel::PopularityRole, "popularity");
-    }
-};
+namespace sp = Spotinetta;
 
-class TrackDataRoles : public QVector<int>
-{
-public:
-    TrackDataRoles() {
-        append(AbstractTrackCollectionModel::TrackRole);
-        append(AbstractTrackCollectionModel::IsLoadedRole);
-        append(AbstractTrackCollectionModel::IsValidRole);
-        append(AbstractTrackCollectionModel::NameRole);
-        append(AbstractTrackCollectionModel::DurationRole);
-        append(AbstractTrackCollectionModel::PopularityRole);
-    }
-};
+namespace Sonetta {
 
-class AlbumDataRoles : public QVector<int>
-{
-public:
-    AlbumDataRoles() {
-        append(AbstractTrackCollectionModel::AlbumRole);
-        append(AbstractTrackCollectionModel::AlbumNameRole);
-    }
-};
+namespace {
 
-class ArtistDataRoles : public QVector<int>
-{
-public:
-    ArtistDataRoles() {
-        append(AbstractTrackCollectionModel::ArtistsRole);
-        append(AbstractTrackCollectionModel::ArtistNamesRole);
-    }
-};
+QHash<int, QByteArray> createRoles() {
+    QHash<int, QByteArray> r;
+    r.insert(AbstractTrackCollectionModel::TrackRole, "track");
+    r.insert(AbstractTrackCollectionModel::ArtistsRole, "artists");
+    r.insert(AbstractTrackCollectionModel::AlbumRole, "album");
+    r.insert(AbstractTrackCollectionModel::IsLoadedRole, "isLoaded");
+    r.insert(AbstractTrackCollectionModel::IsValidRole, "isValid");
+    r.insert(AbstractTrackCollectionModel::NameRole, "name");
+    r.insert(AbstractTrackCollectionModel::ArtistNamesRole, "artistNames");
+    r.insert(AbstractTrackCollectionModel::AlbumNameRole, "albumName");
+    r.insert(AbstractTrackCollectionModel::DurationRole, "duration");
+    r.insert(AbstractTrackCollectionModel::PopularityRole, "popularity");
+    return r;
+}
 
-static const ModelRoleNames     g_roleNames;
-static const TrackDataRoles     g_trackRoles;
-static const AlbumDataRoles     g_albumRoles;
-static const ArtistDataRoles    g_artistRoles;
+QVector<int> createTrackRoleVector() {
+    QVector<int> v;
+    v.append(AbstractTrackCollectionModel::TrackRole);
+    v.append(AbstractTrackCollectionModel::IsLoadedRole);
+    v.append(AbstractTrackCollectionModel::IsValidRole);
+    v.append(AbstractTrackCollectionModel::NameRole);
+    v.append(AbstractTrackCollectionModel::DurationRole);
+    v.append(AbstractTrackCollectionModel::PopularityRole);
+    return v;
+}
 
+QVector<int> createAlbumRoleVector() {
+    QVector<int> v;
+    v.append(AbstractTrackCollectionModel::AlbumRole);
+    v.append(AbstractTrackCollectionModel::AlbumNameRole);
+    return v;
+}
+
+QVector<int> createArtistRoleVector() {
+    QVector<int> v;
+    v.append(AbstractTrackCollectionModel::ArtistsRole);
+    v.append(AbstractTrackCollectionModel::ArtistNamesRole);
+    return v;
+}
+
+const QHash<int, QByteArray>    g_roleNames = createRoles();
+const QVector<int>              g_trackRoles = createTrackRoleVector();
+const QVector<int>              g_albumRoles = createAlbumRoleVector();
+const QVector<int>              g_artistRoles = createArtistRoleVector();
+
+}
 
 AbstractTrackCollectionModel::AbstractTrackCollectionModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -64,7 +62,7 @@ AbstractTrackCollectionModel::AbstractTrackCollectionModel(QObject *parent) :
 QVariant AbstractTrackCollectionModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
-    SpTrack track = getTrackAt(row);
+    sp::Track track = getTrackAt(row);
     Role r = (Role) role;
 
     switch (r)
@@ -153,4 +151,6 @@ void AbstractTrackCollectionModel::updateData(int first, int last)
     QModelIndex end = last == -1 ? index(first) : index(last);
 
     emit dataChanged(begin, end);
+}
+
 }
