@@ -1,12 +1,14 @@
 #include "quicksearch.h"
 
-#include <Sonata/SpSearch>
 
 #include <QDebug>
 
+namespace sp = Spotinetta;
+
+namespace Sonetta {
 
 QuickSearch::QuickSearch(QObject *parent) :
-    QObject(parent), m_watcher(new SpSearchWatcher),
+    QObject(parent), m_watcher(new sp::SearchWatcher),
     m_trackOffset(0), m_artistOffset(0),
     m_playlistOffset(0), m_albumOffset(0)
 {
@@ -14,7 +16,7 @@ QuickSearch::QuickSearch(QObject *parent) :
     m_albumModel = new AlbumListModel(this);
     m_artistModel = new ArtistListModel(this);
 
-    connect(m_watcher, &SpSearchWatcher::loaded,
+    connect(m_watcher, &sp::SearchWatcher::loaded,
             this, &QuickSearch::handleSearchLoaded);
 
     // Set defaults
@@ -27,15 +29,15 @@ QuickSearch::QuickSearch(QObject *parent) :
 void QuickSearch::performSearch(const QString &query, int trackDelta,
                                 int albumDelta, int artistDelta, int playlistDelta)
 {
-    SpotifySession * session = qobject_cast<SpotifySession *>(m_spotifySession);
+    sp::Session * session = qobject_cast<sp::otifySession *>(m_spotifySession);
 
     if (session)
     {
-        SpSearch search = session->search(query, m_trackOffset, trackDelta,
+        sp::Search search = session->search(query, m_trackOffset, trackDelta,
                                           m_albumOffset, albumDelta,
                                           m_artistOffset, artistDelta,
                                           m_playlistOffset, playlistDelta,
-                                          Spotify::StandardSearch);
+                                          sp::otify::StandardSearch);
         m_watcher->setSearch(search);
     }
 }
@@ -72,7 +74,7 @@ QString QuickSearch::query() const
 
 void QuickSearch::handleSearchLoaded()
 {
-    SpSearch search = m_watcher->search();
+    sp::Search search = m_watcher->search();
 
     m_albumOffset += search.albumCount();
     m_trackOffset += search.trackCount();
@@ -126,4 +128,6 @@ void QuickSearch::fetchMoreArtists()
 {
     if (m_watcher->search().isLoaded())
         performSearch(m_watcher->search().query(), 0, 0, m_artistDelta, 0);
+}
+
 }

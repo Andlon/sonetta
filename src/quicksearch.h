@@ -1,13 +1,13 @@
-#ifndef QUICKSEARCH_H
-#define QUICKSEARCH_H
+#pragma once
 
-#include <Sonata/SpSearchWatcher>
-#include <Sonata/Spotify>
+#include <Spotinetta/Spotinetta>
 #include <QObject>
 
 #include "models/tracklistmodel.h"
 #include "models/albumlistmodel.h"
 #include "models/artistlistmodel.h"
+
+namespace Sonetta {
 
 class QuickSearch : public QObject
 {
@@ -17,7 +17,6 @@ class QuickSearch : public QObject
     Q_PROPERTY(int trackDelta MEMBER m_trackDelta NOTIFY trackDeltaChanged)
     Q_PROPERTY(int artistDelta MEMBER m_artistDelta NOTIFY artistDeltaChanged)
     Q_PROPERTY(int playlistDelta MEMBER m_playlistDelta NOTIFY playlistDeltaChanged)
-    Q_PROPERTY(QObject * session MEMBER m_spotifySession NOTIFY sessionChanged)
 
     Q_PROPERTY(QString query READ query NOTIFY queryChanged)
 
@@ -68,7 +67,7 @@ private:
     ArtistListModel *   m_artistModel;
 
     QObject * m_spotifySession;
-    SpSearchWatcher * m_watcher;
+    Spotinetta::SearchWatcher * m_watcher;
 };
 
-#endif // QUICKSEARCH_H
+}
