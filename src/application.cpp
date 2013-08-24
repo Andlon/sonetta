@@ -5,13 +5,10 @@
 #include <QKeyEvent>
 #include <QQuickView>
 
-#include "playlistcontainermodel.h"
-#include "playlistmodel.h"
 #include "quicktrackinfo.h"
 #include "quickartistsynopsis.h"
-#include "quicklinker.h"
 #include "quicksearch.h"
-#include "spotifyimageprovider.h"
+#include "imageprovider.h"
 
 #include "models/albumlistmodel.h"
 #include "models/albumbrowsemodel.h"
@@ -45,15 +42,13 @@ int Application::run()
     qmlRegisterType<NavigationAttached>();
     qmlRegisterUncreatableType<QuickNavEvent>("sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
 
-    qmlRegisterType<PlaylistContainerModel>("sonetta", 0, 1, "PlaylistContainerModel");
-    qmlRegisterType<PlaylistModel>("sonetta", 0, 1, "PlaylistModel");
+//    qmlRegisterType<PlaylistContainerModel>("sonetta", 0, 1, "PlaylistContainerModel");
+//    qmlRegisterType<PlaylistModel>("sonetta", 0, 1, "PlaylistModel");
     qmlRegisterType<AlbumListModel>("sonetta", 0, 1, "AlbumListModel");
     qmlRegisterType<AlbumBrowseModel>("sonetta", 0, 1, "AlbumBrowseModel");
     qmlRegisterType<QuickTrackInfo>("sonetta", 0, 1, "TrackInfo");
     qmlRegisterType<QuickArtistSynopsis>("sonetta", 0, 1, "ArtistSynopsis");
     qmlRegisterType<QuickSearch>("sonetta", 0, 1, "Search");
-
-    qmlRegisterSingletonType<QuickLinker>("sonetta", 0, 1, "Linker", QuickLinkerSingletonProvider);
 
     if (!m_spotify->createSession())
     {
@@ -66,7 +61,7 @@ int Application::run()
 
     QString applicationDir = applicationDirPath();
 
-    SpotifyImageProvider * provider = new SpotifyImageProvider(this);
+    ImageProvider * provider = new ImageProvider(this);
 
     m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
     m_view->engine()->rootContext()->setContextProperty("player", m_player);
@@ -85,6 +80,17 @@ int Application::run()
 
     // Start event loop
     return exec();
+}
+
+Application * Application::instance()
+{
+    QCoreApplication * inst = QCoreApplication::instance();
+    return inst == nullptr ? nullptr : static_cast<Application *>(inst);
+}
+
+sp::Session * Application::session() const
+{
+    return m_session;
 }
 
 bool Application::notify(QObject *receiver, QEvent *event)

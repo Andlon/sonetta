@@ -1,152 +1,158 @@
 #include "quicktrackinfo.h"
-#include <Sonata/sptrackwatcher.h>
-#include <Sonata/spartistwatcher.h>
-
-#include <Sonata/SpAlbum>
-#include <Sonata/SpLink>
 
 #include <QVector>
-
 #include <QDebug>
 
-class QuickTrackInfo::QuickTrackInfoPrivate
-{
-public:
-    SpTrackWatcher * trackWatcher;
-    QVector<SpArtistWatcher *> artistWatchers;
-};
+#include "application.h"
+
+namespace sp = Spotinetta;
+
+namespace Sonetta {
 
 QuickTrackInfo::QuickTrackInfo(QObject *parent)
-    :   QObject(parent), d(new QuickTrackInfoPrivate)
+    :   QObject(parent)
 {
-    d->trackWatcher = new SpTrackWatcher(this);
-    connect(d->trackWatcher, SIGNAL(trackChanged()),
-            this, SLOT(handleTrackChanged()));
-    connect(d->trackWatcher, SIGNAL(dataChanged()),
-            this, SLOT(handleTrackUpdated()));
+    Application * application = Application::instance();
+    Q_ASSERT(application != nullptr);
+    sp::Session * session = application->session();
+    Q_ASSERT(session != nullptr);
+    m_session = session;
 
+    m_trackWatcher = new sp::TrackWatcher(session, this);
+
+    connect(m_trackWatcher, &sp::TrackWatcher::loaded,
+            this, &QuickTrackInfo::onTrackLoaded);
+
+    connect(this, &QuickTrackInfo::trackChanged,
+            this, &QuickTrackInfo::dataUpdated);
 }
 
 QuickTrackInfo::~QuickTrackInfo()
 {
-    delete d;
 }
 
 bool QuickTrackInfo::isValid() const
 {
-    return d->trackWatcher->isValid();
+    return track().isValid();
 }
 
 bool QuickTrackInfo::isLoaded() const
 {
-    return d->trackWatcher->isLoaded();
+    return track().isLoaded();
 }
 
 bool QuickTrackInfo::isAutoLinked() const
 {
-    return d->trackWatcher->isAutoLinked();
+    return track().isLoaded();
 }
 
 int QuickTrackInfo::duration() const
 {
-    return d->trackWatcher->duration();
+    return track().duration();
 }
 
 int QuickTrackInfo::popularity() const
 {
-    return d->trackWatcher->popularity();
+    return track().popularity();
 }
 
 int QuickTrackInfo::artistCount() const
 {
-    return d->trackWatcher->artistCount();
+    return track().artistCount();
 }
 
-SpTrack QuickTrackInfo::track() const
+sp::Track QuickTrackInfo::track() const
 {
-    return d->trackWatcher->track();
+    return m_trackWatcher->watched();
 }
 
-void QuickTrackInfo::setTrack(const SpTrack &track)
+void QuickTrackInfo::setTrack(const sp::Track &track)
 {
-    d->trackWatcher->setTrack(track);
+    if (track != this->track())
+    {
+        m_trackWatcher->watch(track);
+
+        emit trackChanged();
+
+        if (track.isLoaded())
+        {
+            onTrackLoaded();
+        }
+    }
 }
 
 QString QuickTrackInfo::name() const
 {
-    return d->trackWatcher->name();
+    return track().name();
 }
 
 QStringList QuickTrackInfo::artistNames() const
 {
     QStringList names;
-    foreach(SpArtistWatcher * watcher, d->artistWatchers)
-        names << watcher->name();
+    foreach(sp::ArtistWatcher * watcher, m_artistWatchers)
+        names << watcher->watched().name();
 
     return names;
 }
 
-SpArtist QuickTrackInfo::artistAt(int index) const
+sp::Artist QuickTrackInfo::artistAt(int index) const
 {
     if (index >= 0 && index < artistCount())
-        return d->artistWatchers.at(index)->artist();
+        return m_artistWatchers.at(index)->watched();
 
-    return SpArtist();
+    return sp::Artist();
 }
 
-SpArtistList QuickTrackInfo::artists() const
+sp::ArtistList QuickTrackInfo::artists() const
 {
-    SpArtistList list;
-    foreach(SpArtistWatcher * watcher, d->artistWatchers)
-        list << watcher->artist();
+    sp::ArtistList list;
+    foreach(sp::ArtistWatcher * watcher, m_artistWatchers)
+        list << watcher->watched();
 
     return list;
 }
 
-QString QuickTrackInfo::albumCoverUri(int size) const
-{
-    return SpLink::fromAlbumCover(d->trackWatcher->track().album(), static_cast<Spotify::ImageSize>(size)).uri();
-}
+//QString QuickTrackInfo::albumCoverUri(int size) const
+//{
+//    return sp::Link::fromAlbumCover(m_trackWatcher->track().album(), static_cast<sp::ImageSize>(size)).uri();
+//}
 
-void QuickTrackInfo::handleTrackChanged()
+void QuickTrackInfo::onTrackLoaded()
 {
-    if (d->trackWatcher->isLoaded() || !d->trackWatcher->isValid())
-        configureWatchers();
-
-    emit trackChanged();
-    emit artistsChanged();
-}
-
-void QuickTrackInfo::handleTrackUpdated()
-{
-    if (d->trackWatcher->isLoaded())
-        configureWatchers();
+    if (isLoaded())
+        setupWatchers();
 
     emit dataUpdated();
 }
 
-void QuickTrackInfo::configureWatchers()
+void QuickTrackInfo::deleteWatchers()
 {
-    // Reuse watchers if possible
+    for (auto & watcher : m_artistWatchers)
+        watcher->deleteLater();
 
-    int newCount = d->trackWatcher->artistCount();
-    int oldCount = d->artistWatchers.count();
-    int limit = qMin<int>(newCount, oldCount);
+    m_artistWatchers.clear();
+}
 
-    for (int i = limit; i < oldCount; ++i)
-        d->artistWatchers[i]->deleteLater();
+void QuickTrackInfo::setupWatchers()
+{
+    int count = artistCount();
 
-    d->artistWatchers.resize(newCount);
+    deleteWatchers();
 
-    for (int i = limit; i < newCount; ++i)
+    Q_ASSERT(!m_session.isNull());
+
+    m_artistWatchers.resize(count);
+
+    for (int i = 0; i < count; ++i)
     {
-        SpArtistWatcher * watcher = new SpArtistWatcher(this);
-        d->artistWatchers[i] = watcher;
-        connect(watcher, SIGNAL(artistChanged()), this, SIGNAL(artistsChanged()));
-        connect(watcher, SIGNAL(dataChanged()), this, SIGNAL(artistsChanged()));
+        sp::Artist artist = track().artistAt(i);
+        auto watcher = new sp::ArtistWatcher(m_session, this);
+        watcher->watch(artist);
+        connect(watcher, &sp::ArtistWatcher::loaded, this, &QuickTrackInfo::artistsChanged);
+        m_artistWatchers[i] = watcher;
     }
 
-    // Set artists after creation to avoid slot being called while inserting artists
-    for (int i = 0; i < newCount; ++i)
-        d->artistWatchers[i]->setArtist(d->trackWatcher->artistAt(i));
+        emit artistsChanged();
+}
+
 }

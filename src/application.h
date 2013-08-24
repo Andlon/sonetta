@@ -21,6 +21,10 @@ public:
 
     bool notify(QObject *receiver, QEvent *event);
 
+    static Application * instance();
+
+    Spotinetta::Session * session() const;
+
     int run();
     
 private:

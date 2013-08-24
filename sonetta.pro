@@ -30,8 +30,6 @@ HEADERS += \
     src/navigation/navigationnativeeventfilter.h \
     src/navigation/lircremote.h \
     src/quicktrackinfo.h \
-    src/playlistmodel.h \
-    src/playlistcontainermodel.h \
     src/quickartistsynopsis.h \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
@@ -52,8 +50,6 @@ SOURCES += \
     src/navigation/lircremote.cpp \
     src/main.cpp \
     src/quicktrackinfo.cpp \
-    src/playlistmodel.cpp \
-    src/playlistcontainermodel.cpp \
     appkey.c \
     src/quickartistsynopsis.cpp \
     src/models/abstracttrackcollectionmodel.cpp \
