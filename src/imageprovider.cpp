@@ -10,112 +10,115 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-struct ImageDataSync {
-    ImageDataSync() : isLoaded(0) { }
-    QAtomicInt isLoaded;
-    QByteArray data;
-    QString uri;
-};
-
-struct SyncWatcherPair {
-    ImageDataSync * sync;
-    QPointer<sp::ImageWatcher> watcher;
-};
-
-class SyncEvent : public QEvent {
-public:
-    SyncEvent(ImageDataSync * sync) : QEvent(QEvent::User), m_sync(sync) { }
-
-    ImageDataSync * sync() const { return m_sync; }
-
-private:
-    ImageDataSync * m_sync;
-};
-
-
-
 ImageProvider::ImageProvider(const Spotinetta::Session *session, QObject *parent)
-    :   QObject(parent), QQuickImageProvider(QQmlImageProviderBase::Image, QQmlImageProviderBase::ForceAsynchronousImageLoading)
+    :   QObject(parent), QQuickImageProvider(QQmlImageProviderBase::Image, QQmlImageProviderBase::ForceAsynchronousImageLoading),
+      m_cancel(false), m_session(session)
 {
+
 }
 
-void ImageProvider::customEvent(QEvent *event)
+ImageProvider::~ImageProvider()
 {
-    if (event->type() == QEvent::User)
+    // Make sure we cancel any pending requests
+    QMutexLocker locker(&m_waitMutex);
+    m_cancel = true;
+    m_waitCondition.wakeAll();
+}
+
+void ImageProvider::loadImage(const QString &uri)
+{
+    if (!m_session.isNull())
     {
-        SyncEvent * syncEvent = static_cast<SyncEvent *>(event);
-        ImageDataSync * sync = syncEvent->sync();
+        sp::Image image = m_session->createImageFromLink(sp::Link(uri));
 
-        sp::Image link(sync->uri);
-
-        if (link.type() != Spotify::ImageLink)
+        if (image.isLoaded())
         {
-            sync->data = QByteArray();
-            sync->isLoaded.store(1);
-        }
-
-        sp::Image image = SpLink(sync->uri).image();
-
-        if (image.isLoaded() || !image.isValid())
-        {
-            sync->data = image.imageData();
-            sync->isLoaded.store(1);
+            notifyImageLoaded(uri, image);
         }
         else
         {
-            sp::ImageWatcher * watcher = new sp::ImageWatcher(this);
-            watcher->setImage(image);
-            connect(watcher, SIGNAL(dataChanged()),
-                    this, SLOT(handleImageUpdated()));
-
-            SyncWatcherPair pair;
-            pair.sync = sync;
-            pair.watcher = QPointer<sp::ImageWatcher>(watcher);
-
-            m_pairs.append(pair);
+            // Add image to vector of images waiting to be loaded,
+            // and create a watcher that will notify us when the image is loaded
+            m_pending.append(qMakePair(uri, image));
+            sp::ImageWatcher * watcher = new sp::ImageWatcher(m_session, this);
+            connect(watcher, &sp::ImageWatcher::loaded, this, &ImageProvider::onImageLoaded);
+            connect(watcher, &sp::ImageWatcher::loaded, watcher, &sp::ImageWatcher::deleteLater);
+            watcher->watch(image);
         }
     }
 }
 
 QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    ImageDataSync sync;
-    sync.uri = id;
+    const QString & uri = id;
 
+    QMetaObject::invokeMethod(this, "loadImage", Qt::QueuedConnection,
+                              Q_ARG(QString, uri));
+
+    QMutexLocker locker(&m_waitMutex);
+    QMap<QString, QByteArray>::ConstIterator i = m_results.find(uri);
+
+    while (!imageReady(uri) && !m_cancel)
     {
-        SyncEvent * syncEvent = new SyncEvent(&sync);
-        QCoreApplication::postEvent(this, syncEvent);
+        m_waitCondition.wait(&m_waitMutex);
     }
 
-    while (sync.isLoaded.load() != 1)
-        QThread::msleep(5);
+    if (m_cancel)
+        return QImage();
 
-    // Image has been loaded, create QImage from data
-    QImage image = QImage::fromData(sync.data);
+    QByteArray data = takeImageData(uri);
+
+    QImage image = QImage::fromData(data);
     *size = image.size();
 
     if (requestedSize.isValid())
-        return image.scaled(requestedSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    {
+        return image.scaled(requestedSize, Qt::IgnoreAspectRatio);
+    }
     else
+    {
         return image;
+    }
 }
 
-void ImageProvider::handleImageUpdated()
+void ImageProvider::notifyImageLoaded(const QString &uri, const Spotinetta::Image &image)
 {
-    QVector<SyncWatcherPair>::Iterator i = m_pairs.begin();
-    while (i != m_pairs.end())
+    QMutexLocker locker(&m_waitMutex);
+    m_results.insert(uri, image.data());
+    m_waitCondition.wakeAll();
+}
+
+bool ImageProvider::imageReady(const QString &uri) const
+{
+    return m_results.contains(uri);
+}
+
+void ImageProvider::onImageLoaded()
+{
+    QVector<UrlImagePair> keep;
+
+    for (const UrlImagePair & pair : m_pending)
     {
-        SyncWatcherPair &pair = *i;
-        if (pair.watcher->isLoaded())
+        const QString & uri = pair.first;
+        const sp::Image & image = pair.second;
+
+        if (image.isLoaded())
         {
-            pair.sync->data = pair.watcher->image().imageData();
-            pair.sync->isLoaded.store(1);
-            pair.watcher->deleteLater();
-            i = m_pairs.erase(i);
+            notifyImageLoaded(uri, image);
         }
         else
-            ++i;
+        {
+            keep.append(pair);
+        }
     }
+
+    m_pending.swap(keep);
+}
+
+QByteArray ImageProvider::takeImageData(const QString &uri)
+{
+    QMutexLocker locker(&m_waitMutex);
+    return m_results.take(uri);
 }
 
 }
