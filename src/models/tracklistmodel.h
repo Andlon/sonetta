@@ -1,7 +1,8 @@
-#ifndef TRACKLISTMODEL_H
-#define TRACKLISTMODEL_H
+#pragma once
 
 #include "abstracttrackcollectionmodel.h"
+
+namespace Sonetta {
 
 class TrackListModel : public AbstractTrackCollectionModel
 {
@@ -13,19 +14,19 @@ public:
     bool canFetchMore(const QModelIndex &parent) const;
     void fetchMore(const QModelIndex &parent);
 
-    void append(const SpTrackList &tracks);
+    void append(const Spotinetta::TrackList &tracks);
     void clear();
 
 signals:
     void needMore();
 
 protected:
-    SpTrack getTrackAt(int index) const;
+    Spotinetta::Track getTrackAt(int index) const;
     int getTrackCount() const;
 
 private:
     Q_DISABLE_COPY(TrackListModel)
-    SpTrackList m_tracks;
+    Spotinetta::TrackList m_tracks;
 };
 
-#endif // TRACKLISTMODEL_H
+}

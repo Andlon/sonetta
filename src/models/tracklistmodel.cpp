@@ -2,12 +2,16 @@
 
 #include <QMetaMethod>
 
+namespace sp = Spotinetta;
+
+namespace Sonetta {
+
 TrackListModel::TrackListModel(QObject *parent)
     :   AbstractTrackCollectionModel(parent)
 {
 }
 
-void TrackListModel::append(const SpTrackList &tracks)
+void TrackListModel::append(const sp::TrackList &tracks)
 {
     if (tracks.count() > 0)
     {
@@ -39,7 +43,7 @@ void TrackListModel::clear()
     endResetModel();
 }
 
-SpTrack TrackListModel::getTrackAt(int index) const
+sp::Track TrackListModel::getTrackAt(int index) const
 {
     return m_tracks[index];
 }
@@ -47,4 +51,6 @@ SpTrack TrackListModel::getTrackAt(int index) const
 int TrackListModel::getTrackCount() const
 {
     return m_tracks.count();
+}
+
 }
