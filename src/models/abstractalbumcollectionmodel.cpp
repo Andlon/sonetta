@@ -1,26 +1,35 @@
 #include "abstractalbumcollectionmodel.h"
-#include <Sonata/SpArtist>
-#include <Sonata/SpLink>
 
-class AlbumRoleNames : public QHash<int, QByteArray> {
-public:
-    AlbumRoleNames() {
-        insert(AbstractAlbumCollectionModel::AlbumRole, "album");
-        insert(AbstractAlbumCollectionModel::ArtistRole, "artist");
-        insert(AbstractAlbumCollectionModel::IsValidRole, "isValid");
-        insert(AbstractAlbumCollectionModel::IsLoadedRole, "isLoaded");
-        insert(AbstractAlbumCollectionModel::IsAvailableRole, "isAvailable");
-        insert(AbstractAlbumCollectionModel::NameRole, "name");
-        insert(AbstractAlbumCollectionModel::YearRole, "year");
-        insert(AbstractAlbumCollectionModel::TypeRole, "type");
-        insert(AbstractAlbumCollectionModel::SmallCoverUriRole, "smallCoverUri");
-        insert(AbstractAlbumCollectionModel::NormalCoverUriRole, "normalCoverUri");
-        insert(AbstractAlbumCollectionModel::LargeCoverUriRole, "largeCoverUri");
-        insert(AbstractAlbumCollectionModel::ArtistNameRole, "artistName");
-    }
-};
+#include <map>
 
-static const AlbumRoleNames g_roleNames;
+#include <QHash>
+
+namespace sp = Spotinetta;
+
+namespace Sonetta {
+
+namespace {
+
+QHash<int, QByteArray> createRoles() {
+    QHash<int, QByteArray> r;
+    r.insert(AbstractAlbumCollectionModel::AlbumRole, "album" );
+    r.insert(AbstractAlbumCollectionModel::ArtistRole, "artist" );
+    r.insert(AbstractAlbumCollectionModel::IsValidRole, "isValid" );
+    r.insert(AbstractAlbumCollectionModel::IsLoadedRole, "isLoaded" );
+    r.insert(AbstractAlbumCollectionModel::IsAvailableRole, "isAvailable" );
+    r.insert(AbstractAlbumCollectionModel::NameRole, "name" );
+    r.insert(AbstractAlbumCollectionModel::YearRole, "year" );
+    r.insert(AbstractAlbumCollectionModel::TypeRole, "type" );
+    r.insert(AbstractAlbumCollectionModel::SmallCoverUriRole, "smallCoverUri" );
+    r.insert(AbstractAlbumCollectionModel::NormalCoverUriRole, "normalCoverUri" );
+    r.insert(AbstractAlbumCollectionModel::LargeCoverUriRole, "largeCoverUri" );
+    r.insert(AbstractAlbumCollectionModel::ArtistNameRole, "artistName");
+    return r;
+}
+
+QHash<int, QByteArray> const g_roleNames = createRoles();
+
+}
 
 AbstractAlbumCollectionModel::AbstractAlbumCollectionModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -30,7 +39,7 @@ AbstractAlbumCollectionModel::AbstractAlbumCollectionModel(QObject *parent) :
 QVariant AbstractAlbumCollectionModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
-    SpAlbum album = getAlbumAt(row);
+    sp::Album album = getAlbumAt(row);
     Role r = (Role) role;
 
     switch (r)
@@ -57,17 +66,17 @@ QVariant AbstractAlbumCollectionModel::data(const QModelIndex &index, int role) 
         return album.year();
         break;
     case TypeRole:
-        return album.type();
+        return static_cast<int>(album.type());
         break;
-    case SmallCoverUriRole:
-        return SpLink::fromAlbumCover(album, Spotify::ImageSizeSmall).uri(); // Temporary
-        break;
-    case NormalCoverUriRole:
-        return SpLink::fromAlbumCover(album, Spotify::ImageSizeNormal).uri();
-        break;
-    case LargeCoverUriRole:
-        return SpLink::fromAlbumCover(album, Spotify::ImageSizeLarge).uri();
-        break;
+//    case SmallCoverUriRole:
+//        return SpLink::fromAlbumCover(album, Spotify::ImageSizeSmall).uri(); // Temporary
+//        break;
+//    case NormalCoverUriRole:
+//        return SpLink::fromAlbumCover(album, Spotify::ImageSizeNormal).uri();
+//        break;
+//    case LargeCoverUriRole:
+//        return SpLink::fromAlbumCover(album, Spotify::ImageSizeLarge).uri();
+//        break;
     case ArtistNameRole:
         return album.artist().name();
         break;
@@ -93,4 +102,6 @@ void AbstractAlbumCollectionModel::updateData(int first, int last)
     QModelIndex end = last == -1 ? index(first) : index(last);
 
     emit dataChanged(begin, end);
+}
+
 }

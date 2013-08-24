@@ -1,8 +1,10 @@
-#ifndef ABSTRACTALBUMCOLLECTIONMODEL_H
-#define ABSTRACTALBUMCOLLECTIONMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
-#include <Sonata/SpAlbum>
+
+#include <Spotinetta/Spotinetta>
+
+namespace Sonetta {
 
 class AbstractAlbumCollectionModel : public QAbstractListModel
 {
@@ -30,7 +32,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
     
 protected:
-    virtual SpAlbum getAlbumAt(int index) const = 0;
+    virtual Spotinetta::Album getAlbumAt(int index) const = 0;
     virtual int getAlbumCount() const = 0;
 
     void updateData(int first, int last = -1);
@@ -39,4 +41,4 @@ private:
     Q_DISABLE_COPY(AbstractAlbumCollectionModel)  
 };
 
-#endif // ABSTRACTALBUMCOLLECTIONMODEL_H
+}
