@@ -1,7 +1,8 @@
-#ifndef ARTISTLISTMODEL_H
-#define ARTISTLISTMODEL_H
+#pragma once
 
 #include "abstractartistcollectionmodel.h"
+
+namespace Sonetta {
 
 class ArtistListModel : public AbstractArtistCollectionModel
 {
@@ -12,19 +13,19 @@ public:
     bool canFetchMore(const QModelIndex &parent) const;
     void fetchMore(const QModelIndex &parent);
 
-    void append(const SpArtistList &artists);
+    void append(const Spotinetta::ArtistList &artists);
     void clear();
 
 signals:
     void needMore();
 
 protected:
-    SpArtist getArtistAt(int index) const;
+    Spotinetta::Artist getArtistAt(int index) const;
     int getArtistCount() const;
 
 private:
     Q_DISABLE_COPY(ArtistListModel)
-    SpArtistList m_artists;
+    Spotinetta::ArtistList m_artists;
 };
 
-#endif // ARTISTLISTMODEL_H
+}

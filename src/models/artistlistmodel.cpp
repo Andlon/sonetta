@@ -1,14 +1,17 @@
 #include "artistlistmodel.h"
 
 #include <QMetaMethod>
-#include <QDebug>
+
+namespace sp = Spotinetta;
+
+namespace Sonetta {
 
 ArtistListModel::ArtistListModel(QObject *parent) :
     AbstractArtistCollectionModel(parent)
 {
 }
 
-void ArtistListModel::append(const SpArtistList &artists)
+void ArtistListModel::append(const sp::ArtistList &artists)
 {
     if (artists.count() > 0)
     {
@@ -40,7 +43,7 @@ void ArtistListModel::clear()
     endResetModel();
 }
 
-SpArtist ArtistListModel::getArtistAt(int index) const
+sp::Artist ArtistListModel::getArtistAt(int index) const
 {
     Q_ASSERT(index >= 0);
     Q_ASSERT(index < m_artists.count());
@@ -50,4 +53,6 @@ SpArtist ArtistListModel::getArtistAt(int index) const
 int ArtistListModel::getArtistCount() const
 {
     return m_artists.count();
+}
+
 }
