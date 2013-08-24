@@ -1,46 +1,53 @@
 #include "albumbrowsemodel.h"
 
-#include <QDebug>
+#include "../application.h"
 
-AlbumBrowseModel::AlbumBrowseModel(QObject *parent)
-    :   AbstractTrackCollectionModel(parent), m_watcher(new SpAlbumBrowseWatcher)
+namespace sp = Spotinetta;
+
+namespace Sonetta {
+
+AlbumBrowseModel::AlbumBrowseModel(Spotinetta::Session *session, QObject *parent)
+    :   AbstractTrackCollectionModel(parent)
 {
-    connect(m_watcher, SIGNAL(albumBrowseChanged()),
-            this, SIGNAL(albumBrowseChanged()));
-    connect(m_watcher, SIGNAL(loaded()),
-            this, SLOT(handleLoad()));
+    m_watcher = new sp::AlbumBrowseWatcher(session, this);
+
+    connect(m_watcher, &sp::AlbumBrowseWatcher::loaded,
+            this, &AlbumBrowseModel::onLoaded);
 }
 
-SpAlbumBrowse AlbumBrowseModel::albumBrowse() const
+sp::AlbumBrowse AlbumBrowseModel::albumBrowse() const
 {
-    qDebug() << "Browse validity: " << m_watcher->albumBrowse().isValid();
-    return m_watcher->albumBrowse();
+    return m_watcher->watched();
 }
 
-void AlbumBrowseModel::setAlbumBrowse(const SpAlbumBrowse &browse)
+void AlbumBrowseModel::setAlbumBrowse(const sp::AlbumBrowse &browse)
+{
+    if (browse != m_watcher->watched())
+    {
+        beginResetModel();
+        m_watcher->watch(browse);
+        m_tracks = browse.tracks();
+        endResetModel();
+
+        emit albumBrowseChanged();
+    }
+}
+
+void AlbumBrowseModel::onLoaded()
 {
     beginResetModel();
-    m_watcher->setAlbumBrowse(browse);
-    m_tracks = browse.tracks();
-    endResetModel();
-
-    // Should not be necessary
-    emit albumBrowseChanged();
-}
-
-void AlbumBrowseModel::handleLoad()
-{
-    beginResetModel();
-    m_tracks = m_watcher->albumBrowse().tracks();
+    m_tracks = albumBrowse().tracks();
     endResetModel();
 }
 
-SpTrack AlbumBrowseModel::getTrackAt(int index) const
+sp::Track AlbumBrowseModel::getTrackAt(int index) const
 {
-    return m_watcher->albumBrowse().trackAt(index);
+    return albumBrowse().trackAt(index);
 }
 
 int AlbumBrowseModel::getTrackCount() const
 {
     return m_tracks.count();
+}
+
 }

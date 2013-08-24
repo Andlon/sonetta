@@ -1,35 +1,35 @@
-#ifndef ALBUMBROWSEMODEL_H
-#define ALBUMBROWSEMODEL_H
+#pragma once
 
 #include "abstracttrackcollectionmodel.h"
-#include <Sonata/SpAlbumBrowseWatcher>
+
+namespace Sonetta {
 
 class AlbumBrowseModel : public AbstractTrackCollectionModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(SpAlbumBrowse albumBrowse READ albumBrowse WRITE setAlbumBrowse NOTIFY albumBrowseChanged)
+    Q_PROPERTY(Spotinetta::AlbumBrowse albumBrowse READ albumBrowse WRITE setAlbumBrowse NOTIFY albumBrowseChanged)
 
 public:
-    explicit AlbumBrowseModel(QObject * parent = 0);
+    explicit AlbumBrowseModel(Spotinetta::Session * session, QObject * parent = 0);
 
-    SpAlbumBrowse albumBrowse() const;
-    void setAlbumBrowse(const SpAlbumBrowse &browse);
+    Spotinetta::AlbumBrowse albumBrowse() const;
+    void setAlbumBrowse(const Spotinetta::AlbumBrowse &browse);
 
 protected:
     int getTrackCount() const;
-    SpTrack getTrackAt(int index) const;
+    Spotinetta::Track getTrackAt(int index) const;
 
 signals:
     void albumBrowseChanged();
 
 private slots:
-    void handleLoad();
+    void onLoaded();
 
 private:
     Q_DISABLE_COPY(AlbumBrowseModel)
-    SpAlbumBrowseWatcher * m_watcher;
-    SpTrackList m_tracks;
+    Spotinetta::AlbumBrowseWatcher *    m_watcher;
+    Spotinetta::TrackList               m_tracks;
 };
 
-#endif // ALBUMBROWSEMODEL_H
+}
