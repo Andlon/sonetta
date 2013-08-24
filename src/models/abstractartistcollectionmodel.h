@@ -1,8 +1,10 @@
-#ifndef ABSTRACTARTISTCOLLECTIONMODEL_H
-#define ABSTRACTARTISTCOLLECTIONMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
-#include <Sonata/SpArtist>
+
+#include <Spotinetta/Spotinetta>
+
+namespace Sonetta {
 
 class AbstractArtistCollectionModel : public QAbstractListModel
 {
@@ -25,7 +27,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
     
 protected:
-    virtual SpArtist getArtistAt(int index) const = 0;
+    virtual Spotinetta::Artist getArtistAt(int index) const = 0;
     virtual int getArtistCount() const = 0;
 
     void updateData(int first, int last = -1);
@@ -34,4 +36,4 @@ private:
     Q_DISABLE_COPY(AbstractArtistCollectionModel)
 };
 
-#endif // ABSTRACTARTISTCOLLECTIONMODEL_H
+}
