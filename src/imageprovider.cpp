@@ -1,4 +1,4 @@
-#include "spotifyimageprovider.h"
+#include "imageprovider.h"
 
 #include <QThread>
 #include <QEvent>
@@ -7,6 +7,8 @@
 #include <QDebug>
 
 namespace sp = Spotinetta;
+
+namespace Sonetta {
 
 struct ImageDataSync {
     ImageDataSync() : isLoaded(0) { }
@@ -32,8 +34,8 @@ private:
 
 
 
-ImageProvider::ImageProvider(QObject *parent) :
-    QObject(parent), QQuickImageProvider(QQmlImageProviderBase::Image, QQmlImageProviderBase::ForceAsynchronousImageLoading)
+ImageProvider::ImageProvider(const Spotinetta::Session *session, QObject *parent)
+    :   QObject(parent), QQuickImageProvider(QQmlImageProviderBase::Image, QQmlImageProviderBase::ForceAsynchronousImageLoading)
 {
 }
 
@@ -114,4 +116,6 @@ void ImageProvider::handleImageUpdated()
         else
             ++i;
     }
+}
+
 }

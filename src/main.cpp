@@ -9,7 +9,9 @@
 
 int main(int argc, char *argv[])
 {
-    Sonetta::Application sonetta(argc, argv);
+    // Register Spotinetta types
+    Spotinetta::registerTypes();
 
+    Sonetta::Application sonetta(argc, argv);
     return sonetta.run();
 }

@@ -6,12 +6,14 @@
 #include <QQuickView>
 
 #include "quicktrackinfo.h"
-#include "quickartistsynopsis.h"
+//#include "quickartistsynopsis.h"
 #include "quicksearch.h"
 #include "imageprovider.h"
 
 #include "models/albumlistmodel.h"
 #include "models/albumbrowsemodel.h"
+
+#include "../appkey.c"
 
 namespace sp = Spotinetta;
 
@@ -24,7 +26,7 @@ Application::Application(int &argc, char **argv)
     config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
 
     m_session = new sp::Session(config, this);
-    m_player = new Player(m_spotify, this);
+    m_player = new Player(m_session, this);
     m_ui = new UIStateCoordinator(this);
 }
 
@@ -47,7 +49,7 @@ int Application::run()
     qmlRegisterType<AlbumListModel>("sonetta", 0, 1, "AlbumListModel");
     qmlRegisterType<AlbumBrowseModel>("sonetta", 0, 1, "AlbumBrowseModel");
     qmlRegisterType<QuickTrackInfo>("sonetta", 0, 1, "TrackInfo");
-    qmlRegisterType<QuickArtistSynopsis>("sonetta", 0, 1, "ArtistSynopsis");
+    //qmlRegisterType<QuickArtistSynopsis>("sonetta", 0, 1, "ArtistSynopsis");
     qmlRegisterType<QuickSearch>("sonetta", 0, 1, "Search");
 
     if (!m_spotify->createSession())

@@ -11,6 +11,9 @@
 
 #include <Spotinetta/Spotinetta>
 
+
+namespace Sonetta {
+
 struct SyncWatcherPair;
 
 class ImageProvider : public QObject, public QQuickImageProvider
@@ -29,3 +32,5 @@ private slots:
 private:
     QVector<SyncWatcherPair> m_pairs;
 };
+
+}
