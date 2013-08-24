@@ -1,13 +1,13 @@
-#ifndef ALBUMLISTMODEL_H
-#define ALBUMLISTMODEL_H
+#pragma once
 
 #include "abstractalbumcollectionmodel.h"
+#include <Spotinetta/Spotinetta>
 
-#include <Sonata/SpAlbumWatcher>
+namespace Sonetta {
 
 /*!
  * \brief The AlbumListModel class provides a simple model of an
- *  SpAlbumList where the albums have already been loaded.
+ *  Spotinetta::AlbumList where the albums have already been loaded.
  */
 
 class AlbumListModel : public AbstractAlbumCollectionModel
@@ -20,19 +20,19 @@ public:
     bool canFetchMore(const QModelIndex &parent) const;
     void fetchMore(const QModelIndex &parent);
 
-    void append(const SpAlbumList &albums);
+    void append(const Spotinetta::AlbumList &albums);
     void clear();
 
 signals:
     void needMore();
 
 protected:
-    SpAlbum getAlbumAt(int index) const;
+    Spotinetta::Album getAlbumAt(int index) const;
     int getAlbumCount() const;
 
 private:
     Q_DISABLE_COPY(AlbumListModel)
-    SpAlbumList m_albums;
+    Spotinetta::AlbumList m_albums;
 };
 
-#endif // ALBUMLISTMODEL_H
+}

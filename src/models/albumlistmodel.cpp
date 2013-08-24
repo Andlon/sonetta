@@ -2,14 +2,16 @@
 
 #include <QMetaMethod>
 
-#include <QDebug>
+namespace sp = Spotinetta;
+
+namespace Sonetta {
 
 AlbumListModel::AlbumListModel(QObject *parent)
     :   AbstractAlbumCollectionModel(parent)
 {
 }
 
-void AlbumListModel::append(const SpAlbumList &albums)
+void AlbumListModel::append(const sp::AlbumList &albums)
 {
     if (albums.count() > 0)
     {
@@ -41,7 +43,7 @@ void AlbumListModel::clear()
     endResetModel();
 }
 
-SpAlbum AlbumListModel::getAlbumAt(int index) const
+sp::Album AlbumListModel::getAlbumAt(int index) const
 {
     Q_ASSERT(index >= 0);
     Q_ASSERT(index < m_albums.count());
@@ -51,4 +53,6 @@ SpAlbum AlbumListModel::getAlbumAt(int index) const
 int AlbumListModel::getAlbumCount() const
 {
     return m_albums.count();
+}
+
 }
