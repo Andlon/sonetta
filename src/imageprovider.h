@@ -22,8 +22,6 @@ public:
     ~ImageProvider();
 
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
-    
-    void customEvent(QEvent *);
 
 private slots:
     void loadImage(const QString &uri);

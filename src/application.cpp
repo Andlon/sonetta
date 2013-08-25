@@ -24,6 +24,7 @@ Application::Application(int &argc, char **argv)
 {
     sp::SessionConfig config;
     config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
+    config.userAgent = "Sonetta";
 
     m_session = new sp::Session(config, this);
     m_player = new Player(m_session, this);
