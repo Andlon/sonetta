@@ -241,12 +241,12 @@ void PlaylistModel::onTracksAdded(const sp::TrackList &tracks, int position)
     endInsertRows();
 }
 
-void PlaylistModel::onTracksRemoved(const QVector<int> &positions)
+void PlaylistModel::onTracksRemoved(const QVector<int> &/*positions*/)
 {
 
 }
 
-void PlaylistModel::onTracksMoved(const QVector<int> &positions, int newPosition)
+void PlaylistModel::onTracksMoved(const QVector<int> &/*positions*/, int /*newPosition*/)
 {
 
 }

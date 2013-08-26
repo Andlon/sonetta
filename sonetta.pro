@@ -43,7 +43,8 @@ HEADERS += \
     src/application.h \
     src/imageprovider.h \
     src/utilities/session.h \
-    src/models/playlistmodel.h
+    src/models/playlistmodel.h \
+    src/models/playlistcontainermodel.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -64,7 +65,8 @@ SOURCES += \
     src/uistatecoordinator.cpp \
     src/application.cpp \
     src/imageprovider.cpp \
-    src/models/playlistmodel.cpp
+    src/models/playlistmodel.cpp \
+    src/models/playlistcontainermodel.cpp
 
 OTHER_FILES += \
     qml/sonata2/main.qml \
