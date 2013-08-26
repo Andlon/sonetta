@@ -56,7 +56,6 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
                               Q_ARG(QString, uri));
 
     QMutexLocker locker(&m_waitMutex);
-    QMap<QString, QByteArray>::ConstIterator i = m_results.find(uri);
 
     while (!imageReady(uri) && !m_cancel)
     {
@@ -67,6 +66,10 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
         return QImage();
 
     QByteArray data = takeImageData(uri);
+
+    // We have the data, release the lock before decoding/scaling
+    // (do not access shared data after this point)
+    locker.unlock();
 
     QImage image = QImage::fromData(data);
     *size = image.size();
