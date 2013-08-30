@@ -44,7 +44,8 @@ HEADERS += \
     src/imageprovider.h \
     src/utilities/session.h \
     src/models/playlistmodel.h \
-    src/models/playlistcontainermodel.h
+    src/models/playlistcontainermodel.h \
+    src/quick/enums.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -117,4 +118,5 @@ OTHER_FILES += \
     qml/rework/search/ResultPage.qml \
     qml/rework/common/AlbumCollectionView.qml \
     qml/rework/common/CollectionViewHighlight.qml \
-    qml/rework/common/ArtistCollectionView.qml
+    qml/rework/common/ArtistCollectionView.qml \
+    assets/qml/rework2/main.qml

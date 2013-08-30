@@ -13,6 +13,8 @@
 #include "models/albumlistmodel.h"
 #include "models/albumbrowsemodel.h"
 
+#include "quick/enums.h"
+
 #include "../appkey.c"
 
 namespace sp = Spotinetta;
@@ -53,6 +55,12 @@ int Application::run()
     //    //qmlRegisterType<QuickArtistSynopsis>("sonetta", 0, 1, "ArtistSynopsis");
     //    qmlRegisterType<QuickSearch>("sonetta", 0, 1, "Search");
 
+    qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
+
+    // Enums
+    qmlRegisterUncreatableType<AlbumEnums>("Sonetta", 0, 1, "Album", "Cannot instantiate Album.");
+    qmlRegisterUncreatableType<TrackEnums>("Sonetta", 0, 1, "Track", "Cannot instantiate Track.");
+
     if (m_session->error() == sp::Error::Ok)
     {
         m_nav = new Navigation(this);
@@ -65,8 +73,9 @@ int Application::run()
         m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
         m_view->engine()->rootContext()->setContextProperty("player", m_player);
         m_view->engine()->rootContext()->setContextProperty("ui", m_ui);
+        m_view->engine()->rootContext()->setContextProperty("session", m_session);
         m_view->engine()->addImportPath(applicationDir + QStringLiteral("/qml/modules"));
-        m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/qml/rework/main.qml")));
+        m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/qml/rework2/main.qml")));
         m_view->setResizeMode(QQuickView::SizeRootObjectToView);
 
         // Center view
