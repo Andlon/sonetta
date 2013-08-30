@@ -119,4 +119,10 @@ OTHER_FILES += \
     qml/rework/common/AlbumCollectionView.qml \
     qml/rework/common/CollectionViewHighlight.qml \
     qml/rework/common/ArtistCollectionView.qml \
-    assets/qml/rework2/main.qml
+    assets/qml/rework2/main.qml \
+    assets/qml/rework2/controller.qml \
+    assets/qml/rework2/common/VirtualKeyboard.js \
+    assets/qml/rework2/common/Time.js \
+    assets/qml/rework2/common/States.js \
+    assets/qml/rework2/common/VirtualKeyboard.qml \
+    assets/qml/rework2/login/login.qml

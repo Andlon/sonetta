@@ -43,9 +43,9 @@ int Application::run()
     //    qmlRegisterUncreatableType<Player>("sonetta", 0, 1, "Player", "Can not instantiate Player from QML");
     //    qmlRegisterUncreatableType<UIStateCoordinator>("sonetta", 0, 1, "UIStateCoordinator", "Can not instantiate UIStateCoordinator from QML.");
 
-    //    qmlRegisterType<Navigation>("sonetta", 0, 1, "Navigation");
-    //    qmlRegisterType<NavigationAttached>();
-    //    qmlRegisterUncreatableType<QuickNavEvent>("sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
+    qmlRegisterType<Navigation>("Sonetta", 0, 1, "Navigation");
+    qmlRegisterType<NavigationAttached>();
+    qmlRegisterUncreatableType<QuickNavEvent>("Sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
 
     ////    qmlRegisterType<PlaylistContainerModel>("sonetta", 0, 1, "PlaylistContainerModel");
     ////    qmlRegisterType<PlaylistModel>("sonetta", 0, 1, "PlaylistModel");
