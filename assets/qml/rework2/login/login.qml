@@ -22,6 +22,8 @@ Item {
 
         VirtualKeyboard {
             anchors.centerIn: parent
+            highlightColor: ui.colors.highlight
+            color: ui.colors.standard
         }
     }
 

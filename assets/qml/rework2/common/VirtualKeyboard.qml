@@ -32,6 +32,9 @@ FocusScope {
     property url prevImage: "../images/keys/prev.png" // Cursor
     property url nextImage: "../images/keys/next.png" // Cursor
 
+    property color highlightColor: "Green"
+    property color color: "White"
+
     property size cellSize: Qt.size(56, 56)
 
     property int currentRow: 2
@@ -137,6 +140,20 @@ FocusScope {
                 when: isIcon
             }
 
+            Binding {
+                target: foregroundLoader.item
+                property: "color"
+                value: root.color
+                when: !keyRoot.activeFocus
+            }
+
+            Binding {
+                target: foregroundLoader.item
+                property: "color"
+                value: root.highlightColor
+                when: keyRoot.activeFocus
+            }
+
             property int cellWidth: root.cellSize.width * colspan;
             property int cellHeight: root.cellSize.height * rowspan;
 
@@ -157,7 +174,7 @@ FocusScope {
             Loader {
                 id: foregroundLoader
                 anchors.fill: parent
-                opacity: activeFocus ? 1.0 : 0.55
+                //opacity: activeFocus ? 1.0 : 0.55
                 focus: true
 
                 Component.onCompleted: {

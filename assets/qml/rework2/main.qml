@@ -31,14 +31,10 @@ Item {
         source: "images/spotify.png"
     }
 
-
-
     Loader {
         anchors.fill: parent
         source: root.state == "login" ? "login/login.qml" : "controller.qml"
     }
-
-
 
     Connections {
         target: session
@@ -55,7 +51,12 @@ Item {
         // The amount of space between any two generic items
         misc.globalPadding = 20
 
+        var colors = {}
+        colors.highlight = "#84bd00"
+        colors.standard = "#ffffff"
+
         ui.setMiscProperties(misc)
+        ui.setColorProperties(colors)
 
         if (session.relogin())
         {
