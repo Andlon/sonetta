@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
 import QtQml.Models 2.1
+import QtGraphicalEffects 1.0
 
 import Sonetta 0.1
 
@@ -140,20 +141,6 @@ FocusScope {
                 when: isIcon
             }
 
-            Binding {
-                target: foregroundLoader.item
-                property: "color"
-                value: root.color
-                when: !keyRoot.activeFocus
-            }
-
-            Binding {
-                target: foregroundLoader.item
-                property: "color"
-                value: root.highlightColor
-                when: keyRoot.activeFocus
-            }
-
             property int cellWidth: root.cellSize.width * colspan;
             property int cellHeight: root.cellSize.height * rowspan;
 
@@ -174,8 +161,8 @@ FocusScope {
             Loader {
                 id: foregroundLoader
                 anchors.fill: parent
-                //opacity: activeFocus ? 1.0 : 0.55
                 focus: true
+                visible: !keyRoot.activeFocus
 
                 Component.onCompleted: {
                     if (parent.isIcon)
@@ -194,6 +181,14 @@ FocusScope {
                         item.text = keyRoot.text
                     }
                 }
+            }
+
+            ColorOverlay {
+                anchors.fill: foregroundLoader
+                source: foregroundLoader.item
+                visible: keyRoot.activeFocus
+                color: root.highlightColor
+                cached: true
             }
         }
     }
