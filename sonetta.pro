@@ -125,4 +125,5 @@ OTHER_FILES += \
     assets/qml/rework2/common/Time.js \
     assets/qml/rework2/common/States.js \
     assets/qml/rework2/common/VirtualKeyboard.qml \
-    assets/qml/rework2/login/login.qml
+    assets/qml/rework2/login/login.qml \
+    assets/qml/rework2/login/LoginField.qml
