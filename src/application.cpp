@@ -4,6 +4,9 @@
 #include <QScreen>
 #include <QKeyEvent>
 #include <QQuickView>
+#include <QStandardPaths>
+#include <QDebug>
+#include <QDir>
 
 #include "quicktrackinfo.h"
 //#include "quickartistsynopsis.h"
@@ -27,8 +30,14 @@ Application::Application(int &argc, char **argv)
     sp::SessionConfig config;
     config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
     config.userAgent = "Sonetta";
-    config.settingsLocation = "D:/sonetta";
-    config.cacheLocation = "D:/sonetta";
+
+    config.settingsLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/libspotify";
+    config.cacheLocation = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/libspotify";
+
+    // Create directories if they don't exist
+    QDir dir;
+    dir.mkpath(config.settingsLocation);
+    dir.mkpath(config.cacheLocation);
 
     m_session = new sp::Session(config, this);
     m_player = new Player(m_session, this);
