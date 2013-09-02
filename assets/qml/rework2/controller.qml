@@ -3,4 +3,8 @@ import Sonetta 0.1
 
 Item {
 
+    Sidebar {
+
+    }
+
 }
