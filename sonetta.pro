@@ -45,7 +45,8 @@ HEADERS += \
     src/utilities/session.h \
     src/models/playlistmodel.h \
     src/models/playlistcontainermodel.h \
-    src/quick/enums.h
+    src/quick/enums.h \
+    src/quick/models.h
 
 SOURCES += \
     src/navigation/navigation.cpp \

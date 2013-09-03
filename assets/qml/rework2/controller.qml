@@ -14,4 +14,8 @@ Item {
         }
     }
 
+    PlaylistContainerModel {
+
+    }
+
 }

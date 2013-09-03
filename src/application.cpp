@@ -17,6 +17,7 @@
 #include "models/albumbrowsemodel.h"
 
 #include "quick/enums.h"
+#include "quick/models.h"
 
 #include "../appkey.c"
 
@@ -51,20 +52,11 @@ Application::~Application()
 
 int Application::run()
 {
-    //    qmlRegisterUncreatableType<Player>("sonetta", 0, 1, "Player", "Can not instantiate Player from QML");
-    //    qmlRegisterUncreatableType<UIStateCoordinator>("sonetta", 0, 1, "UIStateCoordinator", "Can not instantiate UIStateCoordinator from QML.");
-
     qmlRegisterType<Navigation>("Sonetta", 0, 1, "Navigation");
     qmlRegisterType<NavigationAttached>();
     qmlRegisterUncreatableType<QuickNavEvent>("Sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
 
-    ////    qmlRegisterType<PlaylistContainerModel>("sonetta", 0, 1, "PlaylistContainerModel");
-    ////    qmlRegisterType<PlaylistModel>("sonetta", 0, 1, "PlaylistModel");
-    //    qmlRegisterType<AlbumListModel>("sonetta", 0, 1, "AlbumListModel");
-    //    qmlRegisterType<AlbumBrowseModel>("sonetta", 0, 1, "AlbumBrowseModel");
-    //    qmlRegisterType<QuickTrackInfo>("sonetta", 0, 1, "TrackInfo");
-    //    //qmlRegisterType<QuickArtistSynopsis>("sonetta", 0, 1, "ArtistSynopsis");
-    //    qmlRegisterType<QuickSearch>("sonetta", 0, 1, "Search");
+    qmlRegisterType<QuickPlaylistContainerModel>("Sonetta", 0, 1, "PlaylistContainerModel");
 
     qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
 
