@@ -96,6 +96,8 @@ void PlaylistContainerModel::setPlaylistContainer(const Spotinetta::PlaylistCont
         }
 
         endResetModel();
+
+        emit playlistContainerChanged();
     }
 }
 

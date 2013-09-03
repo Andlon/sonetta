@@ -12,6 +12,8 @@ namespace Sonetta {
 class PlaylistContainerModel : public QAbstractListModel
 {
     Q_OBJECT
+
+    Q_PROPERTY(Spotinetta::PlaylistContainer playlistContainer READ playlistContainer NOTIFY playlistContainerChanged)
 public:
     enum Role {
         PlaylistRole = Qt::UserRole,
@@ -30,6 +32,9 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     QHash<int, QByteArray> roleNames() const;
     int rowCount(const QModelIndex &parent) const;
+
+signals:
+    void playlistContainerChanged();
 
 private slots:
     void onLoaded();
