@@ -13,7 +13,7 @@ class PlaylistContainerModel : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(Spotinetta::PlaylistContainer playlistContainer READ playlistContainer NOTIFY playlistContainerChanged)
+    Q_PROPERTY(Spotinetta::PlaylistContainer playlistContainer READ playlistContainer WRITE setPlaylistContainer NOTIFY playlistContainerChanged)
 public:
     enum Role {
         PlaylistRole = Qt::UserRole,
