@@ -26,7 +26,7 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 Application::Application(int &argc, char **argv)
-    :   QGuiApplication(argc, argv), m_view(0), m_nav(0)
+    :   QGuiApplication(argc, argv), m_view(0), m_nav(0), m_exiting(false)
 {
     sp::SessionConfig config;
     config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
@@ -43,6 +43,8 @@ Application::Application(int &argc, char **argv)
     m_session = new sp::Session(config, this);
     m_player = new Player(m_session, this);
     m_ui = new UIStateCoordinator(this);
+
+    connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
 }
 
 Application::~Application()
@@ -68,6 +70,8 @@ int Application::run()
     {
         m_nav = new Navigation(this);
         m_view = new QQuickView;
+
+        connect(m_view->engine(), &QQmlEngine::quit, this, &Application::onExit);
 
         QString applicationDir = applicationDirPath();
 
@@ -96,6 +100,20 @@ int Application::run()
         const QByteArray msg = QByteArray("Session creation failed. Error: ") + sp::errorMessage(m_session->error()).toUtf8();
         qFatal(msg.constData());
         return 1;
+    }
+}
+
+void Application::onExit()
+{
+    m_exiting = true;
+    m_session->logout();
+}
+
+void Application::onLogout()
+{
+    if (m_exiting)
+    {
+        quit();
     }
 }
 

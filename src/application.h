@@ -26,6 +26,10 @@ public:
     Spotinetta::Session * session() const;
 
     int run();
+
+private slots:
+    void onExit();
+    void onLogout();
     
 private:
     QQuickView * m_view;
@@ -34,6 +38,8 @@ private:
     Player *                m_player;
     Spotinetta::Session *   m_session;
     UIStateCoordinator *    m_ui;
+
+    bool m_exiting;
 
 };
 
