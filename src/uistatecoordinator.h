@@ -44,6 +44,10 @@ public slots:
     
 signals:
     void stateChanged();
+    void statePopped();
+    void statePushed();
+    void stateReset();
+
     void fontsChanged();
     void colorsChanged();
     void miscChanged();

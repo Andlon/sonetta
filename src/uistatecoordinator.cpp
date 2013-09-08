@@ -23,6 +23,7 @@ void UIStateCoordinator::pushState(const QVariant &state)
     m_states.push(state);
 
     emit stateChanged();
+    emit statePushed();
 }
 
 void UIStateCoordinator::resetState(const QVariant &state)
@@ -31,6 +32,7 @@ void UIStateCoordinator::resetState(const QVariant &state)
     m_states.push(state);
 
     emit stateChanged();
+    emit stateReset();
 }
 
 bool UIStateCoordinator::hasPreviousState() const
@@ -44,6 +46,7 @@ void UIStateCoordinator::popState()
     {
         m_states.pop();
         emit stateChanged();
+        emit statePopped();
     }
 }
 
