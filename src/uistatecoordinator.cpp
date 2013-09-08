@@ -6,7 +6,7 @@
 namespace Sonetta {
 
 UIStateCoordinator::UIStateCoordinator(QObject *parent) :
-    QObject(parent), m_currentStateIndex(-1)
+    QObject(parent)
 {
     m_fonts = new QQmlPropertyMap(this);
     m_colors = new QQmlPropertyMap(this);
@@ -15,66 +15,35 @@ UIStateCoordinator::UIStateCoordinator(QObject *parent) :
 
 QVariant UIStateCoordinator::state() const
 {
-    if (m_states.isEmpty())
-        return QVariantMap();
-
-    return m_states.at(m_currentStateIndex);
+    return m_states.isEmpty() ? QVariantMap() : m_states.top();
 }
 
 void UIStateCoordinator::pushState(const QVariant &state)
 {
-    ++m_currentStateIndex;
-    int removeCount = m_states.count() - m_currentStateIndex;
-    m_states.remove(m_currentStateIndex, removeCount);
-    m_states.append(state);
+    m_states.push(state);
 
-    emit stateChanged(Forward);
+    emit stateChanged();
 }
 
-void UIStateCoordinator::initState(const QVariant &state)
+void UIStateCoordinator::resetState(const QVariant &state)
 {
-    if (m_states.isEmpty())
-    {
-        m_currentStateIndex = 0;
-        m_states.append(state);
-        emit stateChanged(None);
-    }
-}
-
-void UIStateCoordinator::resetState(const QVariant &state, Direction direction)
-{
-    m_currentStateIndex = 0;
     m_states.clear();
-    m_states.append(state);
+    m_states.push(state);
 
-    emit stateChanged(direction);
+    emit stateChanged();
 }
 
 bool UIStateCoordinator::hasPreviousState() const
 {
-    return m_currentStateIndex > 0;
+    return !m_states.empty();
 }
 
-bool UIStateCoordinator::hasNextState() const
-{
-    return m_currentStateIndex < m_states.count() - 1;
-}
-
-void UIStateCoordinator::nextState()
-{
-    if (hasNextState())
-    {
-        ++m_currentStateIndex;
-        emit stateChanged(Forward);
-    }
-}
-
-void UIStateCoordinator::previousState()
+void UIStateCoordinator::popState()
 {
     if (hasPreviousState())
     {
-        --m_currentStateIndex;
-        emit stateChanged(Backward);
+        m_states.pop();
+        emit stateChanged();
     }
 }
 
