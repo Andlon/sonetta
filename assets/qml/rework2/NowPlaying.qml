@@ -3,11 +3,13 @@ import Sonetta 0.1
 
 import "common"
 import "common/States.js" as States
+import "common/Time.js" as Time
 
 Item {
     id: root
 
     height: col.height
+    visible: track.isValid
 
     TrackInfo {
         id: track
@@ -66,6 +68,17 @@ Item {
             color: ui.colors.standard
             text: track.artistNames.join(", ")
             elide: Text.ElideRight
+        }
+
+        Text {
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+            font: ui.fonts.standard
+            color: ui.colors.standard
+            text: Time.formatTime(player.position) + " / " + Time.formatTime(track.duration)
+            opacity: 0.6
         }
     }
 }

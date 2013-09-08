@@ -44,7 +44,7 @@ Application::Application(int &argc, char **argv)
     dir.mkpath(config.cacheLocation);
 
     m_session = new sp::Session(config, this);
-    m_player = new Player(m_session, this);
+    m_player = new Player(m_session, m_output, this);
     m_ui = new UIStateCoordinator(this);
 
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);

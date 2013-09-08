@@ -7,8 +7,9 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-Player::Player(sp::Session *session, QObject *parent)
-    :   QObject(parent), m_session(session), m_shuffle(false), m_repeat(false)
+Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *parent)
+    :   QObject(parent), m_session(session), m_shuffle(false), m_repeat(false),
+      m_output(output)
 {
     Q_ASSERT(session != nullptr);
 
@@ -16,6 +17,7 @@ Player::Player(sp::Session *session, QObject *parent)
 
     // Set up connections
     connect(session, &sp::Session::endOfTrack, this, &Player::next);
+    connect(output, &AudioOutput::notify, this, &Player::positionChanged);
 
     // This ensures a track is eventually played whether it's loaded
     // or not
@@ -32,6 +34,11 @@ bool Player::shuffle() const
 bool Player::repeat() const
 {
     return m_repeat;
+}
+
+int Player::position() const
+{
+    return m_output.isNull() ? 0 : m_output->position();
 }
 
 sp::Track Player::track() const
@@ -59,9 +66,11 @@ void Player::setRepeat(bool enable)
 
 void Player::play(const Spotinetta::Track &track)
 {
-    m_watcher->watch(track);
-
-    emit trackChanged();
+    if (track != this->track())
+    {
+        m_watcher->watch(track);
+        emit trackChanged();
+    }
 
     if (track.isLoaded())
     {
@@ -69,6 +78,9 @@ void Player::play(const Spotinetta::Track &track)
         {
             m_session->play();
             m_session->seek(0);
+
+            if (!m_output.isNull())
+                m_output->resetPosition(0);
         }
     }
 
@@ -119,6 +131,7 @@ void Player::next()
         play(m_explicitQueue.dequeue());
     }
 
+    // Emit outside if because of end of track situations
     emit trackChanged();
 }
 

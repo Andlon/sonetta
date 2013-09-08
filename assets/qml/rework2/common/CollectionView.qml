@@ -26,18 +26,16 @@ FocusScope {
     ScrollView {
         focus: true
         anchors.fill: root
-        anchors.margins: 30
         style: ScrollViewStyle {
             scrollBarBackground: Item {}
             corner: Item {}
-            //handle: Rectangle { width: 50; height: 50; color: "White" }
+            handle: Item {}
             incrementControl: Item {}
             decrementControl: Item {}
         }
 
         ListView {
             id: list
-            //anchors.fill: parent
             delegate: delegateComponent
             highlight: highlightComponent
             highlightFollowsCurrentItem: true

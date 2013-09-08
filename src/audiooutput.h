@@ -4,6 +4,7 @@
 #include <Spotinetta/Spotinetta>
 #include <Spotinetta/detail/ringbuffer.h>
 #include <QAudioOutput>
+#include <QAtomicInt>
 
 namespace Sonetta {
 
@@ -16,16 +17,25 @@ public:
     int deliver(const Spotinetta::AudioFrameCollection &collection);
     void reset();
 
+    int position() const;
+    void resetPosition(int pos);
+
+signals:
+    void notify();
+
 private slots:
     void push();
 
 private:
     void setupOutput(const QAudioFormat &format);
 
-    QPointer<QAudioOutput> m_output;
-    QPointer<QIODevice>    m_device;
-    QAudioFormat           m_format;
-    QMutex                 m_formatLock;
+    QPointer<QAudioOutput>  m_output;
+    QPointer<QIODevice>     m_device;
+    QAudioFormat            m_format;
+    QMutex                  m_formatLock;
+
+    int                     m_deviceOffset;
+    int                     m_posOffset;
 
     Spotinetta::detail::RingBuffer<char, 1024> m_buffer;
 };

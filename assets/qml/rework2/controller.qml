@@ -21,9 +21,10 @@ FocusScope {
             anchors {
                 left: parent.left
                 right: pageLabel.left
-                margins: ui.misc.globalPadding
                 rightMargin: 6 * ui.misc.globalPadding
             }
+
+            clip: true
         }
 
         Text {
@@ -31,12 +32,11 @@ FocusScope {
             color: ui.colors.standard
             font: ui.fonts.h1
             text: ui.state.pageLabel
+            height: contentHeight
             anchors {
-                top: parent.top
                 right: parent.right
-                margins: ui.misc.globalPadding
+                bottom: nowplaying.bottom
             }
-            clip: true
         }
     }
 
@@ -59,6 +59,7 @@ FocusScope {
             right: root.right
             bottom: root.bottom
             margins: ui.misc.globalPadding
+            topMargin: 2 * ui.misc.globalPadding
         }
 
         focus: true
