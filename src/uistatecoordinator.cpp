@@ -37,7 +37,7 @@ void UIStateCoordinator::resetState(const QVariant &state)
 
 bool UIStateCoordinator::hasPreviousState() const
 {
-    return !m_states.empty();
+    return m_states.count() > 1;
 }
 
 void UIStateCoordinator::popState()
