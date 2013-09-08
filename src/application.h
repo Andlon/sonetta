@@ -7,6 +7,7 @@
 #include "navigation/navigation.h"
 #include "player.h"
 #include "uistatecoordinator.h"
+#include "audiooutput.h"
 
 class QQuickView;
 
@@ -38,6 +39,7 @@ private:
     Player *                m_player;
     Spotinetta::Session *   m_session;
     UIStateCoordinator *    m_ui;
+    AudioOutput *           m_output;
 
     bool m_exiting;
 

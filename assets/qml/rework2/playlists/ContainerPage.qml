@@ -35,7 +35,6 @@ CollectionView {
         }
     }
 
-
     onItemPressed: {
         var state = ui.state
         state.playlists.stage = "playlist"

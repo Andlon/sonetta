@@ -28,9 +28,12 @@ namespace Sonetta {
 Application::Application(int &argc, char **argv)
     :   QGuiApplication(argc, argv), m_view(0), m_nav(0), m_exiting(false)
 {
+    m_output = new AudioOutput(this);
+
     sp::SessionConfig config;
     config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
     config.userAgent = "Sonetta";
+    config.audioOutput = m_output;
 
     config.settingsLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/libspotify";
     config.cacheLocation = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/libspotify";

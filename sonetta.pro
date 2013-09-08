@@ -46,7 +46,8 @@ HEADERS += \
     src/models/playlistmodel.h \
     src/models/playlistcontainermodel.h \
     src/quick/enums.h \
-    src/quick/models.h
+    src/quick/models.h \
+    src/audiooutput.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -68,7 +69,8 @@ SOURCES += \
     src/application.cpp \
     src/imageprovider.cpp \
     src/models/playlistmodel.cpp \
-    src/models/playlistcontainermodel.cpp
+    src/models/playlistcontainermodel.cpp \
+    src/audiooutput.cpp
 
 OTHER_FILES += \
     qml/sonata2/main.qml \
