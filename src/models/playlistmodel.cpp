@@ -45,7 +45,10 @@ void PlaylistModel::setPlaylist(const Spotinetta::Playlist &playlist)
         {
             onStateChanged();
         }
+
         endResetModel();
+
+        emit playlistChanged();
     }
 }
 

@@ -13,11 +13,16 @@ class PlaylistModel : public AbstractTrackCollectionModel
 {
     Q_OBJECT
 
+    Q_PROPERTY(Spotinetta::Playlist playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
+
 public:
     explicit PlaylistModel(const Spotinetta::Session * session, QObject *parent = 0);
 
     Spotinetta::Playlist playlist() const;
     void setPlaylist(const Spotinetta::Playlist &playlist);
+
+signals:
+    void playlistChanged();
 
 protected:
     Spotinetta::Track getTrackAt(int index) const;

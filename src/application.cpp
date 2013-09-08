@@ -59,6 +59,7 @@ int Application::run()
     qmlRegisterUncreatableType<QuickNavEvent>("Sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
 
     qmlRegisterType<QuickPlaylistContainerModel>("Sonetta", 0, 1, "PlaylistContainerModel");
+    qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");
 
     qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
 
