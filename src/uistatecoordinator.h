@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <QVariant>
-#include <QVector>
+#include <QStack>
 #include <QQmlPropertyMap>
 
 namespace Sonetta {
@@ -15,7 +15,6 @@ class UIStateCoordinator : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QVariant state READ state NOTIFY stateChanged)
-    Q_PROPERTY(bool hasNextState READ hasNextState NOTIFY stateChanged)
     Q_PROPERTY(bool hasPreviousState READ hasPreviousState NOTIFY stateChanged)
 
     // The following properties are property maps
@@ -23,24 +22,11 @@ class UIStateCoordinator : public QObject
     Q_PROPERTY(QObject * colors READ colors NOTIFY colorsChanged)
     Q_PROPERTY(QObject * misc READ misc NOTIFY miscChanged)
 
-    Q_ENUMS(Direction)
-
 public:
-    enum Direction {
-        Forward,
-        Backward,
-        None
-    };
-
     explicit UIStateCoordinator(QObject *parent = 0);
 
     QVariant state() const;
 
-    Q_INVOKABLE void resetState(const QVariant &state, Direction direction = Backward);
-    Q_INVOKABLE void pushState(const QVariant &state);
-    Q_INVOKABLE void initState(const QVariant &state);
-
-    bool hasNextState() const;
     bool hasPreviousState() const;
 
     Q_INVOKABLE void setFontProperties(const QVariant &fonts);
@@ -52,20 +38,18 @@ public:
     QObject * misc() const;
 
 public slots:
-    void previousState();
-    void nextState();
+    void popState();
+    void pushState(const QVariant &state);
+    void resetState(const QVariant &state);
     
 signals:
-    void stateChanged(Direction direction);
+    void stateChanged();
     void fontsChanged();
     void colorsChanged();
     void miscChanged();
     
 private:
-    typedef QVector<QVariant> StateStack;
-
-    StateStack  m_states;
-    int         m_currentStateIndex;
+    QStack<QVariant>    m_states;
 
     QQmlPropertyMap * m_fonts;
     QQmlPropertyMap * m_colors;
