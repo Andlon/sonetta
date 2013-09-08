@@ -1,42 +1,37 @@
 import QtQuick 2.1
+import QtQml.Models 2.1
 import Sonetta 0.1
 
 import "../common"
+import "../common/States.js" as States
 
 Item {
-    PlaylistContainerModel {
-        id: container
-        playlistContainer: session.playlistContainer
-    }
-
-    CollectionView {
-        id: view
-        model: container
+    PageView {
+        id: pager
         anchors.fill: parent
         focus: true
+        currentIndex: {
+            var state = ui.state
+            if (state.playlists.stage === "container")
+                return 0
+            else if (state.playlists.stage === "playlist")
+                return 1
 
-        delegate: CollectionDelegate {
-            height: 75
-            width: view.width
-
-            property string name: model ? model.name : ""
-
-            Text {
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: parent.left
-                    right: parent.right
-                    leftMargin: ui.misc.globalPadding
-                    rightMargin: ui.misc.globalPadding
-                }
-
-                text: name
-                color: ui.colors.standard
-                font: ui.fonts.h3
-                elide: Text.ElideRight
-            }
+            return 0
         }
 
-        onItemPressed: console.log(data.name)
+        model: ObjectModel {
+            ContainerPage {
+                id: view
+                width: pager.cellWidth
+                height: pager.cellHeight
+                focus: true
+            }
+
+            PlaylistPage {
+                width: pager.cellWidth
+                height: pager.cellHeight
+            }
+        }
     }
 }

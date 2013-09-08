@@ -27,7 +27,10 @@ FocusScope {
 
         focus: true
 
-        source: "playlists/playlists.qml"
+        source: {
+            if (ui.state.page === "playlists")
+                return "playlists/playlists.qml"
+        }
     }
 
 }

@@ -1,52 +1,22 @@
 .pragma library
 
-/*
- A collection of functions for generating common state dictionaries
-*/
-
-function createLogin()
+function createInitialState()
 {
-    var state = {};
-    state.type = "page";
-    state.page = "login";
+    var state = {}
 
-    return state;
-}
+    // Determines
+    state.page = "playlists"
+    state.showTopSection = true
 
-function createHome()
-{
-    var state = {};
-    state.type = "page";
-    state.page = "home";
+    state.playlists = {}
 
-    return state;
-}
+    // Holds the current Spotinetta::Playlist object, or undefined if none
+    state.playlists.playlist = undefined
 
-function createPlaylists()
-{
-    var state = {};
-    state.type = "page";
-    state.page = "playlists";
+    // Possible stages:
+    // "container": displays a list of available playlists for the current user
+    // "playlist": displays the playlist specified by the above playlist property
+    state.playlists.stage = "list"
 
-    return state;
-}
-
-function createArtistBrowse(artist)
-{
-    var state = {};
-    state.type = "page"
-    state.page = "artistbrowse"
-    state.artist = artist;
-
-    return state;
-}
-
-function createAlbumBrowse(album)
-{
-    var state = {};
-    state.type = "page"
-    state.page = "albumbrowse"
-    state.album = album;
-
-    return state;
+    return state
 }

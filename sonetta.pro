@@ -131,4 +131,8 @@ OTHER_FILES += \
     assets/qml/rework2/Sidebar.qml \
     assets/qml/rework2/playlists/playlists.qml \
     assets/qml/rework2/common/CollectionView.qml \
-    assets/qml/rework2/common/CollectionDelegate.qml
+    assets/qml/rework2/common/CollectionDelegate.qml \
+    assets/qml/rework2/common/states.js \
+    assets/qml/rework2/common/PageView.qml \
+    assets/qml/rework2/playlists/ContainerPage.qml \
+    assets/qml/rework2/playlists/PlaylistPage.qml

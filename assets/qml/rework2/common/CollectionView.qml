@@ -21,10 +21,12 @@ FocusScope {
     property alias model: list.model
 
     signal itemPressed(var data)
+    clip: true
 
     ScrollView {
         focus: true
         anchors.fill: root
+        anchors.margins: 30
         style: ScrollViewStyle {
             scrollBarBackground: Item {}
             corner: Item {}

@@ -2,6 +2,7 @@ import QtQuick 2.1
 import Sonetta 0.1
 
 import "common"
+import "common/States.js" as States
 
 Item {
     id: root
@@ -56,6 +57,9 @@ Item {
     }
 
     Component.onCompleted: {
+        // Initialize UI state system
+        ui.resetState(States.createInitialState())
+
         // Set up UI visual configuration
 
         var misc = {}
@@ -116,4 +120,6 @@ Item {
             state = "login"
         }
     }
+
+    Navigation.onBack: ui.popState()
 }
