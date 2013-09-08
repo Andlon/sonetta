@@ -4,6 +4,42 @@ import Sonetta 0.1
 FocusScope {
     id: root
 
+    Item {
+        id: topSection
+        visible: ui.state.showTopSection
+        height: childrenRect.height
+
+        anchors {
+            top: root.top
+            right: root.right
+            left: sidebar.right
+            margins: ui.misc.globalPadding
+        }
+
+        NowPlaying {
+            id: nowplaying
+            anchors {
+                left: parent.left
+                right: pageLabel.left
+                margins: ui.misc.globalPadding
+                rightMargin: 6 * ui.misc.globalPadding
+            }
+        }
+
+        Text {
+            id: pageLabel
+            color: ui.colors.standard
+            font: ui.fonts.h1
+            text: ui.state.pageLabel
+            anchors {
+                top: parent.top
+                right: parent.right
+                margins: ui.misc.globalPadding
+            }
+            clip: true
+        }
+    }
+
     Sidebar {
         id: sidebar
         width: 170
@@ -18,7 +54,7 @@ FocusScope {
     Loader {
         id: loader
         anchors {
-            top: root.top
+            top: topSection.bottom
             left: sidebar.right
             right: root.right
             bottom: root.bottom

@@ -6,6 +6,7 @@ function createInitialState()
 
     // Determines
     state.page = "playlists"
+    state.pageLabel = "playlists"
     state.showTopSection = true
 
     state.playlists = {}

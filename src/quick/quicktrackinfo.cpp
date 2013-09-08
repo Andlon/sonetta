@@ -3,7 +3,7 @@
 #include <QVector>
 #include <QDebug>
 
-#include "application.h"
+#include "../utilities/session.h"
 
 namespace sp = Spotinetta;
 
@@ -12,17 +12,17 @@ namespace Sonetta {
 QuickTrackInfo::QuickTrackInfo(QObject *parent)
     :   QObject(parent)
 {
-    Application * application = Application::instance();
-    Q_ASSERT(application != nullptr);
-    sp::Session * session = application->session();
+    sp::Session * session = getCurrentSession();
     Q_ASSERT(session != nullptr);
     m_session = session;
 
     m_trackWatcher = new sp::TrackWatcher(session, this);
+    m_albumWatcher = new sp::AlbumWatcher(session, this);
 
     connect(m_trackWatcher, &sp::TrackWatcher::loaded,
             this, &QuickTrackInfo::onTrackLoaded);
-
+    connect(m_albumWatcher, &sp::AlbumWatcher::loaded,
+            this, &QuickTrackInfo::dataUpdated);
     connect(this, &QuickTrackInfo::trackChanged,
             this, &QuickTrackInfo::dataUpdated);
 }
@@ -112,15 +112,39 @@ sp::ArtistList QuickTrackInfo::artists() const
     return list;
 }
 
-//QString QuickTrackInfo::albumCoverUri(int size) const
-//{
-//    return sp::Link::fromAlbumCover(m_trackWatcher->track().album(), static_cast<sp::ImageSize>(size)).uri();
-//}
+QString QuickTrackInfo::smallCoverUri() const
+{
+    if (!m_session.isNull())
+    {
+        return sp::Link::fromAlbumCover(track().album(), sp::ImageSize::Small).uri();
+    }
+
+    return QString();
+}
+
+QString QuickTrackInfo::normalCoverUri() const
+{
+    if (!m_session.isNull())
+    {
+        return sp::Link::fromAlbumCover(track().album(), sp::ImageSize::Normal).uri();
+    }
+
+    return QString();
+}
+
+QString QuickTrackInfo::largeCoverUri() const
+{
+    if (!m_session.isNull())
+    {
+        return sp::Link::fromAlbumCover(track().album(), sp::ImageSize::Large).uri();
+    }
+
+    return QString();
+}
 
 void QuickTrackInfo::onTrackLoaded()
 {
-    if (isLoaded())
-        setupWatchers();
+    setupWatchers();
 
     emit dataUpdated();
 }
@@ -135,6 +159,8 @@ void QuickTrackInfo::deleteWatchers()
 
 void QuickTrackInfo::setupWatchers()
 {
+    sp::Track track = this->track();
+    m_albumWatcher->watch(track.album());
     int count = artistCount();
 
     deleteWatchers();
@@ -145,14 +171,17 @@ void QuickTrackInfo::setupWatchers()
 
     for (int i = 0; i < count; ++i)
     {
-        sp::Artist artist = track().artistAt(i);
+        sp::Artist artist = track.artistAt(i);
         auto watcher = new sp::ArtistWatcher(m_session, this);
         watcher->watch(artist);
         connect(watcher, &sp::ArtistWatcher::loaded, this, &QuickTrackInfo::artistsChanged);
         m_artistWatchers[i] = watcher;
     }
 
-        emit artistsChanged();
+    emit artistsChanged();
+
+    if (m_albumWatcher->watched().isLoaded())
+        emit dataUpdated();
 }
 
 }

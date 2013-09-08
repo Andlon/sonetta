@@ -29,12 +29,10 @@ HEADERS += \
     src/navigation/navigation.h \
     src/navigation/navigationnativeeventfilter.h \
     src/navigation/lircremote.h \
-    src/quicktrackinfo.h \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
     src/models/albumlistmodel.h \
     src/models/albumbrowsemodel.h \
-    src/quicksearch.h \
     src/models/tracklistmodel.h \
     src/models/abstractartistcollectionmodel.h \
     src/models/artistlistmodel.h \
@@ -45,6 +43,8 @@ HEADERS += \
     src/utilities/session.h \
     src/models/playlistmodel.h \
     src/models/playlistcontainermodel.h \
+    src/quick/quicksearch.h \
+    src/quick/quicktrackinfo.h \
     src/quick/enums.h \
     src/quick/models.h \
     src/audiooutput.h
@@ -54,13 +54,13 @@ SOURCES += \
     src/navigation/navigationnativeeventfilter.cpp \
     src/navigation/lircremote.cpp \
     src/main.cpp \
-    src/quicktrackinfo.cpp \
     appkey.c \
     src/models/abstracttrackcollectionmodel.cpp \
     src/models/abstractalbumcollectionmodel.cpp \
     src/models/albumlistmodel.cpp \
     src/models/albumbrowsemodel.cpp \
-    src/quicksearch.cpp \
+    src/quick/quicktrackinfo.cpp \
+    src/quick/quicksearch.cpp \
     src/models/tracklistmodel.cpp \
     src/models/abstractartistcollectionmodel.cpp \
     src/models/artistlistmodel.cpp \
@@ -137,4 +137,5 @@ OTHER_FILES += \
     assets/qml/rework2/common/states.js \
     assets/qml/rework2/common/PageView.qml \
     assets/qml/rework2/playlists/ContainerPage.qml \
-    assets/qml/rework2/playlists/PlaylistPage.qml
+    assets/qml/rework2/playlists/PlaylistPage.qml \
+    assets/qml/rework2/NowPlaying.qml

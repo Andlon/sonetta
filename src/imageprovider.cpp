@@ -52,6 +52,9 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
 {
     const QString & uri = id;
 
+    if (uri.simplified().isEmpty())
+        return QImage();
+
     QMetaObject::invokeMethod(this, "loadImage", Qt::QueuedConnection,
                               Q_ARG(QString, uri));
 
@@ -120,7 +123,7 @@ void ImageProvider::onImageLoaded()
 
 QByteArray ImageProvider::takeImageData(const QString &uri)
 {
-    QMutexLocker locker(&m_waitMutex);
+    // Mutex should already be locked at this point
     return m_results.take(uri);
 }
 

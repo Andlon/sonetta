@@ -3,9 +3,9 @@
 #include <Spotinetta/Spotinetta>
 #include <QObject>
 
-#include "models/tracklistmodel.h"
-#include "models/albumlistmodel.h"
-#include "models/artistlistmodel.h"
+#include "../models/tracklistmodel.h"
+#include "../models/albumlistmodel.h"
+#include "../models/artistlistmodel.h"
 
 namespace Sonetta {
 

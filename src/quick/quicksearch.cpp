@@ -1,6 +1,6 @@
 #include "quicksearch.h"
 
-#include "utilities/session.h"
+#include "../utilities/session.h"
 
 #include <QDebug>
 

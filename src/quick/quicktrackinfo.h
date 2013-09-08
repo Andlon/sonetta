@@ -20,6 +20,10 @@ class QuickTrackInfo : public QObject {
     Q_PROPERTY(int popularity READ popularity NOTIFY dataUpdated)
     Q_PROPERTY(int duration READ duration NOTIFY dataUpdated)
 
+    Q_PROPERTY(QString smallCoverUri READ smallCoverUri NOTIFY dataUpdated)
+    Q_PROPERTY(QString normalCoverUri READ normalCoverUri NOTIFY dataUpdated)
+    Q_PROPERTY(QString largeCoverUri READ largeCoverUri NOTIFY dataUpdated)
+
 public:
     explicit QuickTrackInfo(QObject * parent = 0);
     ~QuickTrackInfo();
@@ -34,13 +38,15 @@ public:
     QString name() const;
     QStringList artistNames() const;
 
-    //Q_INVOKABLE QString albumCoverUri(/*Spotinetta::otify::ImageSize*/ int size) const;
-
     int duration() const;
     int popularity() const;
     int artistCount() const;
     Q_INVOKABLE Spotinetta::Artist artistAt(int index) const;
     Spotinetta::ArtistList artists() const;
+
+    QString smallCoverUri() const;
+    QString normalCoverUri() const;
+    QString largeCoverUri() const;
 
 signals:
     void trackChanged();
@@ -55,6 +61,7 @@ private:
     void setupWatchers();
 
     Spotinetta::TrackWatcher *              m_trackWatcher;
+    Spotinetta::AlbumWatcher *              m_albumWatcher;
     QVector<Spotinetta::ArtistWatcher *>    m_artistWatchers;
     QPointer<Spotinetta::Session>           m_session;
 };

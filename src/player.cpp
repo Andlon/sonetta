@@ -61,6 +61,8 @@ void Player::play(const Spotinetta::Track &track)
 {
     m_watcher->watch(track);
 
+    emit trackChanged();
+
     if (track.isLoaded())
     {
         if (m_session->load(track))
