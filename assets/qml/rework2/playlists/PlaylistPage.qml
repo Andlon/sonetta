@@ -10,6 +10,8 @@ CollectionView {
 
     PlaylistModel {
         id: playlist
+
+        onPlaylistChanged: root.currentIndex = 0
     }
 
     delegate: CollectionDelegate {
