@@ -19,8 +19,9 @@ CollectionView {
         width: view.width
 
         property string name: model ? model.name : ""
+        property string artists: model ? model.artistNames.join(", ") : ""
 
-        Text {
+        Column {
             anchors {
                 verticalCenter: parent.verticalCenter
                 left: parent.left
@@ -29,10 +30,29 @@ CollectionView {
                 rightMargin: ui.misc.globalPadding
             }
 
-            text: name
-            color: ui.colors.standard
-            font: ui.fonts.h3
-            elide: Text.ElideRight
+            Text {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+
+                text: name
+                color: ui.colors.standard
+                font: ui.fonts.h3
+                elide: Text.ElideRight
+            }
+
+            Text {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+
+                text: artists
+                color: ui.colors.standard
+                font: ui.fonts.standard
+                elide: Text.ElideRight
+            }
         }
     }
 
