@@ -4,7 +4,6 @@ import Sonetta 0.1
 import "../common"
 
 Item {
-
     PlaylistContainerModel {
         id: container
         playlistContainer: session.playlistContainer
@@ -34,7 +33,10 @@ Item {
                 text: name
                 color: ui.colors.standard
                 font: ui.fonts.h3
+                elide: Text.ElideRight
             }
         }
+
+        onItemPressed: console.log(data.name)
     }
 }

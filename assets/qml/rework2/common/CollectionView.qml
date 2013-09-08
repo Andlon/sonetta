@@ -1,8 +1,9 @@
 import QtQuick 2.1
+import QtQuick.Controls 1.0
+import QtQuick.Controls.Styles 1.0
 import Sonetta 0.1
 
 /*
-
   - CollectionView:
   Provides a generic list component with a custom look and feel,
   intended to reduce repetition of QML code to achieve more or less
@@ -19,23 +20,36 @@ FocusScope {
     property Component delegate
     property alias model: list.model
 
-    ListView {
-        id: list
-        anchors.fill: parent
-        delegate: delegateComponent
-        highlight: highlightComponent
-        highlightFollowsCurrentItem: true
-        highlightMoveDuration: ui.misc.globalAnimationTime
-        clip: true
-        boundsBehavior: Flickable.StopAtBounds
+    signal itemPressed(var data)
+
+    ScrollView {
         focus: true
-        interactive: false
-        currentIndex: 0
+        anchors.fill: root
+        style: ScrollViewStyle {
+            scrollBarBackground: Item {}
+            corner: Item {}
+            //handle: Rectangle { width: 50; height: 50; color: "White" }
+            incrementControl: Item {}
+            decrementControl: Item {}
+        }
 
-        onCountChanged: console.log(count)
+        ListView {
+            id: list
+            //anchors.fill: parent
+            delegate: delegateComponent
+            highlight: highlightComponent
+            highlightFollowsCurrentItem: true
+            highlightMoveDuration: ui.misc.globalAnimationTime
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+            focus: true
+            interactive: false
+            currentIndex: 0
 
-        Navigation.onDown: incrementCurrentIndex()
-        Navigation.onUp: decrementCurrentIndex()
+            Navigation.onDown: incrementCurrentIndex()
+            Navigation.onUp: decrementCurrentIndex()
+            Navigation.onOk: root.itemPressed(currentItem.internalModelData)
+        }
     }
 
     Component {
@@ -57,6 +71,7 @@ FocusScope {
             height: delegateLoader.height
 
             property int modelIndex: index
+            property QtObject internalModelData: model
 
             Image {
                 anchors.fill: delegateRoot
@@ -72,7 +87,7 @@ FocusScope {
                 id: delegateLoader
                 sourceComponent: root.delegate
 
-                property QtObject internalModelData: model
+                property alias internalModelData: delegateRoot.internalModelData
             }
         }
     }
