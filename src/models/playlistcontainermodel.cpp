@@ -40,9 +40,6 @@ int PlaylistContainerModel::rowCount(const QModelIndex &parent) const
 
 QVariant PlaylistContainerModel::data(const QModelIndex &index, int role) const
 {
-    if (index.isValid())
-        return QVariant();
-
     const sp::Playlist & playlist = m_playlists.at(index.row())->watched();
 
     switch (role)
@@ -90,10 +87,14 @@ void PlaylistContainerModel::setPlaylistContainer(const Spotinetta::PlaylistCont
         m_playlists.clear();
         m_watcher->watch(container);
 
-        if (container.isLoaded())
-        {
-            onLoaded();
-        }
+        // It seems, though I'm not sure, that we get onPlaylistAdded callbacks
+        // whether the container is loaded or not, so it looks like we don't need
+        // to add any playlists to our list at this point (if we do it messes up the model with duplicate
+        // playlists and too low count)
+//        if (container.isLoaded())
+//        {
+//            onLoaded();
+//        }
 
         endResetModel();
 

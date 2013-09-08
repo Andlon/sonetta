@@ -128,4 +128,7 @@ OTHER_FILES += \
     assets/qml/rework2/common/VirtualKeyboard.qml \
     assets/qml/rework2/login/login.qml \
     assets/qml/rework2/login/LoginField.qml \
-    assets/qml/rework2/Sidebar.qml
+    assets/qml/rework2/Sidebar.qml \
+    assets/qml/rework2/playlists/playlists.qml \
+    assets/qml/rework2/common/CollectionView.qml \
+    assets/qml/rework2/common/CollectionDelegate.qml

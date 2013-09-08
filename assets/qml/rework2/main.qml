@@ -23,16 +23,18 @@ Item {
         fillMode: Image.Tile
     }
 
-//    Image {
-//        // Powered by Spotify
-//        anchors.bottom: parent.bottom
-//        anchors.right: parent.right
-//        anchors.margins: ui.misc.globalPadding
-//        source: "images/spotify.png"
-//    }
+    //    Image {
+    //        // Powered by Spotify
+    //        anchors.bottom: parent.bottom
+    //        anchors.right: parent.right
+    //        anchors.margins: ui.misc.globalPadding
+    //        source: "images/spotify.png"
+    //    }
 
     Loader {
         anchors.fill: parent
+        focus: true
+
         source: {
             if (root.state == "login")
                 return "login/login.qml"
@@ -42,7 +44,9 @@ Item {
                 return ""
         }
 
-       onStatusChanged: ui.misc.ready = status == Loader.Ready
+        onSourceChanged: item.focus = true
+
+        onStatusChanged: ui.misc.ready = status == Loader.Ready
     }
 
     Connections {
