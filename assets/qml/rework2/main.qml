@@ -126,6 +126,4 @@ Item {
     Navigation.onPlayPause: { console.log("PlayPause"); player.playPause() }
     Navigation.onPause: { console.log("Pause"); player.pause() }
     Navigation.onStop: player.pause()
-
-    Navigation.onFastForward:
 }

@@ -14,16 +14,19 @@ Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *paren
     Q_ASSERT(session != nullptr);
 
     m_watcher = new sp::TrackWatcher(session, this);
+    m_positionTimer = new QTimer(this);
 
     // Set up connections
     connect(session, &sp::Session::endOfTrack, this, &Player::next);
-    connect(output, &AudioOutput::notify, this, &Player::positionChanged);
+    connect(m_positionTimer, &QTimer::timeout, this, &Player::positionChanged);
 
     // This ensures a track is eventually played whether it's loaded
     // or not
     connect(m_watcher, &sp::TrackWatcher::loaded, [this] {
         play(m_watcher->watched());
     });;
+
+    m_positionTimer->start(150);
 }
 
 bool Player::shuffle() const

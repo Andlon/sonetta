@@ -5,8 +5,32 @@
 #include <Spotinetta/detail/ringbuffer.h>
 #include <QAudioOutput>
 #include <QAtomicInt>
+#include <QThread>
 
 namespace Sonetta {
+
+class AudioOutput;
+
+class AudioOutputWorker : public QObject {
+    Q_OBJECT
+public:
+    explicit AudioOutputWorker(AudioOutput * output);
+
+public slots:
+    void push();
+
+private slots:
+    void onStateChanged(QAudio::State);
+
+private:
+    void setupOutput(const QAudioFormat &format);
+
+    QPointer<QAudioOutput>  m_output;
+    QPointer<QIODevice>     m_device;
+    QPointer<AudioOutput>   m_audioOutput;
+
+    int                     m_processedMs;
+};
 
 class AudioOutput : public QObject, public Spotinetta::AudioOutputInterface
 {
@@ -20,24 +44,18 @@ public:
     int position() const;
     void resetPosition(int pos);
 
-signals:
-    void notify();
-
-private slots:
-    void push();
-
 private:
-    void setupOutput(const QAudioFormat &format);
-
-    QPointer<QAudioOutput>  m_output;
-    QPointer<QIODevice>     m_device;
     QAudioFormat            m_format;
     QMutex                  m_formatLock;
 
-    int                     m_deviceOffset;
-    int                     m_posOffset;
+    QThread *               m_audioThread;
+    AudioOutputWorker *     m_worker;
+
+    QAtomicInt              m_position;
 
     Spotinetta::detail::RingBuffer<char, 1024> m_buffer;
+
+    friend class AudioOutputWorker;
 };
 
 }

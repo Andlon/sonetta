@@ -11,6 +11,8 @@
 
 #include "audiooutput.h"
 
+class QTimer;
+
 namespace Sonetta {
 
 class Player : public QObject
@@ -53,6 +55,8 @@ private:
     QPointer<AudioOutput>           m_output;
     QQueue<Spotinetta::Track>       m_explicitQueue;
     Spotinetta::TrackWatcher *      m_watcher;
+
+    QTimer *                        m_positionTimer;
 
     bool m_shuffle;
     bool m_repeat;

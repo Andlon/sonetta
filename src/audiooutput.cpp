@@ -6,17 +6,99 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-
-
-AudioOutput::AudioOutput(QObject *parent)
-    :   QObject(parent), m_buffer(50000),
-      m_deviceOffset(0), m_posOffset(0)
+AudioOutputWorker::AudioOutputWorker(AudioOutput *output)
+    :   QObject(nullptr), m_audioOutput(output), m_processedMs(0)
 {
 
 }
 
+void AudioOutputWorker::push()
+{
+    AudioOutput * o = m_audioOutput;
+    QAudioFormat format;
+    {
+        QMutexLocker locker(&o->m_formatLock);
+        format = o->m_format;
+    }
+
+    if (m_output.isNull())
+    {
+        setupOutput(format);
+    }
+
+    if (m_output->format() == format)
+    {
+        qint64 bytesPerFrame = format.bytesPerFrame();
+        qint64 toRead = qMin(o->m_buffer.used(), (qint64) m_output->bytesFree());
+
+        // Adjust toRead for frame boundaries
+        toRead -= (toRead % bytesPerFrame);
+
+        QByteArray data;
+        data.resize(toRead);
+        qint64 read = o->m_buffer.read(data.data(), data.size());
+        qint64 written = m_device->write(data);
+
+        Q_ASSERT(read == toRead);
+        Q_ASSERT(written == read);
+    }
+    // Will this trigger on buffer underruns? Investigate
+    else if (m_output->state() != QAudio::ActiveState)
+    {
+        m_output->deleteLater();
+        m_output.clear();
+        setupOutput(format);
+    }
+
+    // Update position with the amount of processed milliseconds
+    // since the last time this function was called
+    int processedMs = m_output->processedUSecs() / 1000;
+    int deltaProcess = processedMs - m_processedMs;
+    m_processedMs = processedMs;
+
+    m_audioOutput->m_position.fetchAndAddOrdered(deltaProcess);
+}
+
+void AudioOutputWorker::setupOutput(const QAudioFormat &format)
+{
+    m_output = new QAudioOutput(format, this);
+    m_device = m_output->start();
+
+    int notifyMs = format.durationForBytes(m_output->bufferSize() / 2) / 1000;
+    m_output->setNotifyInterval(notifyMs);
+
+    // Reset amount of processed milliseconds (used in position tracking)
+    m_processedMs = 0;
+
+    connect(m_output, &QAudioOutput::notify, this, &AudioOutputWorker::push);
+    connect(m_output, &QAudioOutput::stateChanged, this, &AudioOutputWorker::onStateChanged);
+}
+
+void AudioOutputWorker::onStateChanged(QAudio::State state)
+{
+    qDebug() << "Audio state: " << state;
+    qDebug() << "Audio error: " << m_output->error();
+}
+
+AudioOutput::AudioOutput(QObject *parent)
+    :   QObject(parent), m_buffer(50000)
+{
+    m_position.store(0);
+
+    m_audioThread = new QThread(this);
+    m_worker = new AudioOutputWorker(this);
+    m_worker->moveToThread(m_audioThread);
+
+    connect(m_audioThread, &QThread::finished,
+            m_worker, &AudioOutputWorker::deleteLater);
+
+    m_audioThread->start();
+}
+
 AudioOutput::~AudioOutput()
 {
+    m_audioThread->exit();
+    m_audioThread->wait();
 }
 
 int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
@@ -43,8 +125,7 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
         qint64 written = m_buffer.write(collection.data(), toWrite);
         Q_ASSERT(written == toWrite);
 
-        // Replace SLOT macro way of calling with a more modern function pointer approach
-        QMetaObject::invokeMethod(this, "push", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(m_worker, "push", Qt::QueuedConnection);
 
         // Return number of frames consumed
         return toWrite / bytesPerFrame;
@@ -58,75 +139,14 @@ void AudioOutput::reset()
     qDebug() << "Reset!";
 }
 
-void AudioOutput::push()
-{
-    QAudioFormat format;
-    {
-        QMutexLocker locker(&m_formatLock);
-        format = m_format;
-    }
-
-    if (m_output.isNull())
-    {
-        setupOutput(format);
-    }
-
-    if (m_output->format() == format)
-    {
-        qint64 bytesPerFrame = format.bytesPerFrame();
-        qint64 toRead = qMin(m_buffer.used(), (qint64) m_output->bytesFree());
-
-        // Adjust toRead for frame boundaries
-        toRead -= (toRead % bytesPerFrame);
-
-        QByteArray data;
-        data.resize(toRead);
-        qint64 read = m_buffer.read(data.data(), data.size());
-        qint64 written = m_device->write(data);
-
-        Q_ASSERT(read == toRead);
-        Q_ASSERT(written == read);
-    }
-    // Will this trigger on buffer underruns? Investigate
-    else if (m_output->state() != QAudio::ActiveState)
-    {
-        m_output->deleteLater();
-        m_output.clear();
-        setupOutput(format);
-    }
-
-    emit notify();
-}
-
-void AudioOutput::setupOutput(const QAudioFormat &format)
-{
-    m_output = new QAudioOutput(format, this);
-    m_device = m_output->start();
-    m_deviceOffset = 0;
-
-    int notifyMs = format.durationForBytes(m_output->bufferSize() / 2) / 1000;
-    m_output->setNotifyInterval(notifyMs);
-
-    connect(m_output, &QAudioOutput::notify, this, &AudioOutput::push);
-}
-
 void AudioOutput::resetPosition(int pos)
 {
-    m_deviceOffset = m_output.isNull() ? 0 : m_output->elapsedUSecs() / 1000;
-    m_posOffset = pos;
+    m_position.store(pos);
 }
 
 int AudioOutput::position() const
 {
-    if (!m_output.isNull())
-    {
-        int devPos = m_output->elapsedUSecs() / 1000;
-        return devPos - m_deviceOffset + m_posOffset;
-    }
-    else
-    {
-        return 0;
-    }
+    return m_position.load();
 }
 
 }
