@@ -109,7 +109,7 @@ void Player::play()
 
 void Player::playPause()
 {
-    if (m_session->playbackState() == sp::Session::PlaybackState::Playing)
+    if (m_session->playbackState() == sp::Session::PlaybackState::Paused)
     {
         play();
     }
