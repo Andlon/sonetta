@@ -26,7 +26,7 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 Application::Application(int &argc, char **argv)
-    :   QGuiApplication(argc, argv), m_view(0), m_nav(0), m_exiting(false)
+    :   QGuiApplication(argc, argv), m_view(nullptr), m_nav(0), m_exiting(false)
 {
     m_output = new AudioOutput(this);
 
@@ -47,12 +47,18 @@ Application::Application(int &argc, char **argv)
     m_player = new Player(m_session, m_output, this);
     m_ui = new UIStateCoordinator(this);
 
+    // Parent output to session so that Session is destroyed before output
+    m_output->setParent(m_output);
+
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
+
+    connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
 }
 
 Application::~Application()
 {
-    delete m_view;
+    if (m_view != nullptr)
+        m_view->deleteLater();
 }
 
 int Application::run()

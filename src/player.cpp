@@ -133,6 +133,11 @@ void Player::next()
     {
         play(m_explicitQueue.dequeue());
     }
+    else
+    {
+        pause();
+        m_watcher->watch(sp::Track());
+    }
 
     // Emit outside if because of end of track situations
     emit trackChanged();

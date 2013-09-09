@@ -38,7 +38,7 @@ private:
     QWaitCondition  m_waitCondition;
     bool            m_cancel;
 
-    QVector<UrlImagePair>       m_pending;
+    QVector<UrlImagePair>            m_pending;
     QMultiMap<QString, QByteArray>   m_results;
 
     QPointer<const Spotinetta::Session>       m_session;
