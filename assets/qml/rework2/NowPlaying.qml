@@ -53,7 +53,7 @@ Item {
                 right: parent.right
             }
 
-            font: ui.fonts.h2
+            font: ui.fonts.h3
             color: ui.colors.standard
             text: track.name
             elide: Text.ElideRight

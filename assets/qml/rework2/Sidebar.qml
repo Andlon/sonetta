@@ -10,15 +10,24 @@ Item {
     }
 
     Image {
+        source: "images/sonetta.png"
         anchors {
-            bottom: root.bottom
-            //left: root.left
-            //right: root.right
+            top: root.top
             horizontalCenter: root.horizontalCenter
-            margins: ui.misc.globalPadding
+            topMargin: 20
         }
-
-        source: "images/spotify.png"
-        //height: width / sourceSize.width * sourceSize.height
     }
+
+//    Image {
+//        anchors {
+//            bottom: root.bottom
+//            //left: root.left
+//            //right: root.right
+//            horizontalCenter: root.horizontalCenter
+//            margins: ui.misc.globalPadding
+//        }
+
+//        source: "images/spotify.png"
+//        //height: width / sourceSize.width * sourceSize.height
+//    }
 }

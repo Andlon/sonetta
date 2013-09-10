@@ -38,7 +38,7 @@ CollectionView {
 
                 text: name
                 color: ui.colors.standard
-                font: ui.fonts.h3
+                font: ui.fonts.h4
                 elide: Text.ElideRight
             }
 

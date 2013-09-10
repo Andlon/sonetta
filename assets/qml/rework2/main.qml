@@ -69,7 +69,7 @@ Item {
         misc.ready = false
 
         // The amount of space between any two generic items
-        misc.globalPadding = 20
+        misc.globalPadding = 30
 
         var colors = {}
         colors.highlight = "#84bd00"
@@ -106,6 +106,11 @@ Item {
         h3.family = "Roboto"
         h3.pointSize = 25
         fonts.h3 = Qt.font(h3)
+
+        var h4 = {}
+        h4.family = "Roboto"
+        h4.pointSize = 22
+        fonts.h4 = Qt.font(h4)
 
         ui.setMiscProperties(misc)
         ui.setColorProperties(colors)
