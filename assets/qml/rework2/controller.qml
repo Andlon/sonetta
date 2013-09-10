@@ -42,7 +42,7 @@ FocusScope {
 
     Sidebar {
         id: sidebar
-        width: 170
+        width: 200
 
         anchors {
             left: root.left
