@@ -78,6 +78,10 @@ Item {
         colors.standard = "#ffffff"
         colors.label = "#cccccc"
 
+        colors.dark = "#151515"
+        colors.medium = "#202020"
+        colors.light = "#292929"
+
         var fonts = {}
         // Create default font
         var standard = {}

@@ -9,7 +9,6 @@
 #include <QDir>
 
 #include "quick/quicktrackinfo.h"
-//#include "quickartistsynopsis.h"
 #include "quick/quicksearch.h"
 #include "imageprovider.h"
 
@@ -51,7 +50,6 @@ Application::Application(int &argc, char **argv)
     m_output->setParent(m_output);
 
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
-
     connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
 }
 

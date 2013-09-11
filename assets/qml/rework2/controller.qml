@@ -49,6 +49,8 @@ FocusScope {
             bottom: root.bottom
             top: root.top
         }
+
+        Navigation.onRight: loader.focus = true
     }
 
     Loader {
@@ -68,6 +70,8 @@ FocusScope {
             if (ui.state.page === "playlists")
                 return "playlists/playlists.qml"
         }
+
+        Navigation.onLeft: sidebar.focus = true
     }
 
 }
