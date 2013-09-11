@@ -17,12 +17,12 @@ Item {
         },
         State {
             when: root.selected && !root.activeFocus
-            AnchorChanges { target: highlight; anchors { right: root.right; left: undefined }}
+            AnchorChanges { target: highlight; anchors { right: undefined; left: root.left }}
             PropertyChanges { target: highlight; width: indicatorWidth; }
         },
         State {
             when: !root.selected && !root.activeFocus
-            AnchorChanges { target: highlight; anchors { left: undefined; right: root.right }}
+            AnchorChanges { target: highlight; anchors { left: root.left; right: undefined }}
             PropertyChanges { target: highlight; width: 0; restoreEntryValues: true }
         }
     ]

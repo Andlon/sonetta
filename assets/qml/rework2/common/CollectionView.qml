@@ -57,9 +57,13 @@ FocusScope {
         id: highlightComponent
 
         Rectangle {
-            width: list.currentItem.width
+            width: list.activeFocus ? list.currentItem.width : Math.min(list.currentItem.width, ui.misc.globalPadding / 2)
             height: list.currentItem.height
             color: ui.colors.highlight //root.activeFocus ? ui.colors.highlight : ui.colors.selected
+
+            Behavior on width {
+                SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+            }
         }
     }
 
@@ -68,7 +72,7 @@ FocusScope {
 
         FocusScope {
             id: delegateRoot
-            width: delegateLoader.width
+            width: delegateLoader.width + delegateLoader.x
             height: delegateLoader.height
 
             property int modelIndex: index
@@ -87,6 +91,7 @@ FocusScope {
             Loader {
                 id: delegateLoader
                 sourceComponent: root.delegate
+                x: ui.misc.globalPadding / 2
 
                 property alias internalModelData: delegateRoot.internalModelData
             }
