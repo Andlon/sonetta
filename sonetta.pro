@@ -92,5 +92,8 @@ OTHER_FILES += \
     assets/qml/rework2/playlists/ContainerPage.qml \
     assets/qml/rework2/playlists/PlaylistPage.qml \
     assets/qml/rework2/NowPlaying.qml \
-    assets/qml/rework2/common/Selectable.qml
+    assets/qml/rework2/common/Selectable.qml \
+    assets/qml/rework2/search/search.qml \
+    assets/qml/rework2/nowplaying/nowplaying.qml \
+    assets/qml/rework2/discover/discover.qml
 

@@ -2,6 +2,7 @@ import QtQuick 2.1
 import Sonetta 0.1
 
 import "main"
+import "common"
 
 FocusScope {
     id: root
@@ -52,11 +53,15 @@ FocusScope {
             top: root.top
         }
 
-        Navigation.onRight: loader.focus = true
+        Navigation.onRight: pager.focus = true
     }
 
-    Loader {
-        id: loader
+    PageView {
+        id: pager
+        model: ["nowplaying/nowplaying.qml", "playlists/playlists.qml", "search/search.qml", "discover/discover.qml"]
+        //model: ["Red", "Green", "Blue"]
+        focus: true
+        flow: Qt.LeftToRight
         anchors {
             top: topSection.bottom
             left: sidebar.right
@@ -66,14 +71,31 @@ FocusScope {
             topMargin: 2 * ui.misc.globalPadding
         }
 
-        focus: true
+        cacheBuffer: 10 * pager.height
 
-        source: {
-            if (ui.state.page === "playlists")
-                return "playlists/playlists.qml"
+        currentIndex: sidebar.currentIndex
+
+        delegate: Loader {
+            source: modelData
+            width: pager.cellWidth
+            height: pager.cellHeight
+            focus: true
         }
 
         Navigation.onLeft: sidebar.focus = true
+
+        /* What follows is a workaround for something which looks like a bug in GridView.
+          It appears binding currentIndex to something doesn't necessarily cause the highlight
+          to follow the initial currentItem */
+        property bool startUp: true
+        onCurrentItemChanged:
+        {
+            if (startUp) {
+                positionViewAtIndex(currentIndex, GridView.Center)
+                startUp = false
+            }
+        }
+        /* End of workaround */
     }
 
 }

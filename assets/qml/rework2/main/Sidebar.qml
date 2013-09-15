@@ -5,6 +5,8 @@ import "../common"
 FocusScope {
     id: root
 
+    property alias currentIndex: list.currentIndex
+
     Image {
         source: "../images/dark.png"
         anchors.fill: parent
@@ -22,6 +24,7 @@ FocusScope {
     }
 
     MainMenuList {
+        id: list
         focus: true
         anchors {
             left: root.left
