@@ -80,7 +80,6 @@ void Player::play(const Spotinetta::Track &track)
         if (m_session->load(track))
         {
             m_session->play();
-            m_session->seek(0);
 
             if (!m_output.isNull())
                 m_output->resetPosition(0);
