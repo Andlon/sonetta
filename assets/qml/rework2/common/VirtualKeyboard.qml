@@ -225,6 +225,8 @@ FocusScope {
     onCurrentRowChanged: VK.updateFocusItem()
     onCurrentColumnChanged: VK.updateFocusItem()
 
+    onActiveFocusChanged: if (activeFocus) VK.updateFocusItem()
+
     onKeystateChanged: {
         if (keystate == "upper")
             isLowercase = false
@@ -232,8 +234,16 @@ FocusScope {
             isLowercase = true
     }
 
+    Keys.onPressed: {
+        // Accept text from keyboard
+        if (event.text !== "")
+        {
+            character(event.text)
+        }
+    }
+
     Component.onCompleted: {
         VK.updateModelTable()
-        VK.updateFocusItem()
+        if (activeFocus) VK.updateFocusItem()
     }
 }
