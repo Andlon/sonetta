@@ -47,7 +47,8 @@ HEADERS += \
     src/quick/quicktrackinfo.h \
     src/quick/enums.h \
     src/quick/models.h \
-    src/audiooutput.h
+    src/audiooutput.h \
+    src/searchengine.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -70,7 +71,8 @@ SOURCES += \
     src/imageprovider.cpp \
     src/models/playlistmodel.cpp \
     src/models/playlistcontainermodel.cpp \
-    src/audiooutput.cpp
+    src/audiooutput.cpp \
+    src/searchengine.cpp
 
 OTHER_FILES += \
     assets/qml/rework2/main.qml \

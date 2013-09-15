@@ -45,6 +45,7 @@ Application::Application(int &argc, char **argv)
     m_session = new sp::Session(config, this);
     m_player = new Player(m_session, m_output, this);
     m_ui = new UIStateCoordinator(this);
+    m_search = new SearchEngine(m_session, this);
 
     // Parent output to session so that Session is destroyed before output
     m_output->setParent(m_output);
@@ -55,8 +56,7 @@ Application::Application(int &argc, char **argv)
 
 Application::~Application()
 {
-    if (m_view != nullptr)
-        m_view->deleteLater();
+    delete m_view;
 }
 
 int Application::run()
@@ -91,6 +91,7 @@ int Application::run()
         m_view->engine()->rootContext()->setContextProperty("player", m_player);
         m_view->engine()->rootContext()->setContextProperty("ui", m_ui);
         m_view->engine()->rootContext()->setContextProperty("session", m_session);
+        m_view->engine()->rootContext()->setContextProperty("search", m_search);
         m_view->engine()->addImportPath(applicationDir + QStringLiteral("/qml/modules"));
         m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/qml/rework2/main.qml")));
         m_view->setResizeMode(QQuickView::SizeRootObjectToView);
