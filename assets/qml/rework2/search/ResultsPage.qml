@@ -4,7 +4,9 @@ import Sonetta 0.1
 import "../common"
 
 CollectionView {
-    id: root
+    id: view
+
+    model: search.tracks
 
     delegate: CollectionDelegate {
         height: 100

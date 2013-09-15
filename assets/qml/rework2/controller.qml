@@ -68,7 +68,7 @@ FocusScope {
             right: root.right
             bottom: root.bottom
             margins: ui.misc.globalPadding
-            topMargin: 2 * ui.misc.globalPadding
+            topMargin: ui.misc.globalPadding
         }
 
         cacheBuffer: 10 * pager.height

@@ -34,7 +34,7 @@ QString SearchEngine::query() const
     return m_query;
 }
 
-void SearchEngine::search(const QString &query)
+void SearchEngine::go(const QString &query)
 {
     if (m_watcher->watched().query() != query && !m_session.isNull())
     {

@@ -23,7 +23,7 @@ public:
     QString query() const;
 
 public slots:
-    void search(const QString &query);
+    void go(const QString &query);
 
 signals:
     void queryChanged();

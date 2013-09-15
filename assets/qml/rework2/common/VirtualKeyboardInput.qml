@@ -10,6 +10,8 @@ FocusScope {
 
     readonly property string text: input.text
 
+    signal complete
+
     Column {
         width: childrenRect.width
         height: childrenRect.height
@@ -85,6 +87,7 @@ FocusScope {
 
             onCharacter: root.insert(c)
             onBackspace: root.backspace()
+            onEnter: root.complete()
 
             wrapNavigationLeft: false
 

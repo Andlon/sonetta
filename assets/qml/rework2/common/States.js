@@ -20,6 +20,15 @@ function createInitialState()
     // "playlist": displays the playlist specified by the above playlist property
     state.playlists.stage = "list"
 
+    /* Search page options */
+    state.search = {}
+
+    // Possible stages:
+    // "query" : query input screen
+    // "results": displays results for the given query
+    state.search.stage = "query"
+
+
     return state
 }
 
