@@ -68,6 +68,7 @@ int Application::run()
     qmlRegisterType<QuickPlaylistContainerModel>("Sonetta", 0, 1, "PlaylistContainerModel");
     qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");
     qmlRegisterType<QuickTrackInfo>("Sonetta", 0, 1, "TrackInfo");
+    qmlRegisterType<QuickSearch>("Sonetta", 0, 1, "SearchEngine");
 
     qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
 

@@ -1,11 +1,18 @@
 import QtQuick 2.1
+import QtQml.Models 2.1
+import Sonetta 0.1
 import "../common"
 
-FocusScope {
+PageView {
+    id: root
+    // Apparently this is necessary, no idea why
     focus: true
 
-    VirtualKeyboardInput {
-        anchors.centerIn: parent
-        focus: true
+    model: ObjectModel {
+        QueryPage {
+            width: root.cellWidth
+            height: root.cellHeight
+        }
     }
+
 }

@@ -11,5 +11,4 @@ GridView {
 
     highlightFollowsCurrentItem: true
     highlightMoveDuration: 2 * ui.misc.globalAnimationTime
-
 }
