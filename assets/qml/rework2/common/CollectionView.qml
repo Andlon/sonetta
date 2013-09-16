@@ -57,7 +57,7 @@ FocusScope {
         id: highlightComponent
 
         Rectangle {
-            width: list.activeFocus ? list.currentItem.width : Math.min(list.currentItem.width, ui.misc.globalPadding / 2)
+            width: list.currentItem ? list.activeFocus ? list.currentItem.width : Math.min(list.currentItem.width, ui.misc.globalPadding / 2) : 0
             height: list.currentItem.height
             color: ui.colors.highlight //root.activeFocus ? ui.colors.highlight : ui.colors.selected
 
