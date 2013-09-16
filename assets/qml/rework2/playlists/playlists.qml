@@ -32,4 +32,13 @@ PageView {
             height: pager.cellHeight
         }
     }
+
+    Navigation.onBack: {
+        var state = ui.state
+        if (state.playlists.stage === "playlist")
+        {
+            state.playlists.stage = "container"
+            ui.updateState(state)
+        }
+    }
 }

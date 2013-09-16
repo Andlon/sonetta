@@ -35,6 +35,18 @@ void UIStateCoordinator::resetState(const QVariant &state)
     emit stateReset();
 }
 
+// Updates state without causing a push, pop or reset
+void UIStateCoordinator::updateState(const QVariant &state)
+{
+    if (!m_states.empty())
+    {
+        m_states.pop();
+        m_states.push(state);
+        emit stateChanged();
+        emit stateUpdated();
+    }
+}
+
 bool UIStateCoordinator::hasPreviousState() const
 {
     return m_states.count() > 1;

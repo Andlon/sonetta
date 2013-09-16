@@ -41,12 +41,14 @@ public slots:
     void popState();
     void pushState(const QVariant &state);
     void resetState(const QVariant &state);
+    void updateState(const QVariant &state);
     
 signals:
     void stateChanged();
     void statePopped();
     void statePushed();
     void stateReset();
+    void stateUpdated();
 
     void fontsChanged();
     void colorsChanged();

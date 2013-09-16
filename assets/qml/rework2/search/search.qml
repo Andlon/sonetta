@@ -30,4 +30,13 @@ PageView {
         }
     }
 
+    Navigation.onBack: {
+        var state = ui.state
+        if (state.search.stage === "results")
+        {
+            state.search.stage = "query"
+            ui.updateState(state)
+        }
+    }
+
 }
