@@ -51,4 +51,10 @@ CollectionView {
     }
 
     onItemPressed: player.play(data.track)
+
+    Connections {
+        target: search
+
+        onQueryChanged: view.currentIndex = 0
+    }
 }

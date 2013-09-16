@@ -46,6 +46,10 @@ void SearchEngine::go(const QString &query)
         m_artistOffset = 0;
         m_playlistOffset = 0;
 
+        m_trackModel->clear();
+        m_albumModel->clear();
+        m_artistModel->clear();
+
         // Reconnect fetchMore if connections are broken (note UniqueConnection)
         connect(m_trackModel, &TrackListModel::needMore,
                 this, &SearchEngine::fetchMoreTracks, Qt::UniqueConnection);
@@ -55,6 +59,8 @@ void SearchEngine::go(const QString &query)
                 this, &SearchEngine::fetchMoreAlbums, Qt::UniqueConnection);
 
         performQuery(m_trackDelta, m_albumDelta, m_artistDelta, m_playlistDelta);
+
+        emit queryChanged();
     }
 }
 
