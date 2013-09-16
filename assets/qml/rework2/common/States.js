@@ -18,7 +18,7 @@ function createInitialState()
     // Possible stages:
     // "container": displays a list of available playlists for the current user
     // "playlist": displays the playlist specified by the above playlist property
-    state.playlists.stage = "list"
+    state.playlists.stage = "container"
 
     /* Search page options */
     state.search = {}
