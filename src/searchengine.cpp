@@ -1,6 +1,5 @@
 #include "searchengine.h"
 
-#include "utilities/fuzzystrings.h"
 #include "utilities/predictioncollection.h"
 
 #include <QPair>
