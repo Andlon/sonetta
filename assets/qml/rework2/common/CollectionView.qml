@@ -49,7 +49,7 @@ FocusScope {
 
             Navigation.onDown: incrementCurrentIndex()
             Navigation.onUp: decrementCurrentIndex()
-            Navigation.onOk: root.itemPressed(currentItem.internalModelData)
+            Navigation.onOk: root.itemPressed(currentItem.internalModel)
         }
     }
 
@@ -76,7 +76,8 @@ FocusScope {
             height: delegateLoader.height
 
             property int modelIndex: index
-            property QtObject internalModelData: model
+            property QtObject internalModel: model
+            property var internalModelData: modelData
 
             Image {
                 anchors.fill: delegateRoot
@@ -93,7 +94,8 @@ FocusScope {
                 sourceComponent: root.delegate
                 x: ui.misc.globalPadding / 2
 
-                property alias internalModelData: delegateRoot.internalModelData
+                property alias internalModel: delegateRoot.internalModel
+                property alias modelData: delegateRoot.internalModelData
             }
         }
     }

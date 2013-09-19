@@ -62,7 +62,9 @@ CollectionView {
             var state = ui.state
 
             if (state.playlists.playlist !== undefined)
+            {
                 playlist.playlist = state.playlists.playlist
+            }
         }
     }
 
