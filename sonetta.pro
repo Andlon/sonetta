@@ -48,7 +48,8 @@ HEADERS += \
     src/quick/enums.h \
     src/quick/models.h \
     src/audiooutput.h \
-    src/searchengine.h
+    src/searchengine.h \
+    src/utilities/predictioncollection.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -72,7 +73,8 @@ SOURCES += \
     src/models/playlistmodel.cpp \
     src/models/playlistcontainermodel.cpp \
     src/audiooutput.cpp \
-    src/searchengine.cpp
+    src/searchengine.cpp \
+    src/utilities/predictioncollection.cpp
 
 OTHER_FILES += \
     assets/qml/rework2/main.qml \

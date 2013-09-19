@@ -1,5 +1,12 @@
 #include "searchengine.h"
 
+#include "utilities/fuzzystrings.h"
+#include "utilities/predictioncollection.h"
+
+#include <QPair>
+#include <QVector>
+#include <QtAlgorithms>
+
 namespace sp = Spotinetta;
 
 namespace Sonetta {
@@ -8,6 +15,7 @@ SearchEngine::SearchEngine(const Spotinetta::Session *session, QObject *parent)
     : QObject(parent), m_session(session)
 {
     m_watcher = new sp::SearchWatcher(session, this);
+    m_predictionWatcher = new sp::SearchWatcher(session, this);
     m_trackModel = new TrackListModel(this);
     m_albumModel = new AlbumListModel(this);
     m_artistModel = new ArtistListModel(this);
@@ -27,11 +35,18 @@ SearchEngine::SearchEngine(const Spotinetta::Session *session, QObject *parent)
     // Set up connections
     connect(m_watcher, &sp::SearchWatcher::loaded,
             this, &SearchEngine::onSearchLoaded);
+    connect(m_predictionWatcher, &sp::SearchWatcher::loaded,
+            this, &SearchEngine::onPredictionsLoaded);
 }
 
 QString SearchEngine::query() const
 {
     return m_query;
+}
+
+QStringList SearchEngine::predictions() const
+{
+    return m_predictions;
 }
 
 void SearchEngine::go(const QString &query)
@@ -119,25 +134,128 @@ void SearchEngine::onSearchLoaded()
 void SearchEngine::fetchMoreTracks()
 {
     if (!m_session.isNull())
-    performQuery(m_trackDelta, 0, 0, 0);
+        performQuery(m_trackDelta, 0, 0, 0);
 }
 
 void SearchEngine::fetchMoreArtists()
 {
     if (!m_session.isNull())
-    performQuery(0, 0, m_artistDelta, 0);
+        performQuery(0, 0, m_artistDelta, 0);
 }
 
 void SearchEngine::fetchMorePlaylists()
 {
     if (!m_session.isNull())
-    performQuery(0, 0, 0, m_lastPlaylistDelta);
+        performQuery(0, 0, 0, m_lastPlaylistDelta);
 }
 
 void SearchEngine::fetchMoreAlbums()
 {
     if (!m_session.isNull())
-    performQuery(0, m_albumDelta, 0, 0);
+        performQuery(0, m_albumDelta, 0, 0);
+}
+
+void SearchEngine::predict(const QString &partial)
+{
+    if (partial.isEmpty())
+    {
+        m_predictions.clear();
+        emit predictionsChanged();
+        return;
+    }
+    if (!m_session.isNull())
+    {
+        sp::Search search = m_session->createSearch(partial, 0, 6, 0, 3, 0, 3, 0, 0, sp::Search::Type::Suggest);
+        m_predictionWatcher->watch(search);
+
+        if (search.isLoaded())
+        {
+            onPredictionsLoaded();
+        }
+    }
+}
+
+void SearchEngine::onPredictionsLoaded()
+{
+    sp::Search search = m_predictionWatcher->watched();
+
+    QString query = search.query();
+
+    // Mix track, artist and album predictions.
+    sp::TrackList tracks = search.tracks();
+    sp::ArtistList artists = search.artists();
+    sp::AlbumList albums = search.albums();
+    sp::PlaylistList playlists = search.playlists();
+
+    PredictionCollection pred(query);
+
+    for (const sp::Track & track : tracks)
+    {
+        pred.insert(track);
+    }
+
+    for (const sp::Artist & artist : artists)
+    {
+        pred.insert(artist);
+    }
+
+    for (const sp::Album & album : albums)
+    {
+        pred.insert(album);
+    }
+
+    for (const sp::Playlist & playlist : playlists)
+    {
+        pred.insert(playlist);
+    }
+
+
+
+    //    typedef QPair<QString, qreal> RankedMatch;
+    //    QVector<RankedMatch> matches;
+
+    //    auto rankString = [&] (const QString &name) -> RankedMatch
+    //    {
+    //        qreal rank = FuzzyStrings::levenshtein(query, name) / name.length();
+    //        matches.append(RankedMatch(name, rank));
+    //        return RankedMatch(name, rank);
+    //    };
+
+    //    for (const sp::Track &track : tracks)
+    //    {
+    //        matches.append(rankString(track.name()));
+    //    }
+
+    //    for (const sp::Artist & artist : artists)
+    //    {
+    //        matches.append(rankString(artist.name()));
+    //    }
+
+    //    for (const sp::Album & album : albums)
+    //    {
+    //        matches.append(rankString(album.name()));
+    //    }
+
+    //    qSort(matches.begin(), matches.end(), [] (const RankedMatch &a, const RankedMatch &b) {
+    //        return a.second < b.second;
+    //    });
+
+    //    QStringList predictions;
+    //    predictions.reserve(matches.size());
+    //    for (const RankedMatch & match : matches)
+    //    {
+    //        predictions.append(match.first);
+    //    }
+
+    QStringList predictions = pred.predictions();
+    // Limit to 8 predictions (the 8 best)
+    if (predictions.size() > 8)
+    {
+        predictions.erase(predictions.begin() + 8, predictions.end());
+    }
+
+    m_predictions.swap(predictions);
+    emit predictionsChanged();
 }
 
 }

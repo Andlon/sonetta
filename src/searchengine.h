@@ -2,6 +2,7 @@
 
 #include <Spotinetta/Spotinetta>
 #include <QObject>
+#include <QStringList>
 
 #include "models/tracklistmodel.h"
 #include "models/albumlistmodel.h"
@@ -17,19 +18,26 @@ class SearchEngine : public QObject
     Q_PROPERTY(QObject * tracks MEMBER m_trackModel CONSTANT)
     Q_PROPERTY(QObject * albums MEMBER m_albumModel CONSTANT)
     Q_PROPERTY(QObject * artists MEMBER m_artistModel CONSTANT)
+    Q_PROPERTY(QStringList predictions READ predictions NOTIFY predictionsChanged)
+
 public:
     explicit SearchEngine(const Spotinetta::Session * session, QObject *parent = 0);
 
     QString query() const;
 
+    QStringList predictions() const;
+
 public slots:
     void go(const QString &query);
+    void predict(const QString &partial);
 
 signals:
+    void predictionsChanged();
     void queryChanged();
 
 private slots:
     void onSearchLoaded();
+    void onPredictionsLoaded();
 
     void fetchMoreTracks();
     void fetchMoreArtists();
@@ -57,7 +65,8 @@ private:
     int m_lastPlaylistDelta;
     int m_lastAlbumDelta;
 
-    QString m_query;
+    QString     m_query;
+    QStringList m_predictions;
 
     TrackListModel *    m_trackModel;
     AlbumListModel *    m_albumModel;
@@ -65,6 +74,7 @@ private:
 
     QPointer<const Spotinetta::Session>     m_session;
     Spotinetta::SearchWatcher *             m_watcher;
+    Spotinetta::SearchWatcher *             m_predictionWatcher;
 };
 
 }
