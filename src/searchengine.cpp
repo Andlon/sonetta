@@ -178,15 +178,13 @@ void SearchEngine::onPredictionsLoaded()
 {
     sp::Search search = m_predictionWatcher->watched();
 
-    QString query = search.query();
-
     // Mix track, artist and album predictions.
     sp::TrackList tracks = search.tracks();
     sp::ArtistList artists = search.artists();
     sp::AlbumList albums = search.albums();
     sp::PlaylistList playlists = search.playlists();
 
-    PredictionCollection pred(query);
+    PredictionCollection pred(search.query());
 
     for (const sp::Track & track : tracks)
     {
@@ -207,44 +205,6 @@ void SearchEngine::onPredictionsLoaded()
     {
         pred.insert(playlist);
     }
-
-
-
-    //    typedef QPair<QString, qreal> RankedMatch;
-    //    QVector<RankedMatch> matches;
-
-    //    auto rankString = [&] (const QString &name) -> RankedMatch
-    //    {
-    //        qreal rank = FuzzyStrings::levenshtein(query, name) / name.length();
-    //        matches.append(RankedMatch(name, rank));
-    //        return RankedMatch(name, rank);
-    //    };
-
-    //    for (const sp::Track &track : tracks)
-    //    {
-    //        matches.append(rankString(track.name()));
-    //    }
-
-    //    for (const sp::Artist & artist : artists)
-    //    {
-    //        matches.append(rankString(artist.name()));
-    //    }
-
-    //    for (const sp::Album & album : albums)
-    //    {
-    //        matches.append(rankString(album.name()));
-    //    }
-
-    //    qSort(matches.begin(), matches.end(), [] (const RankedMatch &a, const RankedMatch &b) {
-    //        return a.second < b.second;
-    //    });
-
-    //    QStringList predictions;
-    //    predictions.reserve(matches.size());
-    //    for (const RankedMatch & match : matches)
-    //    {
-    //        predictions.append(match.first);
-    //    }
 
     QStringList predictions = pred.predictions();
     // Limit to 8 predictions (the 8 best)
