@@ -90,7 +90,7 @@ void simplify(QString &prediction)
     // feat. Artist
     // [ ... ]
 
-    QRegularExpression regexp("\\sfeat\\.|\\s\\-\\s|\\[", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpression regexp("\\sfeat\\.|\\s\\-\\s|\\s\\[|\\s\\(", QRegularExpression::CaseInsensitiveOption);
     QRegularExpressionMatch match = regexp.match(prediction);
     if (match.hasMatch())
     {
