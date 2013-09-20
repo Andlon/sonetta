@@ -10,6 +10,11 @@ FocusScope {
 
     readonly property string text: input.text
 
+    property alias wrapNavigationLeft: keyboard.wrapNavigationLeft
+    property alias wrapNavigationRight: keyboard.wrapNavigationRight
+    property alias wrapNavigationBottom: keyboard.wrapNavigationBottom
+    property alias wrapNavigationTop: keyboard.wrapNavigationTop
+
     signal complete
 
     Column {
@@ -89,10 +94,13 @@ FocusScope {
             onBackspace: root.backspace()
             onEnter: root.complete()
 
-            wrapNavigationLeft: false
-
             highlightColor: ui.colors.highlight
         }
+    }
+
+    function setText(text)
+    {
+        input.text = text
     }
 
     function insert(text)
