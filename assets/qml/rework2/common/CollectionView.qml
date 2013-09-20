@@ -20,6 +20,16 @@ FocusScope {
     property Component delegate
     property alias model: list.model
     property alias currentIndex: list.currentIndex
+    property alias count: list.count
+
+    property alias add: list.add
+    property alias addDisplaced: list.addDisplaced
+    property alias displaced: list.displaced
+    property alias move: list.move
+    property alias moveDisplaced: list.moveDisplaced
+    property alias populate: list.populate
+    property alias remove: list.remove
+    property alias removeDisplaced: list.removeDisplaced
 
     signal itemPressed(var data)
     clip: true
