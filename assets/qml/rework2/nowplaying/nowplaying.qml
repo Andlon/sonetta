@@ -12,7 +12,7 @@ FocusScope {
 
     Label {
         id: playingLabel
-        text: "NOW PLAYING:"
+        text: "NOW PLAYING"
         anchors {
             left: parent.left
             leftMargin: ui.misc.globalPadding
@@ -60,13 +60,13 @@ FocusScope {
             }
 
             horizontalAlignment: Text.AlignHCenter
-            text: track.artistNames.join(",")
+            text: track.artistNames.join(", ")
         }
     }
 
     Label {
         id: queueLabel
-        text: "QUEUE:"
+        text: "QUEUE"
         anchors {
             left: parent.horizontalCenter
             leftMargin: ui.misc.globalPadding
@@ -87,5 +87,7 @@ FocusScope {
             right: parent.right
             left: parent.horizontalCenter
         }
+
+        onTrackPlayed: player.queue.pop(modelIndex)
     }
 }

@@ -52,6 +52,11 @@ FocusScope {
             highlight: highlightComponent
             highlightFollowsCurrentItem: true
             highlightMoveDuration: ui.misc.globalAnimationTime
+            highlightRangeMode: ListView.StrictlyEnforceRange
+            preferredHighlightBegin: 0
+            preferredHighlightEnd: list.height
+            snapMode: ListView.SnapToItem
+
             clip: true
             boundsBehavior: Flickable.StopAtBounds
             focus: true

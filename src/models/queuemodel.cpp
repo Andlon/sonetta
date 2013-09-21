@@ -113,6 +113,32 @@ void QueueModel::enqueue(const Spotinetta::Track &track)
     endInsertRows();
 }
 
+// Removes the element in index from the list. If it's an implicit item,
+// remove every implicit item preceding it (mimics the action taken by
+// the desktop spotify client when you play an implicitly added track
+// from the actual play queue window)
+void QueueModel::pop(int index)
+{
+    if (index < 0 || index >= getTrackCount())
+        return;
+
+    if (index < m_explicit.count())
+    {
+        // Item is explicit, simply remove
+        beginRemoveRows(QModelIndex(), index, index);
+        m_explicit.removeAt(index);
+        endRemoveRows();
+    }
+    else
+    {
+        // Item is implicit, remove every implicit item including index
+        int begin = m_explicit.count();
+        beginRemoveRows(QModelIndex(), begin, index);
+        m_implicit.erase(m_implicit.begin(), m_implicit.begin() + (index - begin + 1));
+        endRemoveRows();
+    }
+}
+
 sp::Track QueueModel::dequeue()
 {
     if (m_explicit.isEmpty() && m_implicit.isEmpty())
