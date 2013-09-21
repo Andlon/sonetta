@@ -49,6 +49,10 @@ public:
 public slots:
     void enqueue(const Spotinetta::Track &track);
 
+    void clearContext();
+    void updateContext(const Spotinetta::Playlist &playlist, int index);
+    void updateContext(const Spotinetta::TrackList &tracks, int index);
+
 protected:
     int getTrackCount() const;
     Spotinetta::Track getTrackAt(int index) const;

@@ -69,19 +69,18 @@ void QueueModel::setContext(const QueueContext &context, int index)
 
     if (m_implicit.count() > 0)
     {
-        beginRemoveRows(QModelIndex(), begin, begin + m_implicit.count() - 1);
+        int end = qMax(0, begin + m_implicit.count() - 1);
+        beginRemoveRows(QModelIndex(), begin, end);
         m_implicit.clear();
         endRemoveRows();
     }
 
-    if (tracks.count() > 0 && index < tracks.count())
+    if (tracks.count() > 0 && index + 1 < tracks.count())
     {
-        int end = begin + (tracks.count() - index - 1);
+        sp::TrackList queueTracks = tracks.mid(index + 1);
+        int end = qMax(0, begin + queueTracks.count() - 1);
         beginInsertRows(QModelIndex(), begin, end);
-        for (int i = index + 1; i < tracks.count(); ++i)
-        {
-            m_explicit.enqueue(tracks[i]);
-        }
+        m_implicit.append(queueTracks);
         endInsertRows();
     }
 
@@ -102,7 +101,7 @@ sp::Track QueueModel::getTrackAt(int index) const
     }
     else
     {
-        return m_implicit[explicitCount + index];
+        return m_implicit[index - explicitCount];
     }
 }
 
@@ -133,6 +132,21 @@ sp::Track QueueModel::dequeue()
     endRemoveRows();
 
     return track;
+}
+
+void QueueModel::clearContext()
+{
+    setContext(QueueContext(), 0);
+}
+
+void QueueModel::updateContext(const Spotinetta::Playlist &playlist, int index)
+{
+    setContext(QueueContext(playlist), index);
+}
+
+void QueueModel::updateContext(const Spotinetta::TrackList &tracks, int index)
+{
+    setContext(QueueContext(tracks), index);
 }
 
 }
