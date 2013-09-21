@@ -3,16 +3,21 @@ import Sonetta 0.1
 
 import "../common"
 
-TrackView {
-    id: view
+FocusScope {
+    TrackView {
+        id: view
 
-    model: search.tracks
+        anchors.fill: parent
+        focus: true
 
-    onTrackPlayed: player.queue.updateContext(search.tracks.list, modelIndex)
+        model: search.tracks
 
-    Connections {
-        target: search
+        onTrackPlayed: player.queue.updateContext(search.tracks.list, modelIndex)
 
-        onQueryChanged: view.currentIndex = 0
+        Connections {
+            target: search
+
+            onQueryChanged: view.currentIndex = 0
+        }
     }
 }

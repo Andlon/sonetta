@@ -55,7 +55,7 @@ FocusScope
         }
     }
 
-    CollectionView {
+    MenuView {
         id: predictions
         model: search.predictions
         anchors {
@@ -65,32 +65,6 @@ FocusScope
             top: keyboard.top
             margins: ui.misc.globalPadding
             topMargin: 0
-        }
-
-        delegate: Item {
-            width: predictions.width
-            height: 65
-            Text {
-                anchors {
-                    fill: parent
-                    leftMargin: ui.misc.globalPadding
-                    rightMargin: ui.misc.globalPadding
-                }
-
-                text: modelData
-                font: ui.fonts.h4
-                color: ui.colors.standard
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
-            }
-        }
-
-        add: Transition {
-            NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
-        }
-
-        remove: Transition {
-            NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
         }
 
         onItemPressed: {

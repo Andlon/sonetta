@@ -8,7 +8,6 @@ CollectionView {
 
     delegate: CollectionDelegate {
         height: 100
-        width: view.width
 
         property string name: model ? model.name : ""
         property string artists: model ? model.artistNames.join(", ") : ""

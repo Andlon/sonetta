@@ -71,6 +71,14 @@ FocusScope {
             move: Transition {
                 SmoothedAnimation { property: "y"; duration: ui.misc.globalAnimationTime; velocity: -1 }
             }
+
+            add: Transition {
+                NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
+            }
+
+            remove: Transition {
+                NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
+            }
         }
     }
 
@@ -93,7 +101,7 @@ FocusScope {
 
         FocusScope {
             id: delegateRoot
-            width: delegateLoader.width + delegateLoader.x
+            width: list.width
             height: delegateLoader.height
 
             property int modelIndex: index
@@ -113,7 +121,13 @@ FocusScope {
             Loader {
                 id: delegateLoader
                 sourceComponent: root.delegate
-                x: ui.misc.globalPadding / 2
+
+                anchors {
+                    left: delegateRoot.left
+                    right: delegateRoot.right
+                    leftMargin: ui.misc.globalPadding / 2
+                    rightMargin: ui.misc.globalPadding / 2
+                }
 
                 property alias internalModel: delegateRoot.internalModel
                 property alias modelData: delegateRoot.internalModelData
