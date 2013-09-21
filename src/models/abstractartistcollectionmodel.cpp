@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+namespace sp = Spotinetta;
+
 namespace Sonetta {
 
 namespace {
@@ -44,12 +46,12 @@ QVariant AbstractArtistCollectionModel::data(const QModelIndex &index, int role)
         return artist.isLoaded();
     case NameRole:
         return artist.name();
-//    case SmallPortraitUriRole:
-//        return SpLink::fromArtistPortrait(artist, Spotify::ImageSizeSmall).uri();
-//    case NormalPortraitUriRole:
-//        return SpLink::fromArtistPortrait(artist, Spotify::ImageSizeNormal).uri();
-//    case LargePortraitUriRole:
-//        return SpLink::fromArtistPortrait(artist, Spotify::ImageSizeLarge).uri();
+    case SmallPortraitUriRole:
+        return sp::Link::fromArtistPortrait(artist, sp::ImageSize::Small).uri();
+    case NormalPortraitUriRole:
+        return sp::Link::fromArtistPortrait(artist, sp::ImageSize::Normal).uri();
+    case LargePortraitUriRole:
+        return sp::Link::fromArtistPortrait(artist, sp::ImageSize::Large).uri();
     default:
         return QVariant();
     }
