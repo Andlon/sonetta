@@ -128,7 +128,7 @@ void Player::next()
 {
     sp::Track track;
     // Try to get an available track from queue
-    while (track.availability(m_session) != sp::Track::Availability::Available)
+    while (!m_queue->isEmpty() && track.availability(m_session) != sp::Track::Availability::Available)
         track = m_queue->dequeue();
 
     if (track.isValid())
