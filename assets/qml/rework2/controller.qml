@@ -9,7 +9,8 @@ FocusScope {
 
     Item {
         id: topSection
-        visible: ui.state.showTopSection
+        visible: opacity != 0
+        opacity: ui.state.showTopSection ? 1 : 0
         height: childrenRect.height
 
         anchors {
@@ -40,6 +41,10 @@ FocusScope {
                 right: parent.right
                 bottom: nowplaying.bottom
             }
+        }
+
+        Behavior on opacity {
+            SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
         }
     }
 
