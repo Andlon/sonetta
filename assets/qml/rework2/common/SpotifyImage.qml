@@ -1,9 +1,6 @@
-import QtQuick 2.0
+import QtQuick 2.1
 
 Image {
-
-    onSourceChanged: {
-        if (source.indexOf("image://sp/") != 0)
-            source = "image://sp/" + source
-    }
+    property url uri
+    onUriChanged: source = "image://sp/" + uri
 }

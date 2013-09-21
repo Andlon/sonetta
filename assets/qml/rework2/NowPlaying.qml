@@ -16,7 +16,7 @@ Item {
         track: player.track
     }
 
-    Image {
+    SpotifyImage {
         id: cover
         anchors {
             top: root.top
@@ -26,13 +26,7 @@ Item {
 
         width: sourceSize.width / sourceSize.height * height
 
-        source: {
-            var uri = track.normalCoverUri
-            if (uri != "")
-                return "image://sp/" + track.normalCoverUri
-            else
-                return ""
-        }
+        uri: track.normalCoverUri
     }
 
     Column {
