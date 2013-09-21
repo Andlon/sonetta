@@ -8,7 +8,7 @@
 #include <Spotinetta/Spotinetta>
 
 #include "navigation/navigation.h"
-
+#include "models/queuemodel.h"
 #include "audiooutput.h"
 
 class QTimer;
@@ -23,6 +23,7 @@ class Player : public QObject
     Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
     Q_PROPERTY(int position READ position NOTIFY positionChanged)
     Q_PROPERTY(Spotinetta::Track track READ track NOTIFY trackChanged)
+    Q_PROPERTY(QObject * queue READ queue CONSTANT)
 
 public:
     explicit Player(Spotinetta::Session * session, AudioOutput * output, QObject *parent = 0);
@@ -34,6 +35,8 @@ public:
 
     void setShuffle(bool enable);
     void setRepeat(bool enable);
+
+    QObject * queue() const;
     
 signals:
     void shuffleChanged();
@@ -53,8 +56,8 @@ public slots:
 private:
     QPointer<Spotinetta::Session>   m_session;
     QPointer<AudioOutput>           m_output;
-    QQueue<Spotinetta::Track>       m_explicitQueue;
     Spotinetta::TrackWatcher *      m_watcher;
+    QueueModel *                    m_queue;
 
     QTimer *                        m_positionTimer;
 

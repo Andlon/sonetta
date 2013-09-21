@@ -49,7 +49,10 @@ HEADERS += \
     src/quick/models.h \
     src/audiooutput.h \
     src/searchengine.h \
-    src/utilities/predictioncollection.h
+    src/utilities/predictioncollection.h \
+    src/models/queuemodel.h \
+    src/utilities/persistentplaylistindex.h \
+    src/utilities/qobjectscopedpointer.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -74,7 +77,9 @@ SOURCES += \
     src/models/playlistcontainermodel.cpp \
     src/audiooutput.cpp \
     src/searchengine.cpp \
-    src/utilities/predictioncollection.cpp
+    src/utilities/predictioncollection.cpp \
+    src/models/queuemodel.cpp \
+    src/utilities/persistentplaylistindex.cpp
 
 OTHER_FILES += \
     assets/qml/rework2/main.qml \

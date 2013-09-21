@@ -9,7 +9,7 @@ namespace Sonetta {
 
 Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *parent)
     :   QObject(parent), m_session(session), m_shuffle(false), m_repeat(false),
-      m_output(output)
+      m_output(output), m_queue(new QueueModel(this))
 {
     Q_ASSERT(session != nullptr);
 
@@ -67,6 +67,11 @@ void Player::setRepeat(bool enable)
     }
 }
 
+QObject * Player::queue() const
+{
+    return m_queue;
+}
+
 void Player::play(const Spotinetta::Track &track)
 {
     if (track != this->track())
@@ -92,16 +97,9 @@ void Player::play(const Spotinetta::Track &track)
 
 void Player::enqueue(const Spotinetta::Track &track)
 {
-    if (m_explicitQueue.isEmpty())
-    {
-        // If queue is empty, just play it immediately
-        play(track);
-    }
-    else
-    {
-        // If it's not empty, add it to queue
-        m_explicitQueue.enqueue(track);
-    }
+    // Assumes track is loaded, might want to add watcher and enqueue when ready
+    // or it may be better to add watch functionality to QueueModel
+    m_queue->enqueue(track);
 }
 
 void Player::play()
@@ -128,9 +126,9 @@ void Player::pause()
 
 void Player::next()
 {
-    if (!m_explicitQueue.isEmpty())
+    if (!m_queue->isEmpty())
     {
-        play(m_explicitQueue.dequeue());
+        play(m_queue->dequeue());
     }
     else
     {
