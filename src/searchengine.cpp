@@ -207,10 +207,10 @@ void SearchEngine::onPredictionsLoaded()
     }
 
     QStringList predictions = pred.predictions();
-    // Limit to 8 predictions (the 8 best)
-    if (predictions.size() > 8)
+    // Limit to 6 predictions (the 6 best)
+    if (predictions.size() > 6)
     {
-        predictions.erase(predictions.begin() + 8, predictions.end());
+        predictions.erase(predictions.begin() + 6, predictions.end());
     }
 
     m_predictions.swap(predictions);
