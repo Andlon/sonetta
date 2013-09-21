@@ -21,16 +21,13 @@ CollectionView {
                 rightMargin: ui.misc.globalPadding
             }
 
-            Text {
+            H4 {
                 anchors {
                     left: parent.left
                     right: parent.right
                 }
 
                 text: name
-                color: ui.colors.standard
-                font: ui.fonts.h4
-                elide: Text.ElideRight
             }
 
             Text {

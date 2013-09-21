@@ -76,8 +76,8 @@ FocusScope {
             topMargin: ui.misc.globalPadding
         }
 
-        cacheBuffer: 10 * pager.height
-
+        // Make sure we buffer everything (tweak this in the future?)
+        cacheBuffer: 4 * pager.height
         currentIndex: sidebar.currentIndex
 
         delegate: Loader {
@@ -88,19 +88,6 @@ FocusScope {
         }
 
         Navigation.onLeft: sidebar.focus = true
-
-        /* What follows is a workaround for something which looks like a bug in GridView.
-          It appears binding currentIndex to something doesn't necessarily cause the highlight
-          to follow the initial currentItem */
-        property bool startUp: true
-        onCurrentItemChanged:
-        {
-            if (startUp) {
-                positionViewAtIndex(currentIndex, GridView.Center)
-                startUp = false
-            }
-        }
-        /* End of workaround */
     }
 
 }
