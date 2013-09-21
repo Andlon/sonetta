@@ -79,7 +79,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
 
     if (requestedSize.isValid())
     {
-        return image.scaled(requestedSize, Qt::IgnoreAspectRatio);
+        return image.scaled(requestedSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     }
     else
     {
