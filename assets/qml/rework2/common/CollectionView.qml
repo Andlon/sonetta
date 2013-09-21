@@ -61,6 +61,11 @@ FocusScope {
             Navigation.onDown: incrementCurrentIndex()
             Navigation.onUp: decrementCurrentIndex()
             Navigation.onOk: root.itemPressed(currentItem.internalModel)
+
+            displaced: move
+            move: Transition {
+                SmoothedAnimation { property: "y"; duration: ui.misc.globalAnimationTime; velocity: -1 }
+            }
         }
     }
 
