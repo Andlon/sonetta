@@ -68,7 +68,10 @@ CollectionView {
         }
     }
 
-    onItemPressed: player.play(data.track)
+    onItemPressed: {
+        player.play(data.track)
+        player.queue.updateContext(playlist.playlist, data.index)
+    }
 
     Navigation.onRecord: {
         if (currentItem)
