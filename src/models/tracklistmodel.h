@@ -8,6 +8,8 @@ class TrackListModel : public AbstractTrackCollectionModel
 {
     Q_OBJECT
 
+    Q_PROPERTY(Spotinetta::TrackList list READ list NOTIFY listChanged)
+
 public:
     explicit TrackListModel(QObject * parent);
 
@@ -17,7 +19,10 @@ public:
     void append(const Spotinetta::TrackList &tracks);
     void clear();
 
+    Spotinetta::TrackList list() const;
+
 signals:
+    void listChanged();
     void needMore();
 
 protected:

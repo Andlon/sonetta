@@ -21,6 +21,8 @@ void TrackListModel::append(const sp::TrackList &tracks)
         beginInsertRows(QModelIndex(), first, last);
         m_tracks.append(tracks);
         endInsertRows();
+
+        emit listChanged();
     }
 }
 
@@ -41,6 +43,13 @@ void TrackListModel::clear()
     beginResetModel();
     m_tracks.clear();
     endResetModel();
+
+    emit listChanged();
+}
+
+sp::TrackList TrackListModel::list() const
+{
+    return m_tracks;
 }
 
 sp::Track TrackListModel::getTrackAt(int index) const
