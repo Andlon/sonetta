@@ -5,6 +5,22 @@ import "../common"
 FocusScope {
     focus: true
 
+    TrackInfo {
+        id: track
+        track: player.track
+    }
+
+    SpotifyImage {
+        anchors {
+            left: parent.left
+            right: view.left
+            top: parent.top
+            margins: ui.misc.globalPadding
+        }
+
+        uri: track.largeCoverUri
+    }
+
     CollectionView {
         id: view
 
