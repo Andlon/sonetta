@@ -4,7 +4,7 @@ import Sonetta 0.1
 CollectionView {
     id: root
 
-    delegate: Item {
+    delegate: CollectionDelegate {
         height: 75
         Text {
             anchors {

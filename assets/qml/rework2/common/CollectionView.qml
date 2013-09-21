@@ -130,7 +130,7 @@ FocusScope {
                 }
 
                 property alias internalModel: delegateRoot.internalModel
-                property alias modelData: delegateRoot.internalModelData
+                property alias internalModelData: delegateRoot.internalModelData
             }
         }
     }
