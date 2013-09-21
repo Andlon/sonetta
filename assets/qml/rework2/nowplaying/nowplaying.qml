@@ -15,7 +15,7 @@ FocusScope {
             left: parent.left
             right: view.left
             top: parent.top
-            margins: ui.misc.globalPadding
+            rightMargin: ui.misc.globalPadding
         }
 
         uri: track.largeCoverUri
