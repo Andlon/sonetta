@@ -109,5 +109,10 @@ OTHER_FILES += \
     assets/qml/rework2/search/QueryPage.qml \
     assets/qml/rework2/search/ResultsPage.qml \
     assets/qml/rework2/common/TrackView.qml \
-    assets/qml/rework2/common/SpotifyImage.qml
+    assets/qml/rework2/common/SpotifyImage.qml \
+    assets/qml/rework2/common/H1.qml \
+    assets/qml/rework2/common/H2.qml \
+    assets/qml/rework2/common/H3.qml \
+    assets/qml/rework2/common/H4.qml \
+    assets/qml/rework2/common/Label.qml
 

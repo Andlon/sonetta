@@ -6,9 +6,7 @@ import "../common/States.js" as States
 
 FocusScope
 {
-    Text {
-        font: ui.fonts.h4
-        color: ui.colors.label
+    Label {
         text: "QUERY: "
         anchors {
             bottom: keyboard.top
@@ -42,9 +40,7 @@ FocusScope
         Navigation.onRight: predictions.focus = true
     }
 
-    Text {
-        font: ui.fonts.h4
-        color: ui.colors.label
+    Label {
         text: "SUGGESTIONS: "
         anchors {
             bottom: predictions.top

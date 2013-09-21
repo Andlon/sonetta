@@ -10,15 +10,69 @@ FocusScope {
         track: player.track
     }
 
+    Label {
+        id: playingLabel
+        text: "NOW PLAYING:"
+        anchors {
+            left: parent.left
+            leftMargin: ui.misc.globalPadding
+            right: parent.horizontalCenter
+            top: parent.top
+        }
+    }
+
     SpotifyImage {
+        id: cover
         anchors {
             left: parent.left
             right: view.left
-            top: parent.top
+            top: view.top
             rightMargin: ui.misc.globalPadding
         }
 
         uri: track.largeCoverUri
+    }
+
+    Column {
+        anchors {
+            left: parent.left
+            top: cover.bottom
+            topMargin: ui.misc.globalPadding
+            right: cover.right
+        }
+
+        height: childrenRect.height
+
+        H2 {
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+
+            horizontalAlignment: Text.AlignHCenter
+            text: track.name
+        }
+
+        H3 {
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+
+            horizontalAlignment: Text.AlignHCenter
+            text: track.artistNames.join(",")
+        }
+    }
+
+    Label {
+        id: queueLabel
+        text: "QUEUE:"
+        anchors {
+            left: parent.horizontalCenter
+            leftMargin: ui.misc.globalPadding
+            right: parent.right
+            top: parent.top
+        }
     }
 
     CollectionView {
@@ -27,7 +81,8 @@ FocusScope {
         model: player.queue
         focus: true
         anchors {
-            top: parent.top
+            top: queueLabel.bottom
+            topMargin: ui.misc.globalPadding
             bottom: parent.bottom
             right: parent.right
             left: parent.horizontalCenter
