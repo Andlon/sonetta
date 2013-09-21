@@ -107,5 +107,6 @@ OTHER_FILES += \
     assets/qml/rework2/discover/discover.qml \
     assets/qml/rework2/common/VirtualKeyboardInput.qml \
     assets/qml/rework2/search/QueryPage.qml \
-    assets/qml/rework2/search/ResultsPage.qml
+    assets/qml/rework2/search/ResultsPage.qml \
+    assets/qml/rework2/common/TrackView.qml
 
