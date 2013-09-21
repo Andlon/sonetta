@@ -69,4 +69,11 @@ CollectionView {
     }
 
     onItemPressed: player.play(data.track)
+
+    Navigation.onRecord: {
+        if (currentItem)
+        {
+            player.enqueue(currentItem.internalModel.track)
+        }
+    }
 }
