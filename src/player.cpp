@@ -126,12 +126,16 @@ void Player::pause()
 
 void Player::next()
 {
-    if (!m_queue->isEmpty())
+    sp::Track track;
+    // Try to get an available track from queue
+    while (track.availability(m_session) != sp::Track::Availability::Available)
+        track = m_queue->dequeue();
+
+    if (track.isValid())
     {
-        play(m_queue->dequeue());
+        play(track);
     }
-    else
-    {
+    else {
         pause();
         m_watcher->watch(sp::Track());
     }
