@@ -116,5 +116,6 @@ OTHER_FILES += \
     assets/qml/rework2/common/H4.qml \
     assets/qml/rework2/common/Label.qml \
     assets/qml/rework2/common/MenuView.qml \
-    assets/qml/rework2/common/ArtistView.qml
+    assets/qml/rework2/common/ArtistView.qml \
+    assets/qml/rework2/common/AlbumView.qml
 

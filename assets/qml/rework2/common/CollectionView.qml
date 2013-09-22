@@ -55,7 +55,7 @@ FocusScope {
             highlightRangeMode: ListView.StrictlyEnforceRange
             preferredHighlightBegin: 0
             preferredHighlightEnd: list.height
-            snapMode: ListView.SnapToItem
+            //snapMode: ListView.SnapToItem
 
             clip: true
             boundsBehavior: Flickable.StopAtBounds
@@ -72,13 +72,13 @@ FocusScope {
                 SmoothedAnimation { property: "y"; duration: ui.misc.globalAnimationTime; velocity: -1 }
             }
 
-            add: Transition {
-                NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
-            }
+//            add: Transition {
+//                NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
+//            }
 
-            remove: Transition {
-                NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
-            }
+//            remove: Transition {
+//                NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
+//            }
         }
     }
 

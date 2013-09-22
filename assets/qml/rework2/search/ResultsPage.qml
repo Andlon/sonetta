@@ -69,7 +69,23 @@ FocusScope {
                 Connections {
                     target: search
 
-                    onQueryChanged: tracks.currentIndex = 0
+                    onQueryChanged: artists.currentIndex = 0
+                }
+            }
+
+            AlbumView {
+                id: albums
+                focus: true
+
+                model: search.albums
+
+                width: pager.cellWidth
+                height: pager.cellHeight
+
+                Connections {
+                    target: search
+
+                    onQueryChanged: albums.currentIndex = 0
                 }
             }
         }
