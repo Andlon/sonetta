@@ -68,15 +68,15 @@ QVariant AbstractAlbumCollectionModel::data(const QModelIndex &index, int role) 
     case TypeRole:
         return static_cast<int>(album.type());
         break;
-//    case SmallCoverUriRole:
-//        return SpLink::fromAlbumCover(album, Spotify::ImageSizeSmall).uri(); // Temporary
-//        break;
-//    case NormalCoverUriRole:
-//        return SpLink::fromAlbumCover(album, Spotify::ImageSizeNormal).uri();
-//        break;
-//    case LargeCoverUriRole:
-//        return SpLink::fromAlbumCover(album, Spotify::ImageSizeLarge).uri();
-//        break;
+    case SmallCoverUriRole:
+        return sp::Link::fromAlbumCover(album, sp::ImageSize::Small).uri();
+        break;
+    case NormalCoverUriRole:
+        return sp::Link::fromAlbumCover(album, sp::ImageSize::Normal).uri();
+        break;
+    case LargeCoverUriRole:
+        return sp::Link::fromAlbumCover(album, sp::ImageSize::Large).uri();
+        break;
     case ArtistNameRole:
         return album.artist().name();
         break;
