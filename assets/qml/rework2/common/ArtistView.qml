@@ -13,6 +13,7 @@ CollectionView {
         SpotifyImage {
             id: portrait
             uri: normalPortraitUri
+            placeholder: "../images/artist_placeholder.png"
             //source: "../images/artist_placeholder.png"
 
             fillMode: Image.PreserveAspectCrop
@@ -27,7 +28,7 @@ CollectionView {
             }
         }
 
-        H4 {
+        H3 {
             anchors {
                 left: portrait.right
                 leftMargin: ui.misc.globalPadding
