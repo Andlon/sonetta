@@ -26,7 +26,10 @@ public:
         ArtistNamesRole,
         AlbumNameRole,
         DurationRole,
-        PopularityRole
+        PopularityRole,
+
+        // Used in subclasses
+        LastTrackCollectionModelRole
     };
 
     explicit AbstractTrackCollectionModel(QObject *parent = 0);

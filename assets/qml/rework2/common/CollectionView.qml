@@ -108,6 +108,7 @@ FocusScope {
             property int modelIndex: index
             property QtObject internalModel: model
             property var internalModelData: modelData
+            property bool isCurrentItem: ListView.isCurrentItem
 
             Image {
                 anchors.fill: delegateRoot
@@ -132,6 +133,7 @@ FocusScope {
 
                 property alias internalModel: delegateRoot.internalModel
                 property alias internalModelData: delegateRoot.internalModelData
+                property alias internalIsCurrentItem: delegateRoot.isCurrentItem
             }
         }
     }

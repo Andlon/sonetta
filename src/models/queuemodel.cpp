@@ -49,6 +49,23 @@ QueueModel::QueueModel(QObject *parent) :
 {
 }
 
+QHash<int, QByteArray> QueueModel::roleNames() const
+{
+    QHash<int, QByteArray> roles = AbstractTrackCollectionModel::roleNames();
+    roles.insert(Explicit, "isExplicit");
+    return roles;
+}
+
+QVariant QueueModel::data(const QModelIndex &index, int role) const
+{
+    if (role == Explicit)
+    {
+        return (index.row() < m_explicit.count());
+    }
+
+    return AbstractTrackCollectionModel::data(index, role);
+}
+
 bool QueueModel::isEmpty() const
 {
     return m_explicit.isEmpty() && m_implicit.isEmpty();

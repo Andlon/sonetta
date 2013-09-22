@@ -37,7 +37,14 @@ class QueueModel : public AbstractTrackCollectionModel
 {
     Q_OBJECT
 public:
+    enum Role {
+        Explicit = AbstractTrackCollectionModel::LastTrackCollectionModelRole + 1
+    };
+
     explicit QueueModel(QObject *parent = 0);
+
+    QHash<int, QByteArray> roleNames() const;
+    QVariant data(const QModelIndex &index, int role) const;
 
     QueueContext context() const;
     void setContext(const QueueContext &context, int index);

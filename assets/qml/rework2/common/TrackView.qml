@@ -11,6 +11,12 @@ CollectionView {
 
         property string name: model ? model.name : ""
         property string artists: model ? model.artistNames.join(", ") : ""
+        property bool isExplicit: model ? model.isExplicit !== undefined ? model.isExplicit : true : true
+        property color textColor: isExplicit || (isCurrentItem && root.activeFocus) ? ui.colors.standard : ui.colors.label
+
+        Behavior on textColor {
+            ColorAnimation { duration: ui.misc.globalAnimationTime }
+        }
 
         Column {
             anchors {
@@ -27,6 +33,7 @@ CollectionView {
                     right: parent.right
                 }
 
+                color: textColor
                 text: name
             }
 
@@ -37,7 +44,7 @@ CollectionView {
                 }
 
                 text: artists
-                color: ui.colors.standard
+                color: textColor
                 font: ui.fonts.standard
                 elide: Text.ElideRight
             }
