@@ -7,7 +7,7 @@ import "../common/States.js" as States
 FocusScope
 {
     Label {
-        text: "QUERY: "
+        text: "QUERY"
         anchors {
             bottom: keyboard.top
             left: keyboard.left
@@ -41,7 +41,7 @@ FocusScope
     }
 
     Label {
-        text: "SUGGESTIONS: "
+        text: "SUGGESTIONS"
         anchors {
             bottom: predictions.top
             left: predictions.left

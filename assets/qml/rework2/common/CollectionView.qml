@@ -32,6 +32,8 @@ FocusScope {
     property alias remove: list.remove
     property alias removeDisplaced: list.removeDisplaced
 
+    property alias snapMode: list.snapMode
+
     signal itemPressed(var data)
     clip: true
 
@@ -52,10 +54,9 @@ FocusScope {
             highlight: highlightComponent
             highlightFollowsCurrentItem: true
             highlightMoveDuration: ui.misc.globalAnimationTime
-            highlightRangeMode: ListView.StrictlyEnforceRange
+            highlightRangeMode: ListView.ApplyRange
             preferredHighlightBegin: 0
             preferredHighlightEnd: list.height
-            //snapMode: ListView.SnapToItem
 
             clip: true
             boundsBehavior: Flickable.StopAtBounds
@@ -72,13 +73,13 @@ FocusScope {
                 SmoothedAnimation { property: "y"; duration: ui.misc.globalAnimationTime; velocity: -1 }
             }
 
-//            add: Transition {
-//                NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
-//            }
+            add: Transition {
+                NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
+            }
 
-//            remove: Transition {
-//                NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
-//            }
+            remove: Transition {
+                NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
+            }
         }
     }
 

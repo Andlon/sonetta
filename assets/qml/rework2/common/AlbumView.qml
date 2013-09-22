@@ -33,17 +33,25 @@ CollectionView {
         Column {
             anchors {
                 left: cover.right
-                leftMargin: ui.misc.globalPadding
+                margins: ui.misc.globalPadding
                 right: parent.right
                 verticalCenter: parent.verticalCenter
             }
 
             H3 {
-                text: name + " (" + year + ")"
+                text: name + (year > 0 ? " (" + year + ")" : "")
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
             }
 
             H4 {
                 text: artistName
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
             }
 
         }

@@ -88,6 +88,10 @@ FocusScope {
             left: parent.horizontalCenter
         }
 
+        snapMode: ListView.SnapToItem
+
+        onCountChanged: view.currentIndex = 0
+
         onTrackPlayed: player.queue.pop(modelIndex)
     }
 }
