@@ -1,6 +1,7 @@
 #include "audiooutput.h"
 
 #include <QDebug>
+#include <QMutexLocker>
 
 namespace sp = Spotinetta;
 
