@@ -63,6 +63,8 @@ void AudioOutputWorker::push()
 void AudioOutputWorker::setupOutput(const QAudioFormat &format)
 {
     m_output = new QAudioOutput(format, this);
+
+    m_output->setBufferSize(70000);
     m_device = m_output->start();
 
     int notifyMs = format.durationForBytes(m_output->bufferSize() / 2) / 1000;
