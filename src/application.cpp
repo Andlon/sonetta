@@ -89,6 +89,7 @@ int Application::run()
 
         m_view->engine()->addImportPath(applicationDir + QStringLiteral("/quick"));
         m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/quick"));
+        m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/plugins"));
 
         m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
         m_view->engine()->rootContext()->setContextProperty("player", m_player);
