@@ -87,6 +87,9 @@ int Application::run()
 
         ImageProvider * provider = new ImageProvider(m_session, this);
 
+        m_view->engine()->addImportPath(applicationDir + QStringLiteral("/quick"));
+        m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/quick"));
+
         m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
         m_view->engine()->rootContext()->setContextProperty("player", m_player);
         m_view->engine()->rootContext()->setContextProperty("ui", m_ui);
