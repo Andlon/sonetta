@@ -71,8 +71,8 @@ void AudioOutputWorker::setupOutput(const QAudioFormat &format)
     // Reset amount of processed milliseconds (used in position tracking)
     m_processedMs = 0;
 
-    connect(m_output, &QAudioOutput::notify, this, &AudioOutputWorker::push);
-    connect(m_output, &QAudioOutput::stateChanged, this, &AudioOutputWorker::onStateChanged);
+    connect(m_output.data(), &QAudioOutput::notify, this, &AudioOutputWorker::push);
+    connect(m_output.data(), &QAudioOutput::stateChanged, this, &AudioOutputWorker::onStateChanged);
 }
 
 void AudioOutputWorker::onStateChanged(QAudio::State state)
