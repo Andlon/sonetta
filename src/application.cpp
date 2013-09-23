@@ -85,6 +85,8 @@ int Application::run()
 
         QString applicationDir = applicationDirPath();
 
+        QGuiApplication::addLibraryPath(applicationDir + QStringLiteral("plugins"));
+
         ImageProvider * provider = new ImageProvider(m_session, this);
 
         m_view->engine()->addImportPath(applicationDir + QStringLiteral("/quick"));
