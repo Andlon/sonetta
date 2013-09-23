@@ -5,6 +5,11 @@ CONFIG += c++11
 win32:QMAKE_POST_LINK += deploy.bat
 unix:QMAKE_POST_LINK += sh deploy.sh
 
+# Add rpath so that deployed libs can be found in libs/ subdirectory on Linux
+unix:!mac {
+    LIBS += -Wl,-rpath=\\\$$ORIGIN/libs
+}
+
 
 RCC_DIR = "build/rcc"
 UI_DIR = "build/uic"
