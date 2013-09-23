@@ -6,6 +6,7 @@
 #include <QAudioOutput>
 #include <QAtomicInt>
 #include <QThread>
+#include <QMutex>
 
 namespace Sonetta {
 
