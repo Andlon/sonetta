@@ -85,7 +85,7 @@ int Application::run()
 
         QString applicationDir = applicationDirPath();
 
-        QGuiApplication::addLibraryPath(applicationDir + QStringLiteral("plugins"));
+        QGuiApplication::addLibraryPath(applicationDir + QStringLiteral("/plugins"));
 
         ImageProvider * provider = new ImageProvider(m_session, this);
 
