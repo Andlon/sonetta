@@ -28,10 +28,10 @@ class TrackEnums : public QObject {
 
 public:
     enum Availability {
-        Unavailable = A::Unavailable,
-        Available = A::Available,
-        NotStreamable = A::NotStreamable,
-        BannedByArtist = A::BannedByArtist
+        Unavailable = (unsigned int) A::Unavailable,
+        Available = (unsigned int) A::Available,
+        NotStreamable = (unsigned int) A::NotStreamable,
+        BannedByArtist = (unsigned int) A::BannedByArtist
     };
 
 };
