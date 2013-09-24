@@ -49,6 +49,7 @@ private:
     QAudioFormat            m_format;
     QMutex                  m_formatLock;
     QMutex                  m_writeLock;
+    QMutex                  m_readLock;
 
     QThread *               m_audioThread;
     AudioOutputWorker *     m_worker;
