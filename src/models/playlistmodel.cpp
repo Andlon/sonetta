@@ -2,6 +2,7 @@
 
 #include <QPersistentModelIndex>
 #include <QtAlgorithms>
+#include <QDebug>
 
 namespace sp = Spotinetta;
 
@@ -244,14 +245,14 @@ void PlaylistModel::onTracksAdded(const sp::TrackList &tracks, int position)
     endInsertRows();
 }
 
-void PlaylistModel::onTracksRemoved(const QVector<int> &/*positions*/)
+void PlaylistModel::onTracksRemoved(const QVector<int> &positions)
 {
-
+    qDebug() << "Tracks removed from playlist" << m_watcher->watched().name() << positions;
 }
 
-void PlaylistModel::onTracksMoved(const QVector<int> &/*positions*/, int /*newPosition*/)
+void PlaylistModel::onTracksMoved(const QVector<int> &positions, int newPosition)
 {
-
+    qDebug() << "Tracks moved in playlist" << m_watcher->watched().name() << positions << "to" << newPosition;
 }
 
 
