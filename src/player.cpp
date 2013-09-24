@@ -74,6 +74,18 @@ QObject * Player::queue() const
 
 void Player::play(const Spotinetta::Track &track)
 {
+    if (this->track().isValid())
+    {
+        // If currently playing a track, unload it first
+        m_session->unload();
+
+        // Clear buffers
+        if (!m_output.isNull())
+        {
+            m_output->reset();
+        }
+    }
+
     if (track != this->track())
     {
         m_watcher->watch(track);
