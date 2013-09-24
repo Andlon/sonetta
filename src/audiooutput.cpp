@@ -106,6 +106,12 @@ AudioOutput::~AudioOutput()
 
 int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
 {
+    // If tryLock fails, a reset is in progress, in which case we don't want to
+    // try to write anything, as it will only block
+    if (!m_writeLock.tryLock())
+        return 0;
+
+    int consumed = 0;
     sp::AudioFormat newFormat = collection.format();
 
     bool formatsEqual;
@@ -131,15 +137,27 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
         QMetaObject::invokeMethod(m_worker, "push", Qt::QueuedConnection);
 
         // Return number of frames consumed
-        return toWrite / bytesPerFrame;
+        consumed = toWrite / bytesPerFrame;
     }
 
-    return 0;
+    m_writeLock.unlock();
+    return consumed;
 }
 
 void AudioOutput::reset()
 {
-    qDebug() << "Reset!";
+    // Make sure we have exclusive write access (avoids blocking Spotify's music
+    // thread while resetting)
+    QMutexLocker locker(&m_writeLock);
+
+    // Make sure we're actually pulling data before clearing (since it blocks
+    // until the buffer is empty before resetting).
+    QMetaObject::invokeMethod(m_worker, "push", Qt::QueuedConnection);
+
+    // Note: investigate _possible_ race condition here. Is it possible that
+    // clear will block while waiting for the buffer data to be read while
+    // push is not actually being called? If so, it will block indefinitely.
+    m_buffer.clear();
 }
 
 void AudioOutput::resetPosition(int pos)
