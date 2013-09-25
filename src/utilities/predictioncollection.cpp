@@ -4,7 +4,6 @@
 #include <QChar>
 #include <QVector>
 #include <QStringList>
-#include <QDebug>
 #include <QSet>
 #include <QRegularExpression>
 
@@ -223,7 +222,6 @@ QStringList PredictionCollection::predictions() const
         QString match = i.value();
         if (score > 1e-2)
             pred.prepend(match);
-        qDebug() << score << " : " << match;
     }
 
     pred = removeDuplicates(pred);
