@@ -131,20 +131,21 @@ void Player::play(const Spotinetta::Track &track)
         }
     }
 
-    if (track != this->track())
-    {
-        m_watcher->watch(track);
-        emit trackChanged();
-    }
-
     if (track.isLoaded())
     {
-        if (m_session->load(track))
+        sp::Track loadedTrack = m_session->load(track);
+        if (loadedTrack.isValid())
         {
             m_session->play();
 
             if (!m_output.isNull())
                 m_output->resetPosition(0);
+        }
+
+        if (loadedTrack != this->track())
+        {
+            m_watcher->watch(track);
+            emit trackChanged();
         }
     }
 
