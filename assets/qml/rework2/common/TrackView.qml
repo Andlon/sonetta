@@ -62,4 +62,13 @@ CollectionView {
             player.enqueue(currentItem.internalModel.track)
         }
     }
+
+    Keys.onPressed:
+    {
+        if (event.key === Qt.Key_Q && currentItem)
+        {
+            player.enqueue(currentItem.internalModel.track)
+            event.accepted = true
+        }
+    }
 }
