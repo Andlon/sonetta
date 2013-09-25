@@ -20,6 +20,10 @@ public:
 public slots:
     void push();
 
+signals:
+    void stopped();
+    void started();
+
 private slots:
     void onStateChanged(QAudio::State);
 
@@ -44,6 +48,10 @@ public:
 
     int position() const;
     void resetPosition(int pos);
+
+signals:
+    void stopped();
+    void started();
 
 private:
     QAudioFormat            m_format;

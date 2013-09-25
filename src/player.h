@@ -53,6 +53,12 @@ public slots:
     void pause();
     void next();
 
+private slots:
+    void transitionTrack();
+    void onEndOfTrack();
+    void onOutputStopped();
+    void onOutputStarted();
+
 private:
     QPointer<Spotinetta::Session>   m_session;
     QPointer<AudioOutput>           m_output;
@@ -60,6 +66,9 @@ private:
     QueueModel *                    m_queue;
 
     QTimer *                        m_positionTimer;
+
+    bool m_endOfTrack;
+    bool m_outputIdle;
 
     bool m_shuffle;
     bool m_repeat;

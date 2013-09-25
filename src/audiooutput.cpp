@@ -98,8 +98,14 @@ void AudioOutputWorker::setupOutput(const QAudioFormat &format)
 
 void AudioOutputWorker::onStateChanged(QAudio::State state)
 {
-    qDebug() << "Audio state: " << state;
-    qDebug() << "Audio error: " << m_output->error();
+    if (state == QAudio::ActiveState)
+    {
+        emit started();
+    }
+    else
+    {
+        emit stopped();
+    }
 }
 
 AudioOutput::AudioOutput(QObject *parent)
@@ -113,6 +119,8 @@ AudioOutput::AudioOutput(QObject *parent)
 
     connect(m_audioThread, &QThread::finished,
             m_worker, &AudioOutputWorker::deleteLater);
+    connect(m_worker, &AudioOutputWorker::started, this, &AudioOutput::started);
+    connect(m_worker, &AudioOutputWorker::stopped, this, &AudioOutput::stopped);
 
     m_audioThread->start();
 }
