@@ -49,6 +49,9 @@ public:
     int position() const;
     void resetPosition(int pos);
 
+    void start();
+    void stop();
+
 signals:
     void stopped();
     void started();
@@ -63,6 +66,7 @@ private:
     AudioOutputWorker *     m_worker;
 
     QAtomicInt              m_position;
+    bool                    m_paused;
 
     Spotinetta::detail::RingBuffer<char, 1024> m_buffer;
 

@@ -25,6 +25,9 @@ void AudioOutputWorker::push()
 {
     AudioOutput * o = m_audioOutput;
 
+    if (o->m_paused)
+        return;
+
     // Try to lock the read lock. If we fail, it means a reset is in progress,
     // in which case we don't want to wait around (might cause skipping in audio).
     if (!o->m_readLock.tryLock())
@@ -109,7 +112,7 @@ void AudioOutputWorker::onStateChanged(QAudio::State state)
 }
 
 AudioOutput::AudioOutput(QObject *parent)
-    :   QObject(parent), m_buffer(RINGBUFFERSIZE)
+    :   QObject(parent), m_buffer(RINGBUFFERSIZE), m_paused(false)
 {
     m_position.store(0);
 
@@ -192,6 +195,18 @@ void AudioOutput::resetPosition(int pos)
 int AudioOutput::position() const
 {
     return m_position.load();
+}
+
+void AudioOutput::start()
+{
+    QMutexLocker readLocker(&m_readLock);
+    m_paused = false;
+}
+
+void AudioOutput::stop()
+{
+    QMutexLocker readLocker(&m_readLock);
+    m_paused = true;
 }
 
 }

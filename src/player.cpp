@@ -137,6 +137,7 @@ void Player::play(const Spotinetta::Track &track)
         if (loadedTrack.isValid())
         {
             m_session->play();
+            m_output->start();
 
             if (!m_output.isNull())
                 m_output->resetPosition(0);
@@ -163,6 +164,7 @@ void Player::enqueue(const Spotinetta::Track &track)
 void Player::play()
 {
     m_session->play();
+    m_output->start();
 }
 
 void Player::playPause()
@@ -180,6 +182,7 @@ void Player::playPause()
 void Player::pause()
 {
     m_session->pause();
+    m_output->stop();
 }
 
 void Player::next()
