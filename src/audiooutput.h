@@ -34,6 +34,7 @@ private:
     QPointer<QIODevice>     m_device;
     QPointer<AudioOutput>   m_audioOutput;
 
+    QByteArray              m_intermediate;
     int                     m_processedMs;
 };
 

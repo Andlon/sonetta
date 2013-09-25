@@ -53,10 +53,12 @@ void AudioOutputWorker::push()
         // Adjust toRead for frame boundaries
         toRead -= (toRead % bytesPerFrame);
 
-        QByteArray data;
-        data.resize(toRead);
-        qint64 read = o->m_buffer.read(data.data(), data.size());
-        qint64 written = m_device->write(data);
+        // Read to intermediate buffer. Should be the size of the output buffer,
+        // and should thus be able to hold all the data
+        qint64 read = o->m_buffer.read(m_intermediate.data(), toRead);
+
+        // Transfer data from intermediate buffer to output device.
+        qint64 written = m_device->write(m_intermediate.data(), read);
 
         Q_ASSERT(read == toRead);
         Q_ASSERT(written == read);
@@ -91,6 +93,9 @@ void AudioOutputWorker::setupOutput(const QAudioFormat &format)
     // the buffer is able to hold
     int notifyMs = format.durationForBytes(m_output->bufferSize()) / 3000;
     m_output->setNotifyInterval(notifyMs);
+
+    // Make sure sufficient space is allocated for the intermediate buffer
+    m_intermediate.resize(m_output->bufferSize());
 
     // Reset amount of processed milliseconds (used in position tracking)
     m_processedMs = 0;
