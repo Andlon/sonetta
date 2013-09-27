@@ -21,8 +21,7 @@ public slots:
     void push();
 
 signals:
-    void stopped();
-    void started();
+    void bufferEmpty();
 
 private slots:
     void onStateChanged(QAudio::State);
@@ -54,8 +53,8 @@ public:
     void stop();
 
 signals:
-    void stopped();
-    void started();
+    void bufferEmpty();
+    void bufferPopulated();
 
 private:
     QAudioFormat            m_format;

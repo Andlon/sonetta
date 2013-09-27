@@ -56,8 +56,8 @@ public slots:
 private slots:
     void transitionTrack();
     void onEndOfTrack();
-    void onOutputStopped();
-    void onOutputStarted();
+    void onBufferEmpty();
+    void onBufferPopulated();
 
 private:
     QPointer<Spotinetta::Session>   m_session;
@@ -68,7 +68,7 @@ private:
     QTimer *                        m_positionTimer;
 
     bool m_endOfTrack;
-    bool m_outputIdle;
+    bool m_bufferEmpty;
 
     bool m_shuffle;
     bool m_repeat;

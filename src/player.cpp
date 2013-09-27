@@ -9,7 +9,7 @@ namespace Sonetta {
 
 Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *parent)
     :   QObject(parent), m_session(session), m_shuffle(false), m_repeat(false),
-      m_output(output), m_queue(new QueueModel(this)), m_outputIdle(false), m_endOfTrack(false)
+      m_output(output), m_queue(new QueueModel(this)), m_bufferEmpty(false), m_endOfTrack(false)
 {
     Q_ASSERT(session != nullptr);
 
@@ -28,23 +28,23 @@ Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *paren
 
     if (output)
     {
-        connect(output, &AudioOutput::started, this, &Player::onOutputStarted);
-        connect(output, &AudioOutput::stopped, this, &Player::onOutputStopped);
+        connect(output, &AudioOutput::bufferEmpty, this, &Player::onBufferEmpty);
+        connect(output, &AudioOutput::bufferPopulated, this, &Player::onBufferPopulated);
         connect(session, &sp::Session::endOfTrack, this, &Player::onEndOfTrack);
     }
 
     m_positionTimer->start(150);
 }
 
-void Player::onOutputStarted()
+void Player::onBufferEmpty()
 {
-    m_outputIdle = false;
+    m_bufferEmpty = true;
     transitionTrack();
 }
 
-void Player::onOutputStopped()
+void Player::onBufferPopulated()
 {
-    m_outputIdle = true;
+    m_bufferEmpty = false;
     transitionTrack();
 }
 
@@ -104,7 +104,7 @@ QObject * Player::queue() const
 
 void Player::transitionTrack()
 {
-    if (m_endOfTrack && m_outputIdle)
+    if (m_endOfTrack && m_bufferEmpty)
     {
         // Plays next track when the current track has finished given two conditions:
         // - The end of track must have been reached. This means that libspotify has

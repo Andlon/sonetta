@@ -25,13 +25,16 @@ void AudioOutputWorker::push()
 {
     AudioOutput * o = m_audioOutput;
 
-    if (o->m_paused)
-        return;
-
     // Try to lock the read lock. If we fail, it means a reset is in progress,
     // in which case we don't want to wait around (might cause skipping in audio).
     if (!o->m_readLock.tryLock())
         return;
+
+    if (o->m_paused)
+    {
+        o->m_readLock.unlock();
+        return;
+    }
 
     QAudioFormat format;
     {
@@ -47,21 +50,29 @@ void AudioOutputWorker::push()
     // If the format is correct, write to output
     if (m_output->format() == format)
     {
-        qint64 bytesPerFrame = format.bytesPerFrame();
-        qint64 toRead = qMin(o->m_buffer.used(), (qint64) m_output->bytesFree());
+        if (o->m_buffer.used() > 0)
+        {
+            qint64 bytesPerFrame = format.bytesPerFrame();
+            qint64 toRead = qMin(o->m_buffer.used(), (qint64) m_output->bytesFree());
 
-        // Adjust toRead for frame boundaries
-        toRead -= (toRead % bytesPerFrame);
+            // Adjust toRead for frame boundaries
+            toRead -= (toRead % bytesPerFrame);
 
-        // Read to intermediate buffer. Should be the size of the output buffer,
-        // and should thus be able to hold all the data
-        qint64 read = o->m_buffer.read(m_intermediate.data(), toRead);
+            // Read to intermediate buffer. Should be the size of the output buffer,
+            // and should thus be able to hold all the data
+            qint64 read = o->m_buffer.read(m_intermediate.data(), toRead);
 
-        // Transfer data from intermediate buffer to output device.
-        qint64 written = m_device->write(m_intermediate.data(), read);
+            // Transfer data from intermediate buffer to output device.
+            qint64 written = m_device->write(m_intermediate.data(), read);
 
-        Q_ASSERT(read == toRead);
-        Q_ASSERT(written == read);
+            Q_ASSERT(read == toRead);
+            Q_ASSERT(written == read);
+        }
+        else
+        {
+            // There is no data in buffer, signal
+            emit bufferEmpty();
+        }
     }
     // If format's not the same, recreate output
     else if (m_output->state() != QAudio::ActiveState)
@@ -106,14 +117,7 @@ void AudioOutputWorker::setupOutput(const QAudioFormat &format)
 
 void AudioOutputWorker::onStateChanged(QAudio::State state)
 {
-    if (state == QAudio::ActiveState)
-    {
-        emit started();
-    }
-    else
-    {
-        emit stopped();
-    }
+    Q_UNUSED(state)
 }
 
 AudioOutput::AudioOutput(QObject *parent)
@@ -127,8 +131,7 @@ AudioOutput::AudioOutput(QObject *parent)
 
     connect(m_audioThread, &QThread::finished,
             m_worker, &AudioOutputWorker::deleteLater);
-    connect(m_worker, &AudioOutputWorker::started, this, &AudioOutput::started);
-    connect(m_worker, &AudioOutputWorker::stopped, this, &AudioOutput::stopped);
+    connect(m_worker, &AudioOutputWorker::bufferEmpty, this, &AudioOutput::bufferEmpty);
 
     m_audioThread->start();
 }
@@ -172,6 +175,12 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
 
         qint64 written = m_buffer.write(collection.data(), toWrite);
         Q_ASSERT(written == toWrite);
+
+        if (written > 0)
+        {
+            // Signal that we've populated the buffer
+            emit bufferPopulated();
+        }
 
         QMetaObject::invokeMethod(m_worker, "push", Qt::QueuedConnection);
 
