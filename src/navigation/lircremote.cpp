@@ -28,7 +28,7 @@ void LircRemote::readData()
         if (parts.count() == 4)
         {
             bool ok; // Holds whether the conversion to integer was successful
-            int repeatCount = parts[1].toInt(&ok);
+            int repeatCount = parts[1].toInt(&ok, 16);
 
             if (ok && (repeatCount == 0 || repeatCount >= 3))
             {
