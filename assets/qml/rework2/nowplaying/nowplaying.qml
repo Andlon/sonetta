@@ -31,7 +31,7 @@ FocusScope {
             right: view.left
             top: view.top
             bottom: trackInfo.top
-            bottomMargin: ui.misc.globalPadding
+            bottomMargin: ui.misc.globalPadding / 2
             rightMargin: ui.misc.globalPadding
         }
 
@@ -43,7 +43,7 @@ FocusScope {
         anchors {
             left: parent.left
             bottom: controlContainer.top
-            bottomMargin: ui.misc.globalPadding
+            bottomMargin: ui.misc.globalPadding / 2
             right: cover.right
         }
 
@@ -76,7 +76,7 @@ FocusScope {
         anchors {
             bottom: root.bottom
             left: root.left
-            right: root.horizontalCenter
+            right: cover.right
         }
 
         Controls {

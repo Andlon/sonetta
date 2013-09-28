@@ -5,8 +5,8 @@ import Sonetta 0.1
 ListView {
     id: list
 
-    property int controlWidth: 64
-    property int controlHeight: 64
+    property int controlWidth: 56
+    property int controlHeight: 56
     height: controlHeight + ui.misc.globalPadding
     width: childrenRect.width
     orientation: ListView.Horizontal
@@ -54,11 +54,8 @@ ListView {
     highlight: Rectangle {
         color: ui.colors.highlight
         height: ui.misc.globalPadding / 2
-        anchors {
-            bottom: list.currentItem.bottom
-            left: list.currentItem.left
-            right: list.currentItem.right
-        }
+        width: list.currentItem.width
+        y: list.currentItem.height - height
     }
 
     Navigation.onRight: {
@@ -84,7 +81,6 @@ ListView {
     }
 
     Navigation.onOk: {
-        console.log("OK!")
         if (currentIndex >= 0 && currentIndex < count)
         {
             if (currentIndex == 0)
