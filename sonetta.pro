@@ -122,5 +122,7 @@ OTHER_FILES += \
     assets/qml/rework2/common/Label.qml \
     assets/qml/rework2/common/MenuView.qml \
     assets/qml/rework2/common/ArtistView.qml \
-    assets/qml/rework2/common/AlbumView.qml
+    assets/qml/rework2/common/AlbumView.qml \
+    assets/qml/rework2/nowplaying/Controls.qml \
+    assets/qml/rework2/nowplaying/Control.qml
 

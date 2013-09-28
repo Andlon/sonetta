@@ -3,6 +3,7 @@ import Sonetta 0.1
 import "../common"
 
 FocusScope {
+    id: root
     focus: true
 
     TrackInfo {
@@ -23,10 +24,14 @@ FocusScope {
 
     SpotifyImage {
         id: cover
+
+        fillMode: Image.PreserveAspectFit
         anchors {
             left: parent.left
             right: view.left
             top: view.top
+            bottom: trackInfo.top
+            bottomMargin: ui.misc.globalPadding
             rightMargin: ui.misc.globalPadding
         }
 
@@ -34,16 +39,17 @@ FocusScope {
     }
 
     Column {
+        id: trackInfo
         anchors {
             left: parent.left
-            top: cover.bottom
-            topMargin: ui.misc.globalPadding
+            bottom: controlContainer.top
+            bottomMargin: ui.misc.globalPadding
             right: cover.right
         }
 
         height: childrenRect.height
 
-        H2 {
+        H3 {
             anchors {
                 left: parent.left
                 right: parent.right
@@ -53,7 +59,7 @@ FocusScope {
             text: track.name
         }
 
-        H3 {
+        H4 {
             anchors {
                 left: parent.left
                 right: parent.right
@@ -62,6 +68,27 @@ FocusScope {
             horizontalAlignment: Text.AlignHCenter
             text: track.artistNames.join(", ")
         }
+    }
+
+    Item {
+        id: controlContainer
+        height: controls.height
+        anchors {
+            bottom: root.bottom
+            left: root.left
+            right: root.horizontalCenter
+        }
+
+        Controls {
+            id: controls
+            anchors {
+                centerIn: parent
+            }
+
+            focus: true
+        }
+
+        Navigation.onRight: view.focus = true
     }
 
     Label {
@@ -79,7 +106,6 @@ FocusScope {
         id: view
 
         model: player.queue
-        focus: true
         anchors {
             top: queueLabel.bottom
             topMargin: ui.misc.globalPadding
@@ -93,5 +119,7 @@ FocusScope {
         onCountChanged: view.currentIndex = 0
 
         onTrackPlayed: player.queue.pop(modelIndex)
+
+        Navigation.onLeft: controls.focus = true
     }
 }
