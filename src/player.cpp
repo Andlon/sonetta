@@ -69,6 +69,11 @@ bool Player::repeat() const
     return m_repeat;
 }
 
+bool Player::playing() const
+{
+    return !m_output.isNull() ? m_output->isPlaying() : false;
+}
+
 int Player::position() const
 {
     return m_output.isNull() ? 0 : m_output->position();
@@ -137,10 +142,13 @@ void Player::play(const Spotinetta::Track &track)
         if (loadedTrack.isValid())
         {
             m_session->play();
-            m_output->start();
 
             if (!m_output.isNull())
+            {
+                m_output->start();
+                emit playingChanged();
                 m_output->resetPosition(0);
+            }
         }
 
         if (loadedTrack != this->track())
@@ -165,6 +173,7 @@ void Player::play()
 {
     m_session->play();
     m_output->start();
+    emit playingChanged();
 }
 
 void Player::playPause()
@@ -183,6 +192,7 @@ void Player::pause()
 {
     m_session->pause();
     m_output->stop();
+    emit playingChanged();
 }
 
 void Player::next()

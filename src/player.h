@@ -21,6 +21,7 @@ class Player : public QObject
 
     Q_PROPERTY(bool shuffle READ shuffle WRITE setShuffle NOTIFY shuffleChanged)
     Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
+    Q_PROPERTY(bool playing READ playing NOTIFY playingChanged)
     Q_PROPERTY(int position READ position NOTIFY positionChanged)
     Q_PROPERTY(Spotinetta::Track track READ track NOTIFY trackChanged)
     Q_PROPERTY(QObject * queue READ queue CONSTANT)
@@ -30,6 +31,7 @@ public:
 
     bool shuffle() const;
     bool repeat() const;
+    bool playing() const;
     int position() const;
     Spotinetta::Track track() const;
 
@@ -43,6 +45,7 @@ signals:
     void repeatChanged();
     void trackChanged();
     void positionChanged();
+    void playingChanged();
     
 public slots:
     void play(const Spotinetta::Track &track);
@@ -60,6 +63,8 @@ private slots:
     void onBufferPopulated();
 
 private:
+    void updatePlaybackStatus();
+
     QPointer<Spotinetta::Session>   m_session;
     QPointer<AudioOutput>           m_output;
     Spotinetta::TrackWatcher *      m_watcher;

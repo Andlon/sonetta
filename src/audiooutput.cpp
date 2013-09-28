@@ -201,6 +201,12 @@ void AudioOutput::reset()
     m_buffer.clear();
 }
 
+bool AudioOutput::isPlaying() const
+{
+    QMutexLocker readLocker(&m_readLock);
+    return !m_paused;
+}
+
 void AudioOutput::resetPosition(int pos)
 {
     m_position.store(pos);

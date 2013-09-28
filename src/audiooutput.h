@@ -46,6 +46,8 @@ public:
     int deliver(const Spotinetta::AudioFrameCollection &collection);
     void reset();
 
+    bool isPlaying() const;
+
     int position() const;
     void resetPosition(int pos);
 
@@ -60,7 +62,7 @@ private:
     QAudioFormat            m_format;
     QMutex                  m_formatLock;
     QMutex                  m_writeLock;
-    QMutex                  m_readLock;
+    mutable QMutex          m_readLock;
 
     QThread *               m_audioThread;
     AudioOutputWorker *     m_worker;
