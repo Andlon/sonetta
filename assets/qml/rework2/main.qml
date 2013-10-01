@@ -65,7 +65,7 @@ Item {
         var misc = {}
         misc.globalBottomMargin = 100
         misc.globalTopMargin = 100
-        misc.globalAnimationTime = 150
+        misc.globalAnimationTime = 200
         misc.ready = false
 
         // The amount of space between any two generic items

@@ -124,5 +124,7 @@ OTHER_FILES += \
     assets/qml/rework2/common/ArtistView.qml \
     assets/qml/rework2/common/AlbumView.qml \
     assets/qml/rework2/nowplaying/Controls.qml \
-    assets/qml/rework2/nowplaying/Control.qml
+    assets/qml/rework2/nowplaying/Control.qml \
+    assets/qml/rework2/common/CollectionContext.qml \
+    assets/qml/rework2/common/DelayedProperty.qml
 

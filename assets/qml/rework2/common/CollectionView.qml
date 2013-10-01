@@ -34,7 +34,10 @@ FocusScope {
 
     property alias snapMode: list.snapMode
 
+    property QtObject contextModel: null
+
     signal itemPressed(var data)
+    signal contextPressed(string name, var data)
     clip: true
 
     ScrollView {
@@ -52,11 +55,10 @@ FocusScope {
             id: list
             delegate: delegateComponent
             highlight: highlightComponent
-            highlightFollowsCurrentItem: true
-            highlightMoveDuration: ui.misc.globalAnimationTime
-            highlightRangeMode: ListView.ApplyRange
-            preferredHighlightBegin: 0
-            preferredHighlightEnd: list.height
+            highlightFollowsCurrentItem: false
+            //highlightRangeMode: ListView.ApplyRange
+//            preferredHighlightBegin: list.height * 0.25
+//            preferredHighlightEnd: list.headerItem
 
             clip: true
             boundsBehavior: Flickable.StopAtBounds
@@ -67,6 +69,9 @@ FocusScope {
             Navigation.onDown: incrementCurrentIndex()
             Navigation.onUp: decrementCurrentIndex()
             Navigation.onOk: root.itemPressed(currentItem.internalModel)
+
+            onContentHeightChanged: console.log("Content height: " + contentHeight)
+            onContentYChanged: console.log("Content Y: " + contentY)
 
             displaced: move
             move: Transition {
@@ -80,19 +85,42 @@ FocusScope {
             remove: Transition {
                 NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
             }
+
+//            Binding {
+//                target: highlightMoveAnimator
+//                property: "to"
+//                value: currentItem ? currentItem.y : 0
+//            }
+
+            SmoothedAnimation {
+                id: highlightMoveAnimator
+                velocity: 400
+                duration: ui.misc.globalAnimationTime
+                target: list.highlightItem
+                properties: "y"
+
+                //onToChanged: restart()
+            }
         }
     }
 
     Component {
         id: highlightComponent
 
-        Rectangle {
-            width: list.currentItem ? list.activeFocus ? list.currentItem.width : Math.min(list.currentItem.width, ui.misc.globalPadding / 2) : 0
+        Item {
             height: list.currentItem.height
-            color: ui.colors.highlight //root.activeFocus ? ui.colors.highlight : ui.colors.selected
+            width: list.currentItem.width
 
-            Behavior on width {
-                SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+            Rectangle {
+                color: ui.colors.highlight
+                height: list.currentItem.highlightHeight
+                width: list.currentItem
+                       ? list.activeFocus && !list.currentItem.contextActive
+                         ? list.currentItem.width : Math.min(list.currentItem.width, ui.misc.globalPadding / 2) : 0
+
+                Behavior on width {
+                    SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+                }
             }
         }
     }
@@ -100,20 +128,36 @@ FocusScope {
     Component {
         id: delegateComponent
 
-        FocusScope {
+        Item {
             id: delegateRoot
+            clip: true
             width: list.width
-            height: delegateLoader.height
+            height: contextActive ? delegateLoader.height + contextLoader.height : delegateLoader.height
+
+            Behavior on height {
+                SequentialAnimation {
+                    SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+                    //PropertyAction { target: contextLoader; property: "sourceComponent"; value: undefined }
+                }
+            }
 
             property int modelIndex: index
+            property int highlightHeight: delegateLoader.height
             property QtObject internalModel: model
             property var internalModelData: modelData
             property bool isCurrentItem: ListView.isCurrentItem
+            property bool contextActive: false
 
             Image {
-                anchors.fill: delegateRoot
+                anchors {
+                    left: delegateRoot.left
+                    right: delegateRoot.right
+                    top: delegateRoot.top
+                }
+
                 parent: list.contentItem
                 z: -1
+                height: delegateLoader.height
 
                 source: "../images/dark.png"
                 fillMode: Image.Tile
@@ -135,7 +179,74 @@ FocusScope {
                 property alias internalModelData: delegateRoot.internalModelData
                 property alias internalIsCurrentItem: delegateRoot.isCurrentItem
             }
+
+            Loader {
+                id: contextLoader
+                focus: true
+                anchors {
+                    top: delegateLoader.bottom
+                    left: delegateRoot.left
+                    right: delegateRoot.right
+                    leftMargin: 2 * ui.misc.globalPadding
+                }
+
+                Navigation.onNavigationEvent: {
+                    switch (event.key)
+                    {
+                    case Navigation.OK:
+                    case Navigation.Left:
+                    case Navigation.Right:
+                    case Navigation.Down:
+                    case Navigation.Left:
+                    case Navigation.Up:
+                        delegateRoot.toggleContext()
+                        event.accepted = true
+                        break;
+                    }
+                }
+            }
+
+            function toggleContext()
+            {
+                if (contextModel != undefined)
+                {
+                    // A context model has been supplied, hide/display context menu
+                    if (contextActive)
+                    {
+                        contextActive = false
+                        delegateLoader.focus = true
+                    }
+                    else
+                    {
+                        contextLoader.sourceComponent = contextDelegate
+                        contextActive = true
+                        contextLoader.focus = true
+                        contextLoader.item.collectionViewIndex = modelIndex
+                    }
+
+                    return true
+                }
+                // We simply assume that contextModel has not been altered between a context-toggle
+                // (which would have been a strange thing to do). Thus, if there is no context model,
+                // we want to propagate the event
+                return false
+            }
+
+            Navigation.onOk: event.accepted = toggleContext()
         }
     }
 
+    Component {
+        id: contextDelegate
+
+        CollectionContext {
+            model: contextModel
+
+            onContextPressed:
+            {
+                root.contextPressed(name, list.currentItem.internalModel)
+                list.currentItem.toggleContext()
+            }
+        }
+    }
 }

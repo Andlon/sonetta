@@ -6,6 +6,18 @@ CollectionView {
 
     signal trackPlayed(var modelIndex)
 
+    contextModel: ListModel {
+        ListElement {
+            display: "Play"
+            name: "play"
+        }
+
+        ListElement {
+            display: "Queue"
+            name: "queue"
+        }
+    }
+
     delegate: CollectionDelegate {
         height: 100
 
@@ -51,11 +63,6 @@ CollectionView {
         }
     }
 
-    onItemPressed: {
-        player.play(data.track)
-        trackPlayed(data.index)
-    }
-
     Navigation.onRecord: {
         if (currentItem)
         {
@@ -69,6 +76,18 @@ CollectionView {
         {
             player.enqueue(currentItem.internalModel.track)
             event.accepted = true
+        }
+    }
+
+    onContextPressed: {
+        if (name == "play")
+        {
+            player.play(data.track)
+            trackPlayed(data.index)
+        }
+        else if (name == "queue")
+        {
+            player.enqueue(data.track)
         }
     }
 }
