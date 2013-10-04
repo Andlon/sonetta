@@ -79,6 +79,11 @@ CollectionView {
         }
     }
 
+    onItemPressed: {
+        player.play(data.track)
+        trackPlayed(data.index)
+    }
+
     onContextPressed: {
         if (name == "play")
         {

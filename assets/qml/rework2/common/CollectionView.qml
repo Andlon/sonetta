@@ -1,6 +1,4 @@
 import QtQuick 2.1
-import QtQuick.Controls 1.0
-import QtQuick.Controls.Styles 1.0
 import Sonetta 0.1
 
 /*
@@ -40,78 +38,54 @@ FocusScope {
     signal contextPressed(string name, var data)
     clip: true
 
-    ScrollView {
-        focus: true
+    ListView {
+        id: list
         anchors.fill: root
-        style: ScrollViewStyle {
-            scrollBarBackground: Item {}
-            corner: Item {}
-            handle: Item {}
-            incrementControl: Item {}
-            decrementControl: Item {}
+        delegate: delegateComponent
+        highlight: highlightComponent
+        highlightFollowsCurrentItem: true
+        highlightMoveDuration: ui.misc.globalAnimationTime
+        highlightResizeDuration: ui.misc.globalAnimationTime
+
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        focus: true
+        interactive: false
+        currentIndex: 0
+
+        Navigation.onDown: incrementCurrentIndex()
+        Navigation.onUp: decrementCurrentIndex()
+        Navigation.onOk: root.itemPressed(currentItem.internalModel)
+
+        displaced: move
+        move: Transition {
+            SmoothedAnimation { property: "y"; duration: ui.misc.globalAnimationTime; velocity: -1 }
         }
 
-        ListView {
-            id: list
-            delegate: delegateComponent
-            highlight: highlightComponent
-            highlightFollowsCurrentItem: false
-            //highlightRangeMode: ListView.ApplyRange
-//            preferredHighlightBegin: list.height * 0.25
-//            preferredHighlightEnd: list.headerItem
+        add: Transition {
+            NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
+        }
 
-            clip: true
-            boundsBehavior: Flickable.StopAtBounds
-            focus: true
-            interactive: false
-            currentIndex: 0
-
-            Navigation.onDown: incrementCurrentIndex()
-            Navigation.onUp: decrementCurrentIndex()
-            Navigation.onOk: root.itemPressed(currentItem.internalModel)
-
-            onContentHeightChanged: console.log("Content height: " + contentHeight)
-            onContentYChanged: console.log("Content Y: " + contentY)
-
-            displaced: move
-            move: Transition {
-                SmoothedAnimation { property: "y"; duration: ui.misc.globalAnimationTime; velocity: -1 }
-            }
-
-            add: Transition {
-                NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
-            }
-
-            remove: Transition {
-                NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
-            }
-
-//            Binding {
-//                target: highlightMoveAnimator
-//                property: "to"
-//                value: currentItem ? currentItem.y : 0
-//            }
-
-            SmoothedAnimation {
-                id: highlightMoveAnimator
-                velocity: 400
-                duration: ui.misc.globalAnimationTime
-                target: list.highlightItem
-                properties: "y"
-
-                //onToChanged: restart()
-            }
+        remove: Transition {
+            NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
         }
     }
 
     Component {
         id: highlightComponent
-
         Item {
+            id: highlightContainer
             height: list.currentItem.height
             width: list.currentItem.width
 
+            Behavior on height {
+                SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+            }
+
+            property real indicatorWidth: root.contextModel != undefined ? contextIndicator.width + anchors.rightMargin : 0
+
             Rectangle {
+                id: highlight
                 color: ui.colors.highlight
                 height: list.currentItem.highlightHeight
                 width: list.currentItem
@@ -122,24 +96,65 @@ FocusScope {
                     SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
                 }
             }
+
+            Image {
+                id: contextIndicator
+                visible: list.activeFocus && root.contextModel != undefined
+                anchors {
+                    verticalCenter: highlight.verticalCenter
+                    right: parent.right
+                    rightMargin: ui.misc.globalPadding
+                }
+
+                height: 35
+                width: 35
+                sourceSize.height: height
+                sourceSize.width: width
+                source: "../images/contextArrow.svg"
+                cache: true
+
+                rotation: list.currentItem.contextActive ? -180 : 0
+
+                Behavior on rotation {
+                    RotationAnimation {
+                        duration: ui.misc.globalAnimationTime
+                    }
+                }
+
+                SequentialAnimation {
+                    id: contextIndicatorAnimation
+                    loops: Animation.Infinite
+                    running: root.contextModel != undefined && list.activeFocus
+                    alwaysRunToEnd: true
+                    PropertyAnimation {
+                        target: contextIndicator
+                        property: "opacity"
+                        from: 0.2
+                        to: 1.0
+                        duration: 500
+                        easing.type: Easing.InOutQuad
+                    }
+                    PropertyAnimation {
+                        target: contextIndicator
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.2
+                        duration: 500
+                        easing.type: Easing.InOutQuad
+                    }
+                }
+            }
         }
     }
 
     Component {
         id: delegateComponent
 
-        Item {
+        FocusScope {
             id: delegateRoot
             clip: true
             width: list.width
-            height: contextActive ? delegateLoader.height + contextLoader.height : delegateLoader.height
-
-            Behavior on height {
-                SequentialAnimation {
-                    SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
-                    //PropertyAction { target: contextLoader; property: "sourceComponent"; value: undefined }
-                }
-            }
+            height: delegateLoader.height
 
             property int modelIndex: index
             property int highlightHeight: delegateLoader.height
@@ -147,6 +162,50 @@ FocusScope {
             property var internalModelData: modelData
             property bool isCurrentItem: ListView.isCurrentItem
             property bool contextActive: false
+
+            onContextActiveChanged: {
+                // For some reason, doing this as a State change or in a Transition
+                // causes the view to turn empty. This workaround works, but it should preferably
+                // not be here
+                if (contextActive)
+                    contextLoader.sourceComponent = contextDelegate
+            }
+
+            states: [
+                State {
+                    name: "contextActive"
+                    when: contextActive && root.contextModel != undefined
+                    PropertyChanges { target: delegateRoot; height: delegateLoader.height + contextLoader.height; restoreEntryValues: false }
+                },
+                State {
+                    name: "contextInactive"
+                    when: !contextActive || (root.contextModel == undefined)
+                    PropertyChanges { target: delegateRoot; height: delegateLoader.height }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    from: "contextInactive"
+                    to: "contextActive"
+                    SequentialAnimation {
+                        ScriptAction { script: { contextLoader.focus = true } }
+                        SmoothedAnimation { target: delegateRoot; property: "height"; duration: ui.misc.globalAnimationTime; velocity: -1 }
+                    }
+                },
+                Transition {
+                    from :"contextActive"
+                    to: "contextInactive"
+                    SequentialAnimation {
+                        ScriptAction { script: { delegateLoader.focus = true } }
+                        SmoothedAnimation { target: delegateRoot; property: "height"; duration: ui.misc.globalAnimationTime; velocity: -1 }
+                        PauseAnimation { duration: 4 * ui.misc.globalAnimationTime }
+                        ScriptAction { script: { contextLoader.sourceComponent = undefined }}
+                    }
+                }
+
+
+            ]
 
             Image {
                 anchors {
@@ -167,12 +226,15 @@ FocusScope {
             Loader {
                 id: delegateLoader
                 sourceComponent: root.delegate
+                focus: true
+
+                property real contextPadding: list.highlightItem ? list.highlightItem.indicatorWidth : 0
 
                 anchors {
                     left: delegateRoot.left
                     right: delegateRoot.right
                     leftMargin: ui.misc.globalPadding / 2
-                    rightMargin: ui.misc.globalPadding / 2
+                    rightMargin: ui.misc.globalPadding / 2 + contextPadding
                 }
 
                 property alias internalModel: delegateRoot.internalModel
@@ -182,7 +244,6 @@ FocusScope {
 
             Loader {
                 id: contextLoader
-                focus: true
                 anchors {
                     top: delegateLoader.bottom
                     left: delegateRoot.left
@@ -199,40 +260,14 @@ FocusScope {
                     case Navigation.Down:
                     case Navigation.Left:
                     case Navigation.Up:
-                        delegateRoot.toggleContext()
+                        delegateRoot.contextActive = false
                         event.accepted = true
                         break;
                     }
                 }
             }
 
-            function toggleContext()
-            {
-                if (contextModel != undefined)
-                {
-                    // A context model has been supplied, hide/display context menu
-                    if (contextActive)
-                    {
-                        contextActive = false
-                        delegateLoader.focus = true
-                    }
-                    else
-                    {
-                        contextLoader.sourceComponent = contextDelegate
-                        contextActive = true
-                        contextLoader.focus = true
-                        contextLoader.item.collectionViewIndex = modelIndex
-                    }
-
-                    return true
-                }
-                // We simply assume that contextModel has not been altered between a context-toggle
-                // (which would have been a strange thing to do). Thus, if there is no context model,
-                // we want to propagate the event
-                return false
-            }
-
-            Navigation.onOk: event.accepted = toggleContext()
+            Navigation.onRight: if (root.contextModel != undefined) contextActive = true
         }
     }
 
@@ -245,7 +280,7 @@ FocusScope {
             onContextPressed:
             {
                 root.contextPressed(name, list.currentItem.internalModel)
-                list.currentItem.toggleContext()
+                root.currentItem.contextActive = false
             }
         }
     }
