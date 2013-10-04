@@ -267,7 +267,13 @@ FocusScope {
                 }
             }
 
-            Navigation.onRight: if (root.contextModel != undefined) contextActive = true
+            Navigation.onRight:
+            {
+                if (root.contextModel != undefined)
+                    contextActive = true
+                else
+                    event.accepted = false
+            }
         }
     }
 
