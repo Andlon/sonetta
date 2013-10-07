@@ -7,12 +7,25 @@ import "../common"
 FocusScope {
     id: root
 
+    BackIndicator {
+        id: backIndicator
+        anchors {
+            top: root.top
+            topMargin: ui.misc.globalPadding
+            left: root.left
+        }
+
+        width: 60
+        rotation: 180
+    }
+
     MenuView {
         id: selection
 
         focus: true
         anchors {
-            left: root.left
+            left: backIndicator.right
+            leftMargin: ui.misc.globalPadding
             bottom: root.bottom
             top: root.top
         }
@@ -92,4 +105,6 @@ FocusScope {
 
         Navigation.onLeft: selection.focus = true
     }
+
+    Navigation.onLeft: ui.popState()
 }

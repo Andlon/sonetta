@@ -4,27 +4,54 @@ import Sonetta 0.1
 import "../common"
 import "../common/States.js" as States
 
-TrackView {
+FocusScope {
     id: root
-    model: playlist
 
-    PlaylistModel {
-        id: playlist
+    BackIndicator {
+        id: back
+        anchors {
+            left: parent.left
+            top: parent.top
+            topMargin: ui.misc.globalPadding
+        }
 
-        onPlaylistChanged: root.currentIndex = 0
+        width: 60
+        rotation: 180
     }
 
-    Connections {
-        target: ui
-        onStateChanged: {
-            var state = ui.state
+    TrackView {
+        id: view
+        model: playlist
+        focus: true
 
-            if (state.playlists.playlist !== undefined)
-            {
-                playlist.playlist = state.playlists.playlist
+        anchors {
+            left: back.right
+            leftMargin: ui.misc.globalPadding
+            right: root.right
+            bottom: root.bottom
+            top: root.top
+        }
+
+        PlaylistModel {
+            id: playlist
+
+            onPlaylistChanged: view.currentIndex = 0
+        }
+
+        Connections {
+            target: ui
+            onStateChanged: {
+                var state = ui.state
+
+                if (state.playlists.playlist !== undefined)
+                {
+                    playlist.playlist = state.playlists.playlist
+                }
             }
         }
-    }
 
-    onTrackPlayed: player.queue.updateContext(playlist.playlist, modelIndex)
+        onTrackPlayed: player.queue.updateContext(playlist.playlist, modelIndex)
+
+        Navigation.onLeft: ui.popState()
+    }
 }
