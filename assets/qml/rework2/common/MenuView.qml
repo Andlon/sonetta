@@ -15,9 +15,13 @@ CollectionView {
 
             text: modelData
             font: ui.fonts.h4
-            color: ui.colors.standard
+            color: (root.activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
+
+            Behavior on color {
+                ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuint }
+            }
         }
     }
 }

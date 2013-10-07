@@ -24,14 +24,6 @@ Item {
         fillMode: Image.Tile
     }
 
-    //    Image {
-    //        // Powered by Spotify
-    //        anchors.bottom: parent.bottom
-    //        anchors.right: parent.right
-    //        anchors.margins: ui.misc.globalPadding
-    //        source: "images/spotify.png"
-    //    }
-
     Loader {
         anchors.fill: parent
         focus: true
@@ -76,7 +68,8 @@ Item {
         //colors.selected = "#424242"
         colors.selected = "#4F7000"
         colors.standard = "#ffffff"
-        colors.label = "#cccccc"
+        colors.highlightText = "#292929"
+        colors.label = "#bbbbbb"
 
         colors.dark = "#151515"
         colors.medium = "#202020"

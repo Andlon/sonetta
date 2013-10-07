@@ -29,9 +29,13 @@ CollectionView {
             }
 
             text: name
-            color: ui.colors.standard
+            color: (view.activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
             font: ui.fonts.h3
             elide: Text.ElideRight
+
+            Behavior on color {
+                ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuint }
+            }
         }
     }
 

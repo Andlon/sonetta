@@ -51,6 +51,11 @@ ListView {
             }
 
             text: display
+            color: delegateRoot.activeFocus ? ui.colors.highlightText : ui.colors.standard
+
+            Behavior on color {
+                ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuint }
+            }
         }
     }
 

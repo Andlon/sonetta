@@ -240,6 +240,7 @@ FocusScope {
                 property alias internalModel: delegateRoot.internalModel
                 property alias internalModelData: delegateRoot.internalModelData
                 property alias internalIsCurrentItem: delegateRoot.isCurrentItem
+                property alias contextActive: delegateRoot.contextActive
             }
 
             Loader {

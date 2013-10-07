@@ -24,10 +24,17 @@ CollectionView {
         property string name: model ? model.name : ""
         property string artists: model ? model.artistNames.join(", ") : ""
         property bool isExplicit: model ? model.isExplicit !== undefined ? model.isExplicit : true : true
-        property color textColor: isExplicit || (isCurrentItem && root.activeFocus) ? ui.colors.standard : ui.colors.label
+        property color textColor:  {
+            if (isCurrentItem && root.activeFocus && !contextActive)
+                return ui.colors.highlightText
+            else if (isExplicit)
+                return ui.colors.standard
+            else
+                return ui.colors.label
+        }
 
         Behavior on textColor {
-            ColorAnimation { duration: ui.misc.globalAnimationTime }
+            ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuint }
         }
 
         Column {
