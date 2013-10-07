@@ -28,6 +28,16 @@ function createInitialState()
     // "results": displays results for the given query
     state.search.stage = "query"
 
+    /* Browse options */
+    state.browse = {}
+
+    // Possible types (self-explanatory):
+    // "artist", "album", "playlist"
+    // "": no browse
+    state.browse.type = ""
+    state.browse.artist = undefined
+    state.browse.album = undefined
+    state.browse.playlist = undefined
 
     return state
 }
@@ -37,6 +47,19 @@ function createPage(state, page)
     state.page = page
     state.pageLabel = getLabel(page)
     state.showTopSection = page !== "nowplaying"
+
+    state.browse.type = ""
+    state.browse.artist = undefined
+    state.browse.album = undefined
+    state.browse.playlist = undefined
+
+    return state
+}
+
+function createArtistBrowse(state, artist)
+{
+    state.browse.type = "artist"
+    state.browse.artist = artist
 
     return state
 }
