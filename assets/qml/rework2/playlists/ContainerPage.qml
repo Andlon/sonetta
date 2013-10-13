@@ -14,6 +14,7 @@ CollectionView {
     }
 
     delegate: CollectionDelegate {
+        id: delegate
         height: 100
         width: view.width
 
@@ -29,7 +30,7 @@ CollectionView {
             }
 
             text: name
-            color: (view.activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
+            color: (delegate.activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
             font: ui.fonts.h3
             elide: Text.ElideRight
 

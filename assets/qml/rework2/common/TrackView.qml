@@ -19,13 +19,14 @@ CollectionView {
     }
 
     delegate: CollectionDelegate {
+        id: delegateRoot
         height: 100
 
         property string name: model ? model.name : ""
         property string artists: model ? model.artistNames.join(", ") : ""
         property bool isExplicit: model ? model.isExplicit !== undefined ? model.isExplicit : true : true
         property color textColor:  {
-            if (isCurrentItem && root.activeFocus && !contextActive)
+            if (isCurrentItem && delegateRoot.activeFocus && !contextActive)
                 return ui.colors.highlightText
             else if (isExplicit)
                 return ui.colors.standard

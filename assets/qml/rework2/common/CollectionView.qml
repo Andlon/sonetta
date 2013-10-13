@@ -40,7 +40,13 @@ FocusScope {
 
     ListView {
         id: list
-        anchors.fill: root
+        anchors {
+            top: root.top
+            bottom: root.bottom
+            left: root.left
+            right: scrollbar.left
+        }
+
         delegate: delegateComponent
         highlight: highlightComponent
         highlightFollowsCurrentItem: true
@@ -69,6 +75,20 @@ FocusScope {
         remove: Transition {
             NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
         }
+
+        Navigation.onRight: scrollbar.focus = true
+    }
+
+    VerticalScrollbar {
+        id: scrollbar
+        list: list
+        anchors {
+            right: root.right
+            bottom: root.bottom
+            top: root.top
+        }
+
+        Navigation.onLeft: list.focus = true
     }
 
     Component {
@@ -241,6 +261,9 @@ FocusScope {
                 property alias internalModelData: delegateRoot.internalModelData
                 property alias internalIsCurrentItem: delegateRoot.isCurrentItem
                 property alias contextActive: delegateRoot.contextActive
+
+                // Update delegate height (assumes delegates normally have uniform height) for scrollbar
+                onHeightChanged: scrollbar.delegateHeight = height
             }
 
             Loader {
@@ -253,13 +276,12 @@ FocusScope {
                 }
 
                 Navigation.onNavigationEvent: {
+                    event.accepted = false
                     switch (event.key)
                     {
                     case Navigation.OK:
                     case Navigation.Left:
-                    case Navigation.Right:
                     case Navigation.Down:
-                    case Navigation.Left:
                     case Navigation.Up:
                         delegateRoot.contextActive = false
                         event.accepted = true
@@ -270,10 +292,13 @@ FocusScope {
 
             Navigation.onRight:
             {
-                if (root.contextModel != undefined)
+                if (root.contextModel != undefined && !contextActive)
                     contextActive = true
                 else
+                {
+                    contextActive = false
                     event.accepted = false
+                }
             }
         }
     }

@@ -15,7 +15,7 @@ CollectionView {
 
             text: modelData
             font: ui.fonts.h4
-            color: (root.activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
+            color: (activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
 
