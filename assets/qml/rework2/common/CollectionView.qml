@@ -44,7 +44,7 @@ FocusScope {
             top: root.top
             bottom: root.bottom
             left: root.left
-            right: scrollbar.left
+            right: scrollbar.visible ? scrollbar.left : root.right
         }
 
         delegate: delegateComponent
@@ -76,7 +76,12 @@ FocusScope {
             NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
         }
 
-        Navigation.onRight: scrollbar.focus = true
+        Navigation.onRight: {
+            if (scrollbar.visible)
+                scrollbar.focus = true
+            else
+                event.accepted = false
+        }
     }
 
     VerticalScrollbar {
