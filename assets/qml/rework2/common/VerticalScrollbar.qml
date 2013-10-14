@@ -41,16 +41,20 @@ Item {
         var contentEnd = list.originY + list.contentHeight - list.visibleArea.heightRatio * list.contentHeight
 
         // Determine scroll amount
-        var amount
+        var amount = preferred - list.contentY
+
+        // Adjust amount so that it's a multiple of the height of the list's items
+        amount -= (amount % delegateHeight)
+
         if (preferred > list.contentY)
         {
             // Moving downward, make sure we don't extend beyond visible area
-            amount = Math.min(preferred - list.contentY, contentEnd - list.contentY)
+            amount = Math.min(amount, contentEnd - list.contentY)
         }
         else if (preferred < list.contentY)
         {
             // Moving upward, make sure we don't extend beyond visible area
-            amount = - Math.min(list.contentY - preferred, list.contentY - list.originY)
+            amount = - Math.min(-amount, list.contentY - list.originY)
         }
 
         // Determine position of the currentItem
@@ -58,9 +62,6 @@ Item {
 
         var moveDuration = list.highlightMoveDuration
         list.highlightMoveDuration = 0
-
-        // Adjust amount so that it's a multiple of the height of the list's items
-        amount -= (amount % delegateHeight)
 
         // Scroll the view
         list.contentY += amount
