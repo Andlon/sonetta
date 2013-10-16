@@ -114,6 +114,7 @@ FocusScope {
             left: parent.horizontalCenter
         }
 
+        singleRowLayout: false
         snapMode: ListView.SnapToItem
 
         onCountChanged: view.currentIndex = 0
