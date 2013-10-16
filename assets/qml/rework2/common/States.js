@@ -74,8 +74,8 @@ function getLabel(page)
         return "now playing"
     case "search":
         return "search"
-    case "discover":
-        return "discover"
+    case "session":
+        return "session"
     default:
         return ""
     }

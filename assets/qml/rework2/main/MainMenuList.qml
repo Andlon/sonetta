@@ -6,7 +6,7 @@ import "../common/States.js" as States
 
 ListView {
     id: root
-    model: [ "nowplaying", "playlists", "search", "discover" ]
+    model: [ "nowplaying", "playlists", "search", "session" ]
     currentIndex: 1
 
     delegate: MenuEntry {

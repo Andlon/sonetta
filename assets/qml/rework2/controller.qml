@@ -63,8 +63,7 @@ FocusScope {
 
     PageView {
         id: pager
-        model: ["nowplaying/nowplaying.qml", "playlists/playlists.qml", "search/search.qml", "discover/discover.qml"]
-        //model: ["Red", "Green", "Blue"]
+        model: ["nowplaying/nowplaying.qml", "playlists/playlists.qml", "search/search.qml", "session/session.qml"]
         focus: true
         flow: Qt.LeftToRight
         anchors {
