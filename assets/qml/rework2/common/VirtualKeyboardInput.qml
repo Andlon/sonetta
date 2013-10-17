@@ -36,23 +36,15 @@ FocusScope {
                 opacity: 0.3
                 focus: false
             }
-            PropertyChanges {
-                target: input
-                focus: true
-            }
         }
     ]
 
     transitions: Transition {
-        SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+        SmoothedAnimation { properties: "opacity"; duration: ui.misc.globalAnimationTime; velocity: -1 }
     }
 
     onActiveFocusChanged: {
-        if (activeFocus)
-        {
-
-        }
-        else
+        if (!activeFocus)
         {
             // Lost focus, set to inactive
             state = "inactive"
@@ -71,6 +63,9 @@ FocusScope {
 
             property color barColor: root.activeFocus ? ui.colors.highlight : ui.colors.standard
 
+            Behavior on barColor {
+                ColorAnimation { duration: ui.misc.globalAnimationTime }
+            }
 
             Rectangle {
                 id: rightBar
