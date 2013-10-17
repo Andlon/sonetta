@@ -7,9 +7,38 @@ import "../common/States.js" as States
 FocusScope
 {
     Label {
-        text: "QUERY"
+        id: historyLabel
+        text: "Recent Searches"
         anchors {
-            bottom: keyboard.top
+            top: queryLabel.top
+            left: history.left
+            leftMargin: ui.misc.globalPadding
+        }
+    }
+
+    MenuView {
+        id: history
+
+        anchors {
+            left: parent.left
+            right: keyboard.left
+            bottom: parent.bottom
+            top: keyboard.top
+            margins: ui.misc.globalPadding
+        }
+
+        focus: true
+        model: ["Coldplay", "Nirvana", "AC/DC", "Map of the Problematique", "Frank Ocean",
+            "Haim", "Michael Jackson", "Flashback"]
+
+        Navigation.onRight: keyboard.focus = true
+    }
+
+    Label {
+        id: queryLabel
+        text: "Query"
+        anchors {
+            top: parent.top
             left: keyboard.left
             margins: ui.misc.globalPadding
         }
@@ -18,9 +47,9 @@ FocusScope
     VirtualKeyboardInput {
         id: keyboard
         anchors {
-            left: parent.left
-            verticalCenter: parent.verticalCenter
+            top: queryLabel.bottom
             margins: ui.misc.globalPadding
+            horizontalCenter: parent.horizontalCenter
         }
 
         focus: true
@@ -38,14 +67,15 @@ FocusScope
         onTextChanged: { search.predict(text) }
 
         Navigation.onRight: predictions.focus = true
+        Navigation.onLeft: history.focus = true
     }
 
     Label {
-        text: "SUGGESTIONS"
+        text: "Suggestions"
         anchors {
-            bottom: predictions.top
+            top: queryLabel.top
             left: predictions.left
-            margins: ui.misc.globalPadding
+            leftMargin: ui.misc.globalPadding
         }
 
         opacity: predictions.count > 0 ? 1 : 0
@@ -57,21 +87,26 @@ FocusScope
 
     MenuView {
         id: predictions
-        model: search.predictions
+
         anchors {
-            left: keyboard.right
-            right: parent.right
             bottom: parent.bottom
+            left: keyboard.right
             top: keyboard.top
+            right: parent.right
             margins: ui.misc.globalPadding
-            topMargin: 0
         }
 
+        model: search.predictions
+
         onItemPressed: {
-            keyboard.setText(data.modelData)
+            keyboard.setText(currentItem.internalModelData)
             keyboard.focus = true
         }
 
         Navigation.onLeft: keyboard.focus = true
     }
+
+
+
+
 }

@@ -32,6 +32,8 @@ FocusScope {
 
     property alias snapMode: list.snapMode
 
+    property alias verticalLayoutDirection: list.verticalLayoutDirection
+
     property QtObject contextModel: null
 
     signal itemPressed(var data)
@@ -59,8 +61,8 @@ FocusScope {
         interactive: false
         currentIndex: 0
 
-        Navigation.onDown: incrementCurrentIndex()
-        Navigation.onUp: decrementCurrentIndex()
+        Navigation.onDown: verticalLayoutDirection == ListView.TopToBottom ? incrementCurrentIndex() : decrementCurrentIndex()
+        Navigation.onUp: verticalLayoutDirection == ListView.TopToBottom ? decrementCurrentIndex() : incrementCurrentIndex()
         Navigation.onOk: root.itemPressed(currentItem.internalModel)
 
         displaced: move
