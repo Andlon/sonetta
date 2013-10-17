@@ -57,8 +57,8 @@ FocusScope {
         spacing: ui.misc.globalPadding / 2
 
         Item {
-            width: keyboard.width - 2 * ui.misc.globalPadding
-            x: ui.misc.globalPadding
+            width: keyboard.width //- 2 * ui.misc.globalPadding
+            //x: ui.misc.globalPadding
             height: childrenRect.height
 
             property color barColor: root.activeFocus ? ui.colors.highlight : ui.colors.standard

@@ -159,7 +159,7 @@ function updateFocusItem()
 
     if (item)
     {
-        item.forceActiveFocus()
+        item.focus = true
     }
 }
 

@@ -9,37 +9,38 @@ import "VirtualKeyboard.js" as VK
 
 FocusScope {
     id: root
-    width: grid.width
-    height: grid.height
+    width: childrenRect.width
+    height: childrenRect.height
 
     signal character (string c)
     signal prev
     signal next
     signal enter
     signal backspace
+    signal cancel
 
-    property bool wrapNavigationTop: true
-    property bool wrapNavigationBottom: true
-    property bool wrapNavigationLeft: true
-    property bool wrapNavigationRight: true
+    property bool wrapNavigationTop: false
+    property bool wrapNavigationBottom: false
+    property bool wrapNavigationLeft: false
+    property bool wrapNavigationRight: false
 
-    property url backspaceImage: "../images/keys/backspace.png"
-    property url returnImage: "../images/keys/return.png"
-    property url shiftUpImage: "../images/keys/shiftup.png"
-    property url shiftDownImage: "../images/keys/shiftdown.png"
-    property url symbolsImage: "../images/keys/symbols.png"
-    property url lettersImage: "../images/keys/letters.png"
+    //    property url backspaceImage: "../images/keys/backspace.png"
+    //    property url returnImage: "../images/keys/return.png"
+    //    property url shiftUpImage: "../images/keys/shiftup.png"
+    //    property url shiftDownImage: "../images/keys/shiftdown.png"
+    //    property url symbolsImage: "../images/keys/symbols.png"
+    //    property url lettersImage: "../images/keys/letters.png"
     property url spaceImage: "../images/keys/space.png"
-    property url prevImage: "../images/keys/prev.png" // Cursor
-    property url nextImage: "../images/keys/next.png" // Cursor
+    //    property url prevImage: "../images/keys/prev.png" // Cursor
+    //    property url nextImage: "../images/keys/next.png" // Cursor
 
-    property color highlightColor: "Green"
-    property color color: "White"
+    property color highlightColor: ui.colors.highlight
+    property color color: ui.colors.standard
 
     property size cellSize: Qt.size(56, 56)
 
-    property int currentRow: 2
-    property int currentColumn: 10
+    property int currentRow: 0
+    property int currentColumn: 0
 
     /*
       Possible keystates:
@@ -54,8 +55,71 @@ FocusScope {
     property Component textComponent: defaultTextComponent
     property Component iconComponent: defaultIconComponent
 
+    ListView {
+        id: actions
+        focus: true
+        model: ["Done", "Back", "Caps", "Shift", "Symbol"]
+        width: contentItem.childrenRect.width
+        height: childrenRect.height
+        delegate: Text {
+            height: root.cellSize.height
+            width: contentWidth
+            text: modelData
+            color: actions.activeFocus && ListView.isCurrentItem ? ui.colors.highlight : ui.colors.standard
+            font.pixelSize: 32
+            font.family: "Roboto"
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        Navigation.onRight: focusGrid()
+
+        Navigation.onOk: {
+            if (currentItem)
+            {
+                switch (currentIndex)
+                {
+                case 0:
+                    VK.handleAction("return")
+                    break
+                case 1:
+                    VK.handleAction("backspace")
+                    break
+                case 2:
+                    VK.handleAction("shift")
+                    break
+                case 3:
+                    VK.handleAction("shift")
+                    break
+                case 4:
+                    VK.handleAction("togglesymbols")
+                }
+            }
+        }
+    }
+
+    Rectangle {
+        id: divider
+        anchors {
+            top: actions.top
+            topMargin: ui.misc.globalPadding / 2
+            bottom: actions.bottom
+            bottomMargin: ui.misc.globalPadding / 2
+            left: actions.right
+            leftMargin: ui.misc.globalPadding / 2
+        }
+
+        color: ui.colors.label
+        width: 2
+    }
+
     GridLayout {
         id: grid
+        focus: true
+        anchors {
+            left: divider.right
+            leftMargin: ui.misc.globalPadding / 2
+        }
+
         width: VK.getSize().width
         height: VK.getSize().height
         rowSpacing: 0
@@ -65,55 +129,60 @@ FocusScope {
             model: keys
             delegate: key
         }
+
+
+        Navigation.onRight: event.accepted = VK.moveRight()
+        Navigation.onUp: event.accepted = VK.moveUp()
+        Navigation.onDown: event.accepted = VK.moveDown()
+        Navigation.onOk: VK.handleKeypress()
+
+        onActiveFocusChanged: if (activeFocus) VK.updateFocusItem()
+
+        Navigation.onLeft: {
+            if (!VK.moveLeft())
+            {
+                // Could not move key left, change focus to actions
+                focusActions()
+            }
+        }
     }
 
     ListModel {
         id: keys
 
-        // First row
-        ListElement { row: 0; col: 0; upper: "Q"; lower: "q"; symbol: "!"; }
-        ListElement { row: 0; col: 1; upper: "W"; lower: "w"; symbol: "\""; }
-        ListElement { row: 0; col: 2; upper: "E"; lower: "e"; symbol: "#"; }
-        ListElement { row: 0; col: 3; upper: "R"; lower: "r"; symbol: "$"; }
-        ListElement { row: 0; col: 4; upper: "T"; lower: "t"; symbol: "&"; }
-        ListElement { row: 0; col: 5; upper: "Y"; lower: "y"; symbol: "/"; }
-        ListElement { row: 0; col: 6; upper: "U"; lower: "u"; symbol: "("; }
-        ListElement { row: 0; col: 7; upper: "I"; lower: "i"; symbol: ")"; }
-        ListElement { row: 0; col: 8; upper: "O"; lower: "o"; symbol: "="; }
-        ListElement { row: 0; col: 9; upper: "P"; lower: "p"; symbol: "?"; }
-        ListElement { row: 0; col: 10; upper: "'"; lower: "'"; symbol: "?"; }
+        ListElement { row: 0; col: 0; upper: "A"; lower: "a"; symbol: "?"; }
+        ListElement { row: 0; col: 1; upper: "B"; lower: "b"; symbol: "?"; }
+        ListElement { row: 0; col: 2; upper: "C"; lower: "c"; symbol: "?"; }
+        ListElement { row: 0; col: 3; upper: "D"; lower: "d"; symbol: "?"; }
+        ListElement { row: 0; col: 4; upper: "E"; lower: "e"; symbol: "?"; }
+        ListElement { row: 0; col: 5; upper: "F"; lower: "e"; symbol: "?"; }
 
-        // Second row
-        ListElement { row: 1; col: 0; upper: "A"; lower: "a"; symbol: "!"; }
-        ListElement { row: 1; col: 1; upper: "S"; lower: "s"; symbol: "!"; }
-        ListElement { row: 1; col: 2; upper: "D"; lower: "d"; symbol: "!"; }
-        ListElement { row: 1; col: 3; upper: "F"; lower: "f"; symbol: "!"; }
-        ListElement { row: 1; col: 4; upper: "G"; lower: "g"; symbol: "!"; }
-        ListElement { row: 1; col: 5; upper: "H"; lower: "h"; symbol: "!"; }
-        ListElement { row: 1; col: 6; upper: "J"; lower: "j"; symbol: "!"; }
-        ListElement { row: 1; col: 7; upper: "K"; lower: "k"; symbol: "!"; }
-        ListElement { row: 1; col: 8; upper: "L"; lower: "l"; symbol: "!"; }
-        ListElement { row: 1; col: 9; action: "backspace"; rowspan: 1; colspan: 2 }
+        ListElement { row: 1; col: 0; upper: "G"; lower: "a"; symbol: "?"; }
+        ListElement { row: 1; col: 1; upper: "H"; lower: "b"; symbol: "?"; }
+        ListElement { row: 1; col: 2; upper: "I"; lower: "c"; symbol: "?"; }
+        ListElement { row: 1; col: 3; upper: "J"; lower: "d"; symbol: "?"; }
+        ListElement { row: 1; col: 4; upper: "K"; lower: "e"; symbol: "?"; }
+        ListElement { row: 1; col: 5; upper: "L"; lower: "e"; symbol: "?"; }
 
-        // Third row
-        ListElement { row: 2; col: 0; action: "shift" }
-        ListElement { row: 2; col: 1; upper: "Z"; lower: "z"; symbol: "!"; }
-        ListElement { row: 2; col: 2; upper: "X"; lower: "x"; symbol: "!"; }
-        ListElement { row: 2; col: 3; upper: "C"; lower: "c"; symbol: "!"; }
-        ListElement { row: 2; col: 4; upper: "V"; lower: "v"; symbol: "!"; }
-        ListElement { row: 2; col: 5; upper: "B"; lower: "b"; symbol: "!"; }
-        ListElement { row: 2; col: 6; upper: "N"; lower: "n"; symbol: "!"; }
-        ListElement { row: 2; col: 7; upper: "M"; lower: "m"; symbol: "!"; }
-        ListElement { row: 2; col: 8; upper: ","; lower: ","; symbol: "!"; }
-        ListElement { row: 2; col: 9; upper: ","; lower: ","; symbol: "!"; }
-        ListElement { row: 2; col: 10; action: "return"; rowspan: 2; colspan: 1 }
+        ListElement { row: 2; col: 0; upper: "M"; lower: "a"; symbol: "?"; }
+        ListElement { row: 2; col: 1; upper: "N"; lower: "b"; symbol: "?"; }
+        ListElement { row: 2; col: 2; upper: "O"; lower: "c"; symbol: "?"; }
+        ListElement { row: 2; col: 3; upper: "P"; lower: "d"; symbol: "?"; }
+        ListElement { row: 2; col: 4; upper: "Q"; lower: "e"; symbol: "?"; }
+        ListElement { row: 2; col: 5; upper: "R"; lower: "e"; symbol: "?"; }
 
-        // Fourth row
-        ListElement { row: 3; col: 0; action: "togglesymbols" }
-        ListElement { row: 3; col: 1; upper: "@"; lower: "@"; symbol: "@"; }
-        ListElement { row: 3; col: 2; action: "space"; rowspan: 1; colspan: 6 }
-        ListElement { row: 3; col: 8; action: "prev" }
-        ListElement { row: 3; col: 9; action: "next" }
+        ListElement { row: 3; col: 0; upper: "S"; lower: "a"; symbol: "?"; }
+        ListElement { row: 3; col: 1; upper: "T"; lower: "b"; symbol: "?"; }
+        ListElement { row: 3; col: 2; upper: "U"; lower: "c"; symbol: "?"; }
+        ListElement { row: 3; col: 3; upper: "V"; lower: "d"; symbol: "?"; }
+        ListElement { row: 3; col: 4; upper: "W"; lower: "e"; symbol: "?"; }
+        ListElement { row: 3; col: 5; upper: "X"; lower: "e"; symbol: "?"; }
+
+        ListElement { row: 4; col: 0; upper: "Y"; lower: "a"; symbol: "?"; }
+        ListElement { row: 4; col: 1; upper: "Z"; lower: "b"; symbol: "?"; }
+        ListElement { row: 4; col: 2; action: "space"; colspan: 2 }
+        ListElement { row: 4; col: 4; upper: ","; lower: "c"; symbol: "?"; }
+        ListElement { row: 4; col: 5; upper: "."; lower: "d"; symbol: "?"; }
     }
 
     Component {
@@ -200,8 +269,8 @@ FocusScope {
             id: text
             anchors.fill: parent
             color: "White"
-            font.pixelSize: root.cellSize.width * 0.9
-            font.family: "Arial"
+            font.pixelSize: 36
+            font.family: "Roboto"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
@@ -211,21 +280,16 @@ FocusScope {
         id: defaultIconComponent
 
         Image {
-            sourceSize: Qt.size(width, height)
+            //sourceSize: Qt.size(width, height)
+            fillMode: Image.PreserveAspectFit
         }
     }
 
-    Navigation.onLeft: event.accepted = VK.moveLeft()
-    Navigation.onRight: event.accepted = VK.moveRight()
-    Navigation.onUp: event.accepted = VK.moveUp()
-    Navigation.onDown: event.accepted = VK.moveDown()
-    Navigation.onOk: VK.handleKeypress()
+
     Navigation.onBack: backspace()
 
     onCurrentRowChanged: VK.updateFocusItem()
     onCurrentColumnChanged: VK.updateFocusItem()
-
-    onActiveFocusChanged: if (activeFocus) VK.updateFocusItem()
 
     onKeystateChanged: {
         if (keystate == "upper")
@@ -245,5 +309,28 @@ FocusScope {
     Component.onCompleted: {
         VK.updateModelTable()
         if (activeFocus) VK.updateFocusItem()
+    }
+
+    onActiveFocusChanged: {
+        if (activeFocus)
+        {
+            actions.currentIndex = 0
+            actions.focus = true
+        }
+    }
+
+    function focusActions()
+    {
+        // Determine currentIndex for actions
+        actions.currentIndex = currentRow
+        actions.focus = true
+    }
+
+    function focusGrid()
+    {
+        // Update row and col to match actions' index
+        currentRow = actions.currentIndex
+        currentColumn = 0
+        grid.focus = true
     }
 }
