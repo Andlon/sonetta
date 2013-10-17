@@ -1,4 +1,5 @@
 import QtQuick 2.1
+import Sonetta 0.1
 
 FocusScope {
     id: root
@@ -17,6 +18,47 @@ FocusScope {
 
     signal complete
 
+    state: "inactive"
+
+    states: [
+        State {
+            name: "active"
+            PropertyChanges {
+                target: keyboard
+                opacity: 1.0
+                focus: true
+            }
+        },
+        State {
+            name: "inactive"
+            PropertyChanges {
+                target: keyboard
+                opacity: 0.3
+                focus: false
+            }
+            PropertyChanges {
+                target: input
+                focus: true
+            }
+        }
+    ]
+
+    transitions: Transition {
+        SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+    }
+
+    onActiveFocusChanged: {
+        if (activeFocus)
+        {
+
+        }
+        else
+        {
+            // Lost focus, set to inactive
+            state = "inactive"
+        }
+    }
+
     Column {
         width: childrenRect.width
         height: childrenRect.height
@@ -27,6 +69,8 @@ FocusScope {
             x: ui.misc.globalPadding
             height: childrenRect.height
 
+            property color barColor: root.activeFocus ? ui.colors.highlight : ui.colors.standard
+
 
             Rectangle {
                 id: rightBar
@@ -35,7 +79,7 @@ FocusScope {
                     bottom: underline.top
                 }
 
-                color: ui.colors.highlight
+                color: parent.barColor
                 width: barWidth
                 height: barWidth
             }
@@ -47,7 +91,7 @@ FocusScope {
                     bottom: underline.top
                 }
 
-                color: ui.colors.highlight
+                color: parent.barColor
                 width: barWidth
                 height: barWidth
             }
@@ -56,7 +100,7 @@ FocusScope {
                 id: underline
                 width: keyboard.width
                 height: barWidth
-                color: ui.colors.highlight
+                color: parent.barColor
 
                 anchors {
                     top: input.bottom
@@ -112,5 +156,12 @@ FocusScope {
     {
         if (input.cursorPosition > 0)
             input.remove(input.cursorPosition - 1, input.cursorPosition)
+    }
+
+    Navigation.onOk: {
+        if (state == "inactive")
+        {
+            state = "active"
+        }
     }
 }
