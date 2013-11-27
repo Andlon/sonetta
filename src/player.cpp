@@ -8,8 +8,9 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *parent)
-    :   QObject(parent), m_session(session), m_shuffle(false), m_repeat(false),
-      m_output(output), m_queue(new QueueModel(this)), m_bufferEmpty(false), m_endOfTrack(false)
+    :   QObject(parent), m_session(session), m_output(output),
+      m_queue(new QueueModel(this)), m_endOfTrack(false),
+      m_bufferEmpty(false), m_shuffle(false), m_repeat(false)
 {
     Q_ASSERT(session != nullptr);
 
