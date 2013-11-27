@@ -48,6 +48,8 @@ Application::Application(int &argc, char **argv)
     m_search = new SearchEngine(m_session, this);
 
     // Parent output to session so that Session is destroyed before output
+    // THIS IS A BUG. It will leak, but it doesn't crash. Will rewrite session to take
+    // a shared pointer to audio output interface anyway
     m_output->setParent(m_output);
 
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
