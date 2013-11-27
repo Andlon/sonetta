@@ -10,6 +10,8 @@ FocusScope
 
     property var activeList: history
 
+    onActiveFocusChanged: if (activeFocus) keyboard.focus = true
+
     states: [
         State {
             name: "history"
@@ -95,6 +97,7 @@ FocusScope
         model: ["Coldplay", "Nirvana", "AC/DC", "Map of the Problematique", "Frank Ocean",
             "Haim", "Michael Jackson", "Flashback"]
 
+        onItemPressed: performSearch(currentItem.internalModelData)
         Navigation.onLeft: keyboard.focus = true
     }
 
@@ -126,11 +129,7 @@ FocusScope
 
         model: search.predictions
 
-        onItemPressed: {
-            keyboard.setText(currentItem.internalModelData)
-            keyboard.focus = true
-        }
-
+        onItemPressed: performSearch(currentItem.internalModelData)
         Navigation.onLeft: keyboard.focus = true
     }
 
@@ -167,15 +166,25 @@ FocusScope
             wrapNavigationRight: false
 
             onComplete: {
-                search.go(text)
-                var state = ui.state
-                state.search.stage = "results"
-                ui.pushState(state)
+                performSearch(text)
             }
 
             onTextChanged: { search.predict(text) }
 
             Navigation.onRight: activeList.focus = true
         }
+    }
+
+    function performSearch(text)
+    {
+        search.go(text)
+        var state = ui.state
+        state.search.stage = "results"
+        ui.pushState(state)
+    }
+
+    Connections {
+        target: ui
+        onStateChanged: keyboard.clear()
     }
 }
