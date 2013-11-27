@@ -1,2 +1,6 @@
 - Redesign UI
 - Reimplement key navigation with remote control support
+- Restructure and refactor C++ code
+- Migrate to QBS (instead of QMake)
+- Use more C++11 features and idioms (whenever possible)
+
