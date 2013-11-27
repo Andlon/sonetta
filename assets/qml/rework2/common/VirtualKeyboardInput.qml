@@ -153,6 +153,11 @@ FocusScope {
             input.remove(input.cursorPosition - 1, input.cursorPosition)
     }
 
+    function clear()
+    {
+        input.text = ""
+    }
+
     Navigation.onOk: {
         if (state == "inactive")
         {
