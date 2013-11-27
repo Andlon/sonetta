@@ -121,7 +121,7 @@ void AudioOutputWorker::onStateChanged(QAudio::State state)
 }
 
 AudioOutput::AudioOutput(QObject *parent)
-    :   QObject(parent), m_buffer(RINGBUFFERSIZE), m_paused(false)
+    :   QObject(parent), m_paused(false), m_buffer(RINGBUFFERSIZE)
 {
     m_position.store(0);
 

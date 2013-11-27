@@ -10,8 +10,8 @@ namespace Sonetta {
 
 QuickSearch::QuickSearch(QObject *parent) :
     QObject(parent),
-    m_trackOffset(0), m_artistOffset(0),
-    m_playlistOffset(0), m_albumOffset(0)
+    m_trackOffset(0), m_albumOffset(0),
+    m_playlistOffset(0), m_artistOffset(0)
 {
     m_session = getCurrentSession();
     Q_ASSERT(m_session != nullptr);

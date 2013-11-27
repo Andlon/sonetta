@@ -5,14 +5,14 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 PersistentPlaylistIndex::PersistentPlaylistIndex(const Spotinetta::Session *session, const Spotinetta::Playlist &playlist, int index)
-    :   m_index(index), m_session(session)
+    :   m_session(session), m_index(index)
 {
     setup();
     m_watcher->watch(playlist);
 }
 
 PersistentPlaylistIndex::PersistentPlaylistIndex(const PersistentPlaylistIndex &other)
-    :   m_index(other.index()), m_session(other.m_session)
+    :   m_session(other.m_session), m_index(other.index())
 {
     setup();
     m_watcher->watch(other.playlist());
