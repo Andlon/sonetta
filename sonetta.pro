@@ -57,7 +57,8 @@ HEADERS += \
     src/utilities/predictioncollection.h \
     src/models/queuemodel.h \
     src/utilities/persistentplaylistindex.h \
-    src/utilities/qobjectscopedpointer.h
+    src/utilities/qobjectscopedpointer.h \
+    src/settings.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -84,7 +85,8 @@ SOURCES += \
     src/searchengine.cpp \
     src/utilities/predictioncollection.cpp \
     src/models/queuemodel.cpp \
-    src/utilities/persistentplaylistindex.cpp
+    src/utilities/persistentplaylistindex.cpp \
+    src/settings.cpp
 
 OTHER_FILES += \
     assets/qml/rework2/main.qml \

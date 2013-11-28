@@ -13,6 +13,7 @@ Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *paren
       m_bufferEmpty(false), m_shuffle(false), m_repeat(false)
 {
     Q_ASSERT(session != nullptr);
+    Q_ASSERT(output != nullptr);
 
     m_watcher = new sp::TrackWatcher(session, this);
     m_positionTimer = new QTimer(this);

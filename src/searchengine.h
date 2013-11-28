@@ -3,10 +3,13 @@
 #include <Spotinetta/Spotinetta>
 #include <QObject>
 #include <QStringList>
+#include <QSharedPointer>
 
 #include "models/tracklistmodel.h"
 #include "models/albumlistmodel.h"
 #include "models/artistlistmodel.h"
+
+#include "settings.h"
 
 namespace Sonetta {
 
@@ -19,13 +22,15 @@ class SearchEngine : public QObject
     Q_PROPERTY(QObject * albums MEMBER m_albumModel CONSTANT)
     Q_PROPERTY(QObject * artists MEMBER m_artistModel CONSTANT)
     Q_PROPERTY(QStringList predictions READ predictions NOTIFY predictionsChanged)
+    Q_PROPERTY(QStringList history READ history NOTIFY historyChanged)
 
 public:
-    explicit SearchEngine(const Spotinetta::Session * session, QObject *parent = 0);
+    explicit SearchEngine(const Spotinetta::Session * session, QSharedPointer<Settings> settings, QObject *parent = 0);
 
     QString query() const;
 
     QStringList predictions() const;
+    QStringList history() const;
 
 public slots:
     void go(const QString &query);
@@ -33,6 +38,7 @@ public slots:
 
 signals:
     void predictionsChanged();
+    void historyChanged();
     void queryChanged();
 
 private slots:
@@ -47,6 +53,10 @@ private slots:
 private:
     void performQuery(int trackDelta, int albumDelta,
                       int artistDelta, int playlistDelta);
+
+    void commitHistory();
+    void loadHistory();
+    void updateHistory(const QString & entry);
 
     int m_albumDelta;
     int m_trackDelta;
@@ -67,12 +77,14 @@ private:
 
     QString     m_query;
     QStringList m_predictions;
+    QStringList m_history;
 
     TrackListModel *    m_trackModel;
     AlbumListModel *    m_albumModel;
     ArtistListModel *   m_artistModel;
 
     QPointer<const Spotinetta::Session>     m_session;
+    QSharedPointer<Settings>                m_settings;
     Spotinetta::SearchWatcher *             m_watcher;
     Spotinetta::SearchWatcher *             m_predictionWatcher;
 };

@@ -10,9 +10,15 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-SearchEngine::SearchEngine(const Spotinetta::Session *session, QObject *parent)
-    : QObject(parent), m_session(session)
+namespace {
+const int MAXHISTORY = 40;
+}
+
+SearchEngine::SearchEngine(const Spotinetta::Session *session, QSharedPointer<Settings> settings, QObject *parent)
+    : QObject(parent), m_session(session), m_settings(settings)
 {
+    Q_ASSERT(session != nullptr);
+
     m_watcher = new sp::SearchWatcher(session, this);
     m_predictionWatcher = new sp::SearchWatcher(session, this);
     m_trackModel = new TrackListModel(this);
@@ -36,6 +42,8 @@ SearchEngine::SearchEngine(const Spotinetta::Session *session, QObject *parent)
             this, &SearchEngine::onSearchLoaded);
     connect(m_predictionWatcher, &sp::SearchWatcher::loaded,
             this, &SearchEngine::onPredictionsLoaded);
+
+    loadHistory();
 }
 
 QString SearchEngine::query() const
@@ -46,6 +54,11 @@ QString SearchEngine::query() const
 QStringList SearchEngine::predictions() const
 {
     return m_predictions;
+}
+
+QStringList SearchEngine::history() const
+{
+    return m_history;
 }
 
 void SearchEngine::go(const QString &query)
@@ -75,6 +88,9 @@ void SearchEngine::go(const QString &query)
         performQuery(m_trackDelta, m_albumDelta, m_artistDelta, m_playlistDelta);
 
         emit queryChanged();
+
+        updateHistory(query);
+        commitHistory();
     }
 }
 
@@ -99,6 +115,28 @@ void SearchEngine::performQuery(int trackDelta, int albumDelta,
     {
         onSearchLoaded();
     }
+}
+
+void SearchEngine::commitHistory()
+{
+    m_settings->commitSearchHistory(m_history);
+}
+
+void SearchEngine::loadHistory()
+{
+    m_history = m_settings->loadSearchHistory();
+    emit historyChanged();
+}
+
+void SearchEngine::updateHistory(const QString &entry)
+{
+    m_history.removeOne(entry);
+    m_history.prepend(entry);
+
+    if (m_history.size() > MAXHISTORY)
+        m_history.removeLast();
+
+    emit historyChanged();
 }
 
 void SearchEngine::onSearchLoaded()

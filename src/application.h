@@ -11,6 +11,7 @@
 #include "uistatecoordinator.h"
 #include "audiooutput.h"
 #include "searchengine.h"
+#include "settings.h"
 
 class QQuickView;
 
@@ -47,6 +48,7 @@ private:
     Spotinetta::Session *       m_session;
     UIStateCoordinator *        m_ui;
     QSharedPointer<AudioOutput> m_output;
+    QSharedPointer<Settings>    m_settings;
     SearchEngine *              m_search;
 
     bool m_exiting;

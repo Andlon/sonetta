@@ -24,9 +24,16 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
+namespace {
+
+void deleteAudioOutputLater(AudioOutput * output) { output->deleteLater(); }
+void deleteSettingsLater(Settings * settings) { settings->deleteLater(); }
+
+}
+
 Application::Application(int &argc, char **argv)
     :   QGuiApplication(argc, argv), m_view(new QQuickView), m_nav(new Navigation(this)),
-      m_output(new AudioOutput), m_exiting(false)
+      m_output(new AudioOutput, deleteAudioOutputLater), m_settings(new Settings, deleteSettingsLater), m_exiting(false)
 {
     QGuiApplication::addLibraryPath(applicationDirPath() + QStringLiteral("/plugins"));
 
@@ -34,7 +41,7 @@ Application::Application(int &argc, char **argv)
 
     m_player = new Player(m_session, m_output.data(), this);
     m_ui = new UIStateCoordinator(this);
-    m_search = new SearchEngine(m_session, this);
+    m_search = new SearchEngine(m_session, m_settings, this);
 
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
     connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
