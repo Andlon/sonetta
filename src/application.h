@@ -34,6 +34,8 @@ public:
 private slots:
     void onExit();
     void onLogout();
+
+    void updateCursor();
     
 private:
     void createSession();

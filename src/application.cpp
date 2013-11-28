@@ -45,6 +45,8 @@ Application::Application(int &argc, char **argv)
 
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
     connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
+
+    connect(m_settings.data(), &Settings::mouseEnabled, this, &Application::updateCursor);
 }
 
 int Application::run()
@@ -81,6 +83,21 @@ void Application::onLogout()
     }
 }
 
+void Application::updateCursor()
+{
+    if (m_view.isNull())
+        return;
+
+    if (m_settings->mouseEnabled())
+    {
+        m_view->unsetCursor();
+    }
+    else
+    {
+        m_view->setCursor(QCursor(Qt::BlankCursor));
+    }
+}
+
 Application * Application::instance()
 {
     QCoreApplication * inst = QCoreApplication::instance();
@@ -94,7 +111,14 @@ sp::Session * Application::session() const
 
 bool Application::notify(QObject *receiver, QEvent *event)
 {
-    if (event->type() == QEvent::KeyPress)
+    switch (event->type())
+    {
+    case QEvent::MouseButtonDblClick:
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+        if (!m_settings->mouseEnabled())
+            break;
+    case QEvent::KeyPress:
     {
         QKeyEvent * keyEvent = static_cast<QKeyEvent *>(event);
 
@@ -105,8 +129,12 @@ bool Application::notify(QObject *receiver, QEvent *event)
                 return true;
         }
     }
+        break;
+    default:
+        return QGuiApplication::notify(receiver, event);
+    }
 
-    return QGuiApplication::notify(receiver, event);
+    return true;
 }
 
 void Application::registerQmlTypes()
@@ -151,6 +179,8 @@ void Application::setupQuickEnvironment()
 
 void Application::showUi()
 {
+    updateCursor();
+
     // Center view
     QScreen * screen = m_view->screen();
     QPoint screenCenter = screen->availableGeometry().center();

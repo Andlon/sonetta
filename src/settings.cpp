@@ -5,9 +5,20 @@
 namespace Sonetta {
 
 Settings::Settings(QObject *parent)
-    :   QObject(parent)
+    :   QObject(parent), m_mouseEnabled(false)
 {
+    syncSettings();
+}
 
+bool Settings::mouseEnabled() const
+{
+    return m_mouseEnabled;
+}
+
+void Settings::setMouseEnabled(bool enabled)
+{
+    m_mouseEnabled = enabled;
+    emit mouseEnabledChanged();
 }
 
 QStringList Settings::loadSearchHistory()
@@ -22,6 +33,12 @@ QStringList Settings::loadSearchHistory()
 void Settings::commitSearchHistory(const QStringList &history)
 {
     m_settings.setValue("search/history", history);
+}
+
+void Settings::syncSettings()
+{
+    if (m_settings.contains("input/enablemouse"))
+        m_mouseEnabled = m_settings.value("input/enablemouse", m_mouseEnabled).toBool();
 }
 
 
