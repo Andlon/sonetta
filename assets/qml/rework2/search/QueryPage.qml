@@ -91,11 +91,9 @@ FocusScope
             right: parent.right
             bottom: parent.bottom
             top: keyboardWrapper.top
-            topMargin: ui.misc.globalPadding / 2
         }
 
-        model: ["Coldplay", "Nirvana", "AC/DC", "Map of the Problematique", "Frank Ocean",
-            "Haim", "Michael Jackson", "Flashback"]
+        model: search.history
 
         onItemPressed: performSearch(currentItem.internalModelData)
         Navigation.onLeft: keyboard.focus = true
@@ -149,7 +147,7 @@ FocusScope
             text: "Query"
             anchors {
                 bottom: keyboard.top
-                bottomMargin: ui.misc.globalPadding / 2
+                bottomMargin: ui.misc.globalPadding
                 left: keyboard.left
             }
         }
