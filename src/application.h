@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGuiApplication>
+#include <QScopedPointer>
 
 #include <Spotinetta/Spotinetta>
 
@@ -19,7 +20,6 @@ class Application : public QGuiApplication
     Q_OBJECT
 public:
     explicit Application(int & argc, char ** argv);
-    ~Application();
 
     bool notify(QObject *receiver, QEvent *event);
 
@@ -34,7 +34,12 @@ private slots:
     void onLogout();
     
 private:
-    QQuickView * m_view;
+    void createSession();
+    void registerQmlTypes();
+    void setupQuickEnvironment();
+    void showUi();
+
+    QScopedPointer<QQuickView> m_view;
     Navigation * m_nav;
 
     Player *                m_player;

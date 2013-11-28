@@ -25,24 +25,13 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 Application::Application(int &argc, char **argv)
-    :   QGuiApplication(argc, argv), m_view(nullptr), m_nav(0), m_exiting(false)
+    :   QGuiApplication(argc, argv), m_view(new QQuickView), m_nav(new Navigation(this)),
+      m_output(new AudioOutput(this)), m_exiting(false)
 {
-    m_output = new AudioOutput(this);
+    QGuiApplication::addLibraryPath(applicationDirPath() + QStringLiteral("/plugins"));
 
-    sp::SessionConfig config;
-    config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
-    config.userAgent = "Sonetta";
-    config.audioOutput = m_output;
+    createSession();
 
-    config.settingsLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/libspotify";
-    config.cacheLocation = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/libspotify";
-
-    // Create directories if they don't exist
-    QDir dir;
-    dir.mkpath(config.settingsLocation);
-    dir.mkpath(config.cacheLocation);
-
-    m_session = new sp::Session(config, this);
     m_player = new Player(m_session, m_output, this);
     m_ui = new UIStateCoordinator(this);
     m_search = new SearchEngine(m_session, this);
@@ -56,60 +45,14 @@ Application::Application(int &argc, char **argv)
     connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
 }
 
-Application::~Application()
-{
-    delete m_view;
-}
-
 int Application::run()
 {
-    qmlRegisterType<Navigation>("Sonetta", 0, 1, "Navigation");
-    qmlRegisterType<NavigationAttached>();
-    qmlRegisterUncreatableType<QuickNavEvent>("Sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
-
-    qmlRegisterType<QuickPlaylistContainerModel>("Sonetta", 0, 1, "PlaylistContainerModel");
-    qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");
-    qmlRegisterType<QuickTrackInfo>("Sonetta", 0, 1, "TrackInfo");
-    qmlRegisterType<QuickSearch>("Sonetta", 0, 1, "SearchEngine");
-
-    qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
-
-    // Enums
-    qmlRegisterUncreatableType<AlbumEnums>("Sonetta", 0, 1, "Album", "Cannot instantiate Album.");
-    qmlRegisterUncreatableType<TrackEnums>("Sonetta", 0, 1, "Track", "Cannot instantiate Track.");
+    registerQmlTypes();
 
     if (m_session->error() == sp::Error::Ok)
     {
-        m_nav = new Navigation(this);
-        m_view = new QQuickView;
-
-        connect(m_view->engine(), &QQmlEngine::quit, this, &Application::onExit);
-
-        QString applicationDir = applicationDirPath();
-
-        QGuiApplication::addLibraryPath(applicationDir + QStringLiteral("/plugins"));
-
-        ImageProvider * provider = new ImageProvider(m_session, this);
-
-        m_view->engine()->addImportPath(applicationDir + QStringLiteral("/quick"));
-        m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/quick"));
-        m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/plugins"));
-
-        m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
-        m_view->engine()->rootContext()->setContextProperty("player", m_player);
-        m_view->engine()->rootContext()->setContextProperty("ui", m_ui);
-        m_view->engine()->rootContext()->setContextProperty("session", m_session);
-        m_view->engine()->rootContext()->setContextProperty("search", m_search);
-        m_view->engine()->addImportPath(applicationDir + QStringLiteral("/qml/modules"));
-        m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/qml/rework2/main.qml")));
-        m_view->setResizeMode(QQuickView::SizeRootObjectToView);
-
-        // Center view
-        QScreen * screen = m_view->screen();
-        QPoint screenCenter = screen->availableGeometry().center();
-        QPoint windowCenter = m_view->geometry().center();
-        m_view->setPosition(screenCenter - windowCenter);
-        m_view->showFullScreen();
+        setupQuickEnvironment();
+        showUi();
 
         // Start event loop
         return exec();
@@ -162,6 +105,74 @@ bool Application::notify(QObject *receiver, QEvent *event)
     }
 
     return QGuiApplication::notify(receiver, event);
+}
+
+void Application::registerQmlTypes()
+{
+    qmlRegisterType<Navigation>("Sonetta", 0, 1, "Navigation");
+    qmlRegisterType<NavigationAttached>();
+    qmlRegisterUncreatableType<QuickNavEvent>("Sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
+
+    qmlRegisterType<QuickPlaylistContainerModel>("Sonetta", 0, 1, "PlaylistContainerModel");
+    qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");
+    qmlRegisterType<QuickTrackInfo>("Sonetta", 0, 1, "TrackInfo");
+    qmlRegisterType<QuickSearch>("Sonetta", 0, 1, "SearchEngine");
+
+    qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
+
+    // Enums
+    qmlRegisterUncreatableType<AlbumEnums>("Sonetta", 0, 1, "Album", "Cannot instantiate Album.");
+    qmlRegisterUncreatableType<TrackEnums>("Sonetta", 0, 1, "Track", "Cannot instantiate Track.");
+}
+
+void Application::setupQuickEnvironment()
+{
+    connect(m_view->engine(), &QQmlEngine::quit, this, &Application::onExit);
+
+    QString applicationDir = applicationDirPath();
+
+    ImageProvider * provider = new ImageProvider(m_session, this);
+    m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
+
+    m_view->engine()->addImportPath(applicationDir + QStringLiteral("/quick"));
+    m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/quick"));
+    m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/plugins"));
+
+    m_view->engine()->rootContext()->setContextProperty("player", m_player);
+    m_view->engine()->rootContext()->setContextProperty("ui", m_ui);
+    m_view->engine()->rootContext()->setContextProperty("session", m_session);
+    m_view->engine()->rootContext()->setContextProperty("search", m_search);
+    m_view->engine()->addImportPath(applicationDir + QStringLiteral("/qml/modules"));
+    m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/qml/rework2/main.qml")));
+    m_view->setResizeMode(QQuickView::SizeRootObjectToView);
+}
+
+void Application::showUi()
+{
+    // Center view
+    QScreen * screen = m_view->screen();
+    QPoint screenCenter = screen->availableGeometry().center();
+    QPoint windowCenter = m_view->geometry().center();
+    m_view->setPosition(screenCenter - windowCenter);
+    m_view->showFullScreen();
+}
+
+void Application::createSession()
+{
+    sp::SessionConfig config;
+    config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
+    config.userAgent = "Sonetta";
+    config.audioOutput = m_output;
+
+    config.settingsLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/libspotify";
+    config.cacheLocation = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/libspotify";
+
+    // Create directories if they don't exist
+    QDir dir;
+    dir.mkpath(config.settingsLocation);
+    dir.mkpath(config.cacheLocation);
+
+    m_session = new sp::Session(config, this);
 }
 
 }
