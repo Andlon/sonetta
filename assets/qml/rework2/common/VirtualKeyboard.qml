@@ -153,39 +153,39 @@ FocusScope {
     ListModel {
         id: keys
 
-        ListElement { row: 0; col: 0; upper: "A"; lower: "a"; symbol: "?"; }
-        ListElement { row: 0; col: 1; upper: "B"; lower: "b"; symbol: "?"; }
-        ListElement { row: 0; col: 2; upper: "C"; lower: "c"; symbol: "?"; }
-        ListElement { row: 0; col: 3; upper: "D"; lower: "d"; symbol: "?"; }
-        ListElement { row: 0; col: 4; upper: "E"; lower: "e"; symbol: "?"; }
-        ListElement { row: 0; col: 5; upper: "F"; lower: "e"; symbol: "?"; }
+        ListElement { row: 0; col: 0; upper: "A"; lower: "a"; symbol: "1"; }
+        ListElement { row: 0; col: 1; upper: "B"; lower: "b"; symbol: "2"; }
+        ListElement { row: 0; col: 2; upper: "C"; lower: "c"; symbol: "3"; }
+        ListElement { row: 0; col: 3; upper: "D"; lower: "d"; symbol: "4"; }
+        ListElement { row: 0; col: 4; upper: "E"; lower: "e"; symbol: "5"; }
+        ListElement { row: 0; col: 5; upper: "F"; lower: "f"; symbol: "6"; }
 
-        ListElement { row: 1; col: 0; upper: "G"; lower: "a"; symbol: "?"; }
-        ListElement { row: 1; col: 1; upper: "H"; lower: "b"; symbol: "?"; }
-        ListElement { row: 1; col: 2; upper: "I"; lower: "c"; symbol: "?"; }
-        ListElement { row: 1; col: 3; upper: "J"; lower: "d"; symbol: "?"; }
-        ListElement { row: 1; col: 4; upper: "K"; lower: "e"; symbol: "?"; }
-        ListElement { row: 1; col: 5; upper: "L"; lower: "e"; symbol: "?"; }
+        ListElement { row: 1; col: 0; upper: "G"; lower: "g"; symbol: "7"; }
+        ListElement { row: 1; col: 1; upper: "H"; lower: "h"; symbol: "8"; }
+        ListElement { row: 1; col: 2; upper: "I"; lower: "i"; symbol: "9"; }
+        ListElement { row: 1; col: 3; upper: "J"; lower: "j"; symbol: "0"; }
+        ListElement { row: 1; col: 4; upper: "K"; lower: "k"; symbol: "="; }
+        ListElement { row: 1; col: 5; upper: "L"; lower: "l"; symbol: "?"; }
 
-        ListElement { row: 2; col: 0; upper: "M"; lower: "a"; symbol: "?"; }
-        ListElement { row: 2; col: 1; upper: "N"; lower: "b"; symbol: "?"; }
-        ListElement { row: 2; col: 2; upper: "O"; lower: "c"; symbol: "?"; }
-        ListElement { row: 2; col: 3; upper: "P"; lower: "d"; symbol: "?"; }
-        ListElement { row: 2; col: 4; upper: "Q"; lower: "e"; symbol: "?"; }
-        ListElement { row: 2; col: 5; upper: "R"; lower: "e"; symbol: "?"; }
+        ListElement { row: 2; col: 0; upper: "M"; lower: "m"; symbol: "!"; }
+        ListElement { row: 2; col: 1; upper: "N"; lower: "n"; symbol: "\""; }
+        ListElement { row: 2; col: 2; upper: "O"; lower: "o"; symbol: "#"; }
+        ListElement { row: 2; col: 3; upper: "P"; lower: "p"; symbol: "$"; }
+        ListElement { row: 2; col: 4; upper: "Q"; lower: "q"; symbol: "%"; }
+        ListElement { row: 2; col: 5; upper: "R"; lower: "r"; symbol: "&"; }
 
-        ListElement { row: 3; col: 0; upper: "S"; lower: "a"; symbol: "?"; }
-        ListElement { row: 3; col: 1; upper: "T"; lower: "b"; symbol: "?"; }
-        ListElement { row: 3; col: 2; upper: "U"; lower: "c"; symbol: "?"; }
-        ListElement { row: 3; col: 3; upper: "V"; lower: "d"; symbol: "?"; }
-        ListElement { row: 3; col: 4; upper: "W"; lower: "e"; symbol: "?"; }
-        ListElement { row: 3; col: 5; upper: "X"; lower: "e"; symbol: "?"; }
+        ListElement { row: 3; col: 0; upper: "S"; lower: "s"; symbol: "/"; }
+        ListElement { row: 3; col: 1; upper: "T"; lower: "t"; symbol: "("; }
+        ListElement { row: 3; col: 2; upper: "U"; lower: "u"; symbol: ")"; }
+        ListElement { row: 3; col: 3; upper: "V"; lower: "v"; symbol: "+"; }
+        ListElement { row: 3; col: 4; upper: "W"; lower: "w"; symbol: "-"; }
+        ListElement { row: 3; col: 5; upper: "X"; lower: "x"; symbol: "\\"; }
 
-        ListElement { row: 4; col: 0; upper: "Y"; lower: "a"; symbol: "?"; }
-        ListElement { row: 4; col: 1; upper: "Z"; lower: "b"; symbol: "?"; }
+        ListElement { row: 4; col: 0; upper: "Y"; lower: "y"; symbol: "<"; }
+        ListElement { row: 4; col: 1; upper: "Z"; lower: "z"; symbol: ">"; }
         ListElement { row: 4; col: 2; action: "space"; colspan: 2 }
-        ListElement { row: 4; col: 4; upper: ","; lower: "c"; symbol: "?"; }
-        ListElement { row: 4; col: 5; upper: "."; lower: "d"; symbol: "?"; }
+        ListElement { row: 4; col: 4; upper: ","; lower: ","; symbol: ";"; }
+        ListElement { row: 4; col: 5; upper: "."; lower: "."; symbol: ":"; }
     }
 
     Component {
