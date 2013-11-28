@@ -107,7 +107,7 @@ FocusScope
         anchors {
             left: predictions.left
             bottom: predictions.top
-            bottomMargin: ui.misc.globalPadding / 2
+            bottomMargin: ui.misc.globalPadding
         }
 
         opacity: predictions.count > 0 ? 1 : 0
