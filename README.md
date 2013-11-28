@@ -9,6 +9,8 @@ Sonetta implements a good chunk of Spotify's features, but there is a lot of wor
 
 How to compile
 ----------
+Detailed instructions coming soon (hopefully). In short, you need to init/update submodules, build spotinetta, get appkey.c from Spotify, place it in Sonetta's root folder, and make libspotify headers/library available in include/library paths. Then
+
 	qmake
 	
 ### Windows
