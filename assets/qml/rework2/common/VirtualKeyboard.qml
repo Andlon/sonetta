@@ -95,6 +95,9 @@ FocusScope {
                 }
             }
         }
+
+        Navigation.onUp: decrementCurrentIndex()
+        Navigation.onDown: incrementCurrentIndex()
     }
 
     Rectangle {
