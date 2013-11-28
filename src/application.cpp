@@ -26,20 +26,15 @@ namespace Sonetta {
 
 Application::Application(int &argc, char **argv)
     :   QGuiApplication(argc, argv), m_view(new QQuickView), m_nav(new Navigation(this)),
-      m_output(new AudioOutput(this)), m_exiting(false)
+      m_output(new AudioOutput), m_exiting(false)
 {
     QGuiApplication::addLibraryPath(applicationDirPath() + QStringLiteral("/plugins"));
 
     createSession();
 
-    m_player = new Player(m_session, m_output, this);
+    m_player = new Player(m_session, m_output.data(), this);
     m_ui = new UIStateCoordinator(this);
     m_search = new SearchEngine(m_session, this);
-
-    // Parent output to session so that Session is destroyed before output
-    // THIS IS A BUG. It will leak, but it doesn't crash. Will rewrite session to take
-    // a shared pointer to audio output interface anyway
-    m_output->setParent(m_output);
 
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
     connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });

@@ -2,6 +2,7 @@
 
 #include <QGuiApplication>
 #include <QScopedPointer>
+#include <QSharedPointer>
 
 #include <Spotinetta/Spotinetta>
 
@@ -42,11 +43,11 @@ private:
     QScopedPointer<QQuickView> m_view;
     Navigation * m_nav;
 
-    Player *                m_player;
-    Spotinetta::Session *   m_session;
-    UIStateCoordinator *    m_ui;
-    AudioOutput *           m_output;
-    SearchEngine *          m_search;
+    Player *                    m_player;
+    Spotinetta::Session *       m_session;
+    UIStateCoordinator *        m_ui;
+    QSharedPointer<AudioOutput> m_output;
+    SearchEngine *              m_search;
 
     bool m_exiting;
 
