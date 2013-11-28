@@ -1,9 +1,3 @@
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QQmlEngine>
-#include <QQmlContext>
-#include <QDebug>
-
 #include "application.h"
 
 
