@@ -11,11 +11,12 @@ How to compile
 ----------
 	qmake
 	
-Windows:
+### Windows
+
 	nmake
 	deploy.bat
 
-Linux:
+### Linux:
 	make
 	sh deploy.sh
 	
