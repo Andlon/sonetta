@@ -1,6 +1,14 @@
-- Redesign UI
-- Reimplement key navigation with remote control support
+Generic
+- Redesign UI (work in progress)
 - Restructure and refactor C++ code
+- Refactor QML to use more states and transitions and less property bindings
 - Migrate to QBS (instead of QMake)
 - Use more C++11 features and idioms (whenever possible)
+- Dump Visual C++ as compatible compiler and rely on GCC/MinGW/Clang instead
 
+Specific
+- Redesign login page (which I've completely neglected so far)
+- Redesign "Now playing" page (possibly rename to "Playback")
+- Figure out how to deal with artist/album browsing in terms of paging
+- Implement UI for artist/album browsing once ^ is figured out
+- Reimplement key navigation with remote control support
