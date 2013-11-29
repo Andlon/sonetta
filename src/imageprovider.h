@@ -37,6 +37,7 @@ private:
     QMutex          m_waitMutex;
     QWaitCondition  m_waitCondition;
     bool            m_cancel;
+    unsigned int    m_waitCount;
 
     QVector<UrlImagePair>            m_pending;
     QMultiMap<QString, QByteArray>   m_results;

@@ -46,7 +46,7 @@ Application::Application(int &argc, char **argv)
     connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
     connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
 
-    connect(m_settings.data(), &Settings::mouseEnabled, this, &Application::updateCursor);
+    connect(m_settings.data(), &Settings::mouseEnabledChanged, this, &Application::updateCursor);
 }
 
 int Application::run()
@@ -161,7 +161,7 @@ void Application::setupQuickEnvironment()
 
     QString applicationDir = applicationDirPath();
 
-    ImageProvider * provider = new ImageProvider(m_session, this);
+    ImageProvider * provider = new ImageProvider(m_session, m_view.data());
     m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
 
     m_view->engine()->addImportPath(applicationDir + QStringLiteral("/quick"));

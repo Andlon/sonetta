@@ -12,7 +12,7 @@ namespace Sonetta {
 
 ImageProvider::ImageProvider(const Spotinetta::Session *session, QObject *parent)
     :   QObject(parent), QQuickImageProvider(QQmlImageProviderBase::Image, QQmlImageProviderBase::ForceAsynchronousImageLoading),
-      m_cancel(false), m_session(session)
+      m_cancel(false), m_waitCount(0), m_session(session)
 {
 
 }
@@ -20,9 +20,19 @@ ImageProvider::ImageProvider(const Spotinetta::Session *session, QObject *parent
 ImageProvider::~ImageProvider()
 {
     // Make sure we cancel any pending requests
-    QMutexLocker locker(&m_waitMutex);
-    m_cancel = true;
+    {
+        QMutexLocker locker(&m_waitMutex);
+        m_cancel = true;
+    }
+
     m_waitCondition.wakeAll();
+
+    // Wait until all pending requests have been finished
+    QMutexLocker locker(&m_waitMutex);
+    while (m_waitCount > 0)
+    {
+        m_waitCondition.wait(&m_waitMutex);
+    }
 }
 
 void ImageProvider::loadImage(const QString &uri)
@@ -31,7 +41,7 @@ void ImageProvider::loadImage(const QString &uri)
     {
         sp::Image image = m_session->createImageFromLink(sp::Link(uri));
 
-        if (image.isLoaded())
+        if (image.isLoaded() || !image.isValid())
         {
             notifyImageLoaded(uri, image);
         }
@@ -60,10 +70,12 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
 
     QMutexLocker locker(&m_waitMutex);
 
+    ++m_waitCount;
     while (!imageReady(uri) && !m_cancel)
     {
         m_waitCondition.wait(&m_waitMutex);
     }
+    --m_waitCount;
 
     if (m_cancel)
         return QImage();
@@ -71,7 +83,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     QByteArray data = takeImageData(uri);
 
     // We have the data, release the lock before decoding/scaling
-    // (do not access shared data after this point)
+    // (do NOT access shared member data after this point!)
     locker.unlock();
 
     QImage image = QImage::fromData(data);
