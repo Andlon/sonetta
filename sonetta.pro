@@ -58,7 +58,9 @@ HEADERS += \
     src/models/queuemodel.h \
     src/utilities/persistentplaylistindex.h \
     src/utilities/qobjectscopedpointer.h \
-    src/settings.h
+    src/settings.h \
+    src/utilities/mosaicgenerator.h \
+    src/quick/quickmosaicgenerator.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -86,7 +88,8 @@ SOURCES += \
     src/utilities/predictioncollection.cpp \
     src/models/queuemodel.cpp \
     src/utilities/persistentplaylistindex.cpp \
-    src/settings.cpp
+    src/settings.cpp \
+    src/utilities/mosaicgenerator.cpp
 
 OTHER_FILES += \
     assets/qml/rework2/main.qml \
