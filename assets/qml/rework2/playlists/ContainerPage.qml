@@ -15,15 +15,30 @@ CollectionView {
 
     delegate: CollectionDelegate {
         id: delegate
-        height: 100
+        height: 120
         width: view.width
 
         property string name: model ? model.name : ""
+        property var playlist: model ? model.playlist : null
+
+        onPlaylistChanged: if (playlist) mosaic.playlist = playlist
+
+        Mosaic {
+            id: mosaic
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+                margins: ui.misc.globalPadding / 2
+            }
+
+            width: height
+        }
 
         Text {
             anchors {
                 verticalCenter: parent.verticalCenter
-                left: parent.left
+                left: mosaic.right
                 right: parent.right
                 leftMargin: ui.misc.globalPadding
                 rightMargin: ui.misc.globalPadding

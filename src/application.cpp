@@ -8,8 +8,6 @@
 #include <QDebug>
 #include <QDir>
 
-#include "quick/quicktrackinfo.h"
-#include "quick/quicksearch.h"
 #include "imageprovider.h"
 
 #include "models/albumlistmodel.h"
@@ -17,6 +15,9 @@
 
 #include "quick/enums.h"
 #include "quick/models.h"
+#include "quick/quicktrackinfo.h"
+#include "quick/quicksearch.h"
+#include "quick/quickmosaicgenerator.h"
 
 #include "../appkey.c"
 
@@ -147,6 +148,7 @@ void Application::registerQmlTypes()
     qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");
     qmlRegisterType<QuickTrackInfo>("Sonetta", 0, 1, "TrackInfo");
     qmlRegisterType<QuickSearch>("Sonetta", 0, 1, "SearchEngine");
+    qmlRegisterType<QuickMosaicGenerator>("Sonetta", 0, 1, "MosaicGenerator");
 
     qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
 
