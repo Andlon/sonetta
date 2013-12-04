@@ -47,8 +47,8 @@ FocusScope {
         MenuView {
             id: menu
             width: password.width
-            height: 200
             model: ["Login", "Exit"]
+            alternate: false
 
             Navigation.onUp: password.focus = true
 
