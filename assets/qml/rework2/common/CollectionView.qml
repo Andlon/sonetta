@@ -35,12 +35,13 @@ FocusScope {
     property alias verticalLayoutDirection: list.verticalLayoutDirection
 
     property QtObject contextModel: null
+    property bool alternate: true
 
     signal itemPressed(var data)
     signal contextPressed(string name, var data)
     clip: true
 
-    height: childrenRect.height
+    height: list.contentHeight
 
     ListView {
         id: list
@@ -268,12 +269,26 @@ FocusScope {
                 }
 
                 parent: list.contentItem
-                z: -1
+                z: -2
                 height: delegateLoader.height
 
                 source: "../images/dark.png"
                 fillMode: Image.Tile
-                visible: modelIndex % 2 == 0
+                visible: modelIndex % 2 == 0 || !alternate
+            }
+
+            Rectangle {
+                anchors {
+                    top: delegateRoot.top
+                    left: delegateRoot.left
+                    right: delegateRoot.right
+                }
+
+                height: 2
+                z: -1
+                parent: list.contentItem
+                color: ui.colors.light
+                visible: !alternate && index != 0
             }
 
             Loader {
