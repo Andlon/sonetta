@@ -1,44 +1,36 @@
 import QtQuick 2.1
 import Sonetta 0.1
+import "../common"
 
-Item {
+FocusScope {
     id: root
-    height: col.height + 2 * ui.misc.globalPadding
-    width: 200
+    height: childrenRect.height
+    width: childrenRect.width
 
-    property alias label: label.text
-    property alias text: input.text
+    property alias label: inputlabel.text
+    readonly property alias text: input.text
+
+    signal complete
 
     Column {
-        id: col
-        spacing: 0
-        clip: true
-        y: ui.misc.globalPadding
+        height: childrenRect.height
+        width: childrenRect.width
 
-        anchors {
-            right: root.right
-            left: root.left
-            margins: ui.misc.globalPadding
+        Label {
+            id: inputlabel
+
+            anchors {
+                left: input.left
+                right: input.right
+            }
         }
 
-        Text {
-            id: label
-            font: ui.fonts.h2
-            color: ui.colors.standard
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: contentHeight
-            width: contentWidth
-        }
-
-        Text {
+        VirtualKeyboardInput {
             id: input
-            font: ui.fonts.h1
-            color: ui.colors.standard
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: contentHeight
-            width: contentWidth
+            collapsible: true
+            focus: true
+
+            onComplete: root.complete()
         }
     }
 }
