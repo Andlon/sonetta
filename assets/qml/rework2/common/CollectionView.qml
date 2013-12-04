@@ -40,6 +40,8 @@ FocusScope {
     signal contextPressed(string name, var data)
     clip: true
 
+    height: childrenRect.height
+
     ListView {
         id: list
         anchors {
@@ -61,8 +63,32 @@ FocusScope {
         interactive: false
         currentIndex: 0
 
-        Navigation.onDown: verticalLayoutDirection == ListView.TopToBottom ? incrementCurrentIndex() : decrementCurrentIndex()
-        Navigation.onUp: verticalLayoutDirection == ListView.TopToBottom ? decrementCurrentIndex() : incrementCurrentIndex()
+        Navigation.onDown: {
+            if (currentIndex < count - 1)
+            {
+                if (verticalLayoutDirection == ListView.TopToBottom)
+                    incrementCurrentIndex()
+                else
+                    decrementCurrentIndex()
+            }
+            else
+            {
+                event.accepted = false
+            }
+        }
+        Navigation.onUp: {
+            if (currentIndex > 0)
+            {
+                if (verticalLayoutDirection == ListView.TopToBottom)
+                    decrementCurrentIndex()
+                else
+                    incrementCurrentIndex()
+            }
+            else
+            {
+                event.accepted = false
+            }
+        }
         Navigation.onOk: root.itemPressed(currentItem.internalModel)
 
         displaced: move
