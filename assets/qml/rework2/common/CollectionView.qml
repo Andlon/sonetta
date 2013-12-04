@@ -36,6 +36,7 @@ FocusScope {
 
     property QtObject contextModel: null
     property bool alternate: true
+    property bool persistentHighlight: true
 
     signal itemPressed(var data)
     signal contextPressed(string name, var data)
@@ -131,6 +132,7 @@ FocusScope {
             id: highlightContainer
             height: list.currentItem.height
             width: list.currentItem.width
+            visible: list.activeFocus || persistentHighlight
 
             Behavior on height {
                 SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
@@ -142,9 +144,14 @@ FocusScope {
                 id: highlight
                 color: ui.colors.highlight
                 height: list.currentItem.highlightHeight
-                width: list.currentItem
-                       ? list.activeFocus && !list.currentItem.contextActive
-                         ? list.currentItem.width : Math.min(list.currentItem.width, ui.misc.globalPadding / 2) : 0
+                width: list.currentItem ? Math.min(list.currentItem.width, ui.misc.globalPadding / 2) : 0
+
+                states: [
+                    State {
+                        when: list.currentItem && list.activeFocus && !list.currentItem.contextActive
+                        PropertyChanges { target: highlight; width: list.currentItem.width }
+                    }
+                ]
 
                 Behavior on width {
                     SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
