@@ -16,13 +16,15 @@ FocusScope {
     property alias wrapNavigationBottom: keyboard.wrapNavigationBottom
     property alias wrapNavigationTop: keyboard.wrapNavigationTop
 
-    signal complete
+    property bool active: false
+    property bool collapsible: false
 
-    state: "inactive"
+    signal complete
 
     states: [
         State {
             name: "active"
+            when: active
             PropertyChanges {
                 target: keyboard
                 opacity: 1.0
@@ -31,23 +33,35 @@ FocusScope {
         },
         State {
             name: "inactive"
+            when: !active && !collapsible
             PropertyChanges {
                 target: keyboard
                 opacity: 0.3
                 focus: false
             }
+        },
+        State {
+            name: "collapsed"
+            extend: "inactive"
+            when: !active && collapsible
+            PropertyChanges {
+                target: keyboard
+                height: 0
+                restoreEntryValues: true
+            }
         }
+
     ]
 
     transitions: Transition {
-        SmoothedAnimation { properties: "opacity"; duration: ui.misc.globalAnimationTime; velocity: -1 }
+        SmoothedAnimation { properties: "opacity, height"; duration: ui.misc.globalAnimationTime; velocity: -1 }
     }
 
     onActiveFocusChanged: {
         if (!activeFocus)
         {
-            // Lost focus, set to inactive
-            state = "inactive"
+            // Lost focus, set to inactive/collapsed
+            active = false
         }
     }
 
@@ -55,6 +69,7 @@ FocusScope {
         width: childrenRect.width
         height: childrenRect.height
         spacing: ui.misc.globalPadding / 2
+        clip: true
 
         Item {
             width: keyboard.width //- 2 * ui.misc.globalPadding
@@ -159,9 +174,7 @@ FocusScope {
     }
 
     Navigation.onOk: {
-        if (state == "inactive")
-        {
-            state = "active"
-        }
+        if (!active)
+            active = true
     }
 }
