@@ -73,7 +73,16 @@ int Application::run()
 void Application::onExit()
 {
     m_exiting = true;
-    m_session->logout();
+    if (m_session->connectionState() == sp::Session::ConnectionState::LoggedIn
+            || m_session->connectionState() == sp::Session::ConnectionState::Offline)
+    {
+        m_session->logout();
+    }
+    else
+    {
+        // Skip session logout
+        onLogout();
+    }
 }
 
 void Application::onLogout()
