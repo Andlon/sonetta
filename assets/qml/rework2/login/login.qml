@@ -44,26 +44,57 @@ FocusScope {
             onComplete: menu.focus = true
         }
 
-        MenuView {
+        Menu {
             id: menu
             width: password.width
-            model: ["Login", "Exit"]
-            alternate: false
 
-            Navigation.onUp: password.focus = true
+            MenuAction {
+                id: rememberMe
+                text: "Remember me"
+                toggleable: true
+                toggled: true
+            }
 
-            onItemPressed: {
-                if (currentIndex == 0)
-                {
-                    session.login(username.text, password.text, true)
+            MenuAction {
+                text: "Login"
+                Navigation.onOk: {
+                    console.log("Logging in")
+                    session.login(username.text, password.text, rememberMe.toggled)
                 }
-                else if (currentIndex == 1)
+            }
+
+            MenuAction {
+                text: "Exit"
+                Navigation.onOk:
                 {
+                    console.log("Quitting")
                     Qt.quit()
                 }
             }
 
+            Navigation.onUp: password.focus = true
         }
+
+//        ToggleView {
+//            id: menu
+//            width: password.width
+//            model: ["Login", "Exit"]
+//            alternate: false
+
+//            Navigation.onUp: password.focus = true
+
+//            onItemPressed: {
+//                if (currentIndex == 0)
+//                {
+//                    session.login(username.text, password.text, true)
+//                }
+//                else if (currentIndex == 1)
+//                {
+//                    Qt.quit()
+//                }
+//            }
+
+//        }
     }
 
 }

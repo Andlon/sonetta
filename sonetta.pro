@@ -135,5 +135,7 @@ OTHER_FILES += \
     assets/qml/rework2/common/BackIndicator.qml \
     assets/qml/rework2/common/VerticalScrollbar.qml \
     assets/qml/rework2/session/session.qml \
-    assets/qml/rework2/common/Mosaic.qml
+    assets/qml/rework2/common/Mosaic.qml \
+    assets/qml/rework2/common/Menu.qml \
+    assets/qml/rework2/common/MenuAction.qml
 
