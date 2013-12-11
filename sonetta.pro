@@ -94,7 +94,6 @@ SOURCES += \
 OTHER_FILES += \
     assets/qml/rework2/main.qml \
     assets/qml/rework2/controller.qml \
-    assets/qml/rework2/main/MenuEntry.qml \
     assets/qml/rework2/main/MainMenuList.qml \
     assets/qml/rework2/main/Sidebar.qml \
     assets/qml/rework2/common/VirtualKeyboard.js \
@@ -137,5 +136,6 @@ OTHER_FILES += \
     assets/qml/rework2/session/session.qml \
     assets/qml/rework2/common/Mosaic.qml \
     assets/qml/rework2/common/Menu.qml \
-    assets/qml/rework2/common/MenuAction.qml
+    assets/qml/rework2/common/MenuAction.qml \
+    assets/qml/rework2/main/MainMenuEntry.qml
 

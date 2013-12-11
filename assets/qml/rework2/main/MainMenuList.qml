@@ -9,7 +9,7 @@ ListView {
     model: [ "nowplaying", "playlists", "search", "session" ]
     currentIndex: 1
 
-    delegate: MenuEntry {
+    delegate: MainMenuEntry {
         id: entry
         page: modelData
 
