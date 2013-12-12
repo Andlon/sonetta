@@ -184,7 +184,7 @@ void Application::setupQuickEnvironment()
     m_view->engine()->rootContext()->setContextProperty("session", m_session);
     m_view->engine()->rootContext()->setContextProperty("search", m_search);
     m_view->engine()->addImportPath(applicationDir + QStringLiteral("/qml/modules"));
-    m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/qml/rework2/main.qml")));
+    m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/qml/default/main.qml")));
     m_view->setResizeMode(QQuickView::SizeRootObjectToView);
 }
 
