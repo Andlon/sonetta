@@ -50,7 +50,7 @@ FocusScope {
             top: root.top
             bottom: root.bottom
             left: root.left
-            right: scrollbar.visible ? scrollbar.left : root.right
+            right: scrollbar.left //scrollbar.visible ? scrollbar.left : root.right
         }
 
         delegate: delegateComponent

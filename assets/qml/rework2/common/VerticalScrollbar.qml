@@ -7,7 +7,7 @@ Item {
     height: list ? list.height : 200
     width: 40
 
-    visible: list.visibleArea.heightRatio < 1
+    visible: activeFocus || list.visibleArea.heightRatio < 1
 
     property ListView list
     property int minimumScrollerHeight: 40

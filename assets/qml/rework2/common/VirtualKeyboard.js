@@ -181,15 +181,15 @@ function handleKeypress()
         }
         else
         {
-            var char
+            var c
             if (keystate == "upper")
-                char = element.upper
+                c = element.upper
             else if (keystate == "lower")
-                char = element.lower
+                c = element.lower
             else if (keystate == "symbol")
-                char = element.symbol
+                c = element.symbol
 
-            root.character(char)
+            root.character(c)
         }
     }
 }
