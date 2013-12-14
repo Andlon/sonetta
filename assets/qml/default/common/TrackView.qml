@@ -61,7 +61,7 @@ CollectionView {
         id: dualRow
         CollectionDelegate {
             id: delegateRoot
-            height: 100
+            height: childrenRect.height + ui.misc.globalPadding
 
             property string name: model ? model.name : ""
             property string artists: model ? model.artistNames.join(", ") : ""
@@ -81,12 +81,14 @@ CollectionView {
 
             Column {
                 anchors {
-                    verticalCenter: parent.verticalCenter
                     left: parent.left
                     right: parent.right
                     leftMargin: ui.misc.globalPadding
                     rightMargin: ui.misc.globalPadding
                 }
+
+                y: ui.misc.globalPadding / 2
+                height: childrenRect.height
 
                 H4 {
                     anchors {

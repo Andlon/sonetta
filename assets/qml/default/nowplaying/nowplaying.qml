@@ -30,7 +30,7 @@ FocusScope {
             left: parent.left
             right: view.left
             top: view.top
-            bottom: trackInfo.top
+            bottom: playback.top
             bottomMargin: ui.misc.globalPadding / 2
             rightMargin: ui.misc.globalPadding
         }
@@ -38,55 +38,20 @@ FocusScope {
         uri: track.largeCoverUri
     }
 
-    Column {
-        id: trackInfo
+    Playback {
+        id: playback
         anchors {
             left: parent.left
-            bottom: controlContainer.top
-            bottomMargin: ui.misc.globalPadding / 2
+            bottom: parent.bottom
+            bottomMargin: 4 * ui.misc.globalPadding
             right: cover.right
         }
+
+        focus: true
 
         height: childrenRect.height
-
-        H3 {
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
-
-            horizontalAlignment: Text.AlignHCenter
-            text: track.name
-        }
-
-        H4 {
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
-
-            horizontalAlignment: Text.AlignHCenter
-            text: track.artistNames.join(", ")
-        }
-    }
-
-    Item {
-        id: controlContainer
-        height: controls.height
-        anchors {
-            bottom: root.bottom
-            left: root.left
-            right: cover.right
-        }
-
-        Controls {
-            id: controls
-            anchors {
-                centerIn: parent
-            }
-
-            focus: true
-        }
+        trackName: track.name
+        artistName: track.artistNames.join(", ")
 
         Navigation.onRight: view.focus = true
     }
@@ -121,6 +86,6 @@ FocusScope {
 
         onTrackPlayed: player.queue.pop(modelIndex)
 
-        Navigation.onLeft: controls.focus = true
+        Navigation.onLeft: playback.focus = true
     }
 }
