@@ -137,5 +137,6 @@ OTHER_FILES += \
     assets/qml/default/common/Mosaic.qml \
     assets/qml/default/common/Menu.qml \
     assets/qml/default/common/MenuAction.qml \
-    assets/qml/default/main/MainMenuEntry.qml
+    assets/qml/default/main/MainMenuEntry.qml \
+    assets/qml/default/common/Pattern.qml
 
