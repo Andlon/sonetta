@@ -59,6 +59,7 @@ Item {
         misc.globalTopMargin = 100
         misc.globalAnimationTime = 200
         misc.ready = false
+        misc.topSectionHeight = 0
 
         // The amount of space between any two generic items
         misc.globalPadding = 30

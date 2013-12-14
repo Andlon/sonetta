@@ -11,6 +11,7 @@ FocusScope {
         focus: true
         anchors {
             fill: parent
+            topMargin: ui.misc.topSectionHeight
         }
 
         width: 270
