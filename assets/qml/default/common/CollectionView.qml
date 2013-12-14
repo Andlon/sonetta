@@ -35,8 +35,6 @@ FocusScope {
     property alias verticalLayoutDirection: list.verticalLayoutDirection
 
     property QtObject contextModel: null
-    property bool alternate: true
-    property bool persistentHighlight: true
 
     signal itemPressed(var data)
     signal contextPressed(string name, var data)
@@ -128,83 +126,14 @@ FocusScope {
 
     Component {
         id: highlightComponent
-        Item {
+        CollectionHighlight {
             id: highlightContainer
             height: list.currentItem.height
             width: list.currentItem.width
-            visible: list.activeFocus || persistentHighlight
 
-            Behavior on height {
-                SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
-            }
-
-            property real indicatorWidth: root.contextModel != undefined ? contextIndicator.width + anchors.rightMargin : 0
-
-            Rectangle {
-                id: highlight
-                color: ui.colors.highlight
-                height: list.currentItem.highlightHeight
-                width: list.currentItem ? Math.min(list.currentItem.width, ui.misc.globalPadding / 2) : 0
-
-                states: [
-                    State {
-                        when: list.currentItem && list.activeFocus && !list.currentItem.contextActive
-                        PropertyChanges { target: highlight; width: list.currentItem.width }
-                    }
-                ]
-
-                Behavior on width {
-                    SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
-                }
-            }
-
-            Image {
-                id: contextIndicator
-                visible: list.activeFocus && root.contextModel != undefined
-                anchors {
-                    verticalCenter: highlight.verticalCenter
-                    right: parent.right
-                    rightMargin: ui.misc.globalPadding
-                }
-
-                height: 35
-                width: 35
-                sourceSize.height: height
-                sourceSize.width: width
-                source: "../images/contextArrow.svg"
-                cache: true
-
-                rotation: list.currentItem.contextActive ? -180 : 0
-
-                Behavior on rotation {
-                    RotationAnimation {
-                        duration: ui.misc.globalAnimationTime
-                    }
-                }
-
-                SequentialAnimation {
-                    id: contextIndicatorAnimation
-                    loops: Animation.Infinite
-                    running: root.contextModel != undefined && list.activeFocus
-                    alwaysRunToEnd: true
-                    PropertyAnimation {
-                        target: contextIndicator
-                        property: "opacity"
-                        from: 0.2
-                        to: 1.0
-                        duration: 500
-                        easing.type: Easing.InOutQuad
-                    }
-                    PropertyAnimation {
-                        target: contextIndicator
-                        property: "opacity"
-                        from: 1.0
-                        to: 0.2
-                        duration: 500
-                        easing.type: Easing.InOutQuad
-                    }
-                }
-            }
+            currentItem: list.currentItem
+            contextEnabled: root.contextModel != undefined
+            contextActive: list.currentItem.contextActive
         }
     }
 
@@ -268,7 +197,7 @@ FocusScope {
 
             ]
 
-            Image {
+            Pattern {
                 anchors {
                     left: delegateRoot.left
                     right: delegateRoot.right
@@ -279,23 +208,8 @@ FocusScope {
                 z: -2
                 height: delegateLoader.height
 
-                source: "../images/dark.png"
-                fillMode: Image.Tile
-                visible: modelIndex % 2 == 0 || !alternate
-            }
-
-            Rectangle {
-                anchors {
-                    top: delegateRoot.top
-                    left: delegateRoot.left
-                    right: delegateRoot.right
-                }
-
-                height: 2
-                z: -1
-                parent: list.contentItem
-                color: ui.colors.light
-                visible: !alternate && index != 0
+                pattern: "dark"
+                visible: modelIndex % 2 == 0
             }
 
             Loader {
