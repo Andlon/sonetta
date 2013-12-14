@@ -130,7 +130,6 @@ OTHER_FILES += \
     assets/qml/default/nowplaying/Controls.qml \
     assets/qml/default/nowplaying/Control.qml \
     assets/qml/default/common/CollectionContext.qml \
-    assets/qml/default/common/DelayedProperty.qml \
     assets/qml/default/common/BackIndicator.qml \
     assets/qml/default/common/VerticalScrollbar.qml \
     assets/qml/default/session/session.qml \
