@@ -88,7 +88,7 @@ FocusScope {
         anchors {
             top: queueLabel.bottom
             topMargin: ui.misc.globalPadding
-            bottom: playback.bottom
+            bottom: parent.bottom
             right: parent.right
             left: parent.horizontalCenter
         }
@@ -100,20 +100,5 @@ FocusScope {
         onTrackPlayed: player.queue.pop(modelIndex)
 
         Navigation.onLeft: playback.focus = true
-    }
-
-    Image {
-        anchors {
-            bottom: parent.bottom
-            right: parent.right
-            top: view.bottom
-            topMargin: ui.misc.globalPadding
-            left: view.left
-        }
-
-        fillMode: Image.PreserveAspectFit
-        horizontalAlignment: Image.AlignHCenter
-
-        source: "../images/spotify.png"
     }
 }

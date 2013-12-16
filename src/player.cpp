@@ -179,6 +179,7 @@ void Player::seek(int position)
         int pos = qMax(position, 0);
         pos = qMin(track.duration(), pos);
         m_session->seek(pos);
+        m_output->reset();
         m_output->resetPosition(pos);
     }
 }
