@@ -26,6 +26,8 @@ FocusScope {
         id: cover
 
         fillMode: Image.PreserveAspectFit
+        verticalAlignment: Image.AlignTop
+
         anchors {
             left: parent.left
             right: view.left
@@ -86,7 +88,7 @@ FocusScope {
         anchors {
             top: queueLabel.bottom
             topMargin: ui.misc.globalPadding
-            bottom: parent.bottom
+            bottom: playback.bottom
             right: parent.right
             left: parent.horizontalCenter
         }
@@ -95,9 +97,23 @@ FocusScope {
         snapMode: ListView.SnapToItem
 
         onCountChanged: view.currentIndex = 0
-
         onTrackPlayed: player.queue.pop(modelIndex)
 
         Navigation.onLeft: playback.focus = true
+    }
+
+    Image {
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+            top: view.bottom
+            topMargin: ui.misc.globalPadding
+            left: view.left
+        }
+
+        fillMode: Image.PreserveAspectFit
+        horizontalAlignment: Image.AlignHCenter
+
+        source: "../images/spotify.png"
     }
 }

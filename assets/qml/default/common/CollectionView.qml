@@ -19,6 +19,7 @@ FocusScope {
     property alias model: list.model
     property alias currentIndex: list.currentIndex
     property alias currentItem: list.currentItem
+    property alias delegateHeight: scrollbar.delegateHeight
     property alias count: list.count
 
     property alias add: list.add

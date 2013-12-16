@@ -6,6 +6,8 @@ Item {
 
     property alias fillMode: image.fillMode
     property alias sourceSize: image.sourceSize
+    property alias verticalAlignment: image.verticalAlignment
+    property alias horizontalAlignment: image.horizontalAlignment
 
     width: image.sourceSize.width
     height: image.sourceSize.height
