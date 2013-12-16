@@ -42,8 +42,8 @@ FocusScope {
         id: playback
         anchors {
             left: parent.left
-            bottom: parent.bottom
-            bottomMargin: 4 * ui.misc.globalPadding
+            bottom: trackbar.top
+            bottomMargin: ui.misc.globalPadding
             right: cover.right
         }
 
@@ -54,6 +54,18 @@ FocusScope {
         artistName: track.artistNames.join(", ")
 
         Navigation.onRight: view.focus = true
+        Navigation.onDown: trackbar.focus = true
+    }
+
+    Trackbar {
+        id: trackbar
+        anchors {
+            bottom: parent.bottom
+            left: playback.left
+            right: playback.right
+        }
+
+        Navigation.onUp: playback.focus = true
     }
 
     Label {

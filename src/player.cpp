@@ -171,6 +171,18 @@ void Player::enqueue(const Spotinetta::Track &track)
     m_queue->enqueue(track);
 }
 
+void Player::seek(int position)
+{
+    sp::Track track = m_watcher->watched();
+    if (track.isValid())
+    {
+        int pos = qMax(position, 0);
+        pos = qMin(track.duration(), pos);
+        m_session->seek(pos);
+        m_output->resetPosition(pos);
+    }
+}
+
 void Player::play()
 {
     m_session->play();

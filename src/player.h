@@ -50,6 +50,7 @@ signals:
 public slots:
     void play(const Spotinetta::Track &track);
     void enqueue(const Spotinetta::Track &track);
+    void seek(int position);
 
     void play();
     void playPause();

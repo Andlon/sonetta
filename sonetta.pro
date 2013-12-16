@@ -139,5 +139,6 @@ OTHER_FILES += \
     assets/qml/default/main/MainMenuEntry.qml \
     assets/qml/default/common/Pattern.qml \
     assets/qml/default/common/CollectionHighlight.qml \
-    assets/qml/default/nowplaying/Playback.qml
+    assets/qml/default/nowplaying/Playback.qml \
+    assets/qml/default/nowplaying/Trackbar.qml
 

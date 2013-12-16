@@ -6,5 +6,7 @@ function formatTime(msecs)
     var mins = Math.floor(totalSecs / 60);
     var secs = totalSecs % 60;
 
-    return mins + ":" + (secs < 10 ? "0" + secs : secs)
+    var padding = mins < 10 ? " " : ""
+
+    return padding + mins + ":" + (secs < 10 ? "0" + secs : secs)
 }
