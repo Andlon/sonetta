@@ -1,8 +1,7 @@
-pragma singleton
-
+pragma Singleton
 import QtQuick 2.2
 
-QtObject {
+Item {
     id: root
     readonly property alias page: m.page
     readonly property alias parameters: m.parameters
@@ -11,15 +10,17 @@ QtObject {
     signal enteringPage(var page, var parameters)
     signal leavingPage(var page)
 
+    signal transition(var page, var parameters)
+
     QtObject {
         id: m
 
-        property string page: ""
-        property var parameters
-        property var states: { return [] }
+        property string page: "test"
+        property var parameters: { return {} }
+        property var history: { return [] }
         property int count: 0
 
-        function updateCount() { count = m.states.length }
+        function updateCount() { count = m.history.length + 1 }
         function createState(page, parameters) { return { page: page, parameters: parameters } }
     }
 
@@ -31,53 +32,64 @@ QtObject {
             enteringPage(page, parameters)
         }
 
-        var state = m.createState(page, parameters)
+        var state = m.createState(root.page, root.parameters)
+        m.history.push(state)
 
-        m.states.push(state)
-        root.page = page
-        root.parameters = parameters
+        m.page = page
+        m.parameters = parameters
         m.updateCount()
+
+        transition(page, parameters)
     }
 
     function pop()
     {
-        if (count > 0)
+        if (count > 1)
         {
-            var state = m.states.pop()
+            var state = m.history.pop()
 
-            if (state.page !== page)
+            if (root.page !== state.page)
             {
                 leavingPage(root.page, root.parameters)
                 enteringPage(state.page, state.parameters)
-                root.page = state.page
+                m.page = state.page
             }
 
-            root.parameters = state.parameters
+            m.parameters = state.parameters
             m.updateCount()
+
+            transition(page, parameters)
         }
     }
 
     function reset(page, parameters)
     {
-        var state = m.createState(page, parameters)
-        m.states = [ state ]
-
         if (page !== root.page)
         {
-            leavingPage(page)
+            leavingPage(root.page)
             enteringPage(page, parameters)
         }
 
-        root.page = page
-        root.parameters = parameters
+        m.history = [ ]
+
+        m.page = page
+        m.parameters = parameters
 
         m.updateCount()
+
+        transition(page, parameters)
     }
 
     function update(page, parameters)
     {
         console.assert(page === root.page)
-        m.states[count - 1].parameters = parameters
         m.parameters = parameters
     }
+
+//    function printState(page, parameters)
+//    {
+//        console.log("Page: " + page)
+//        console.log("Parameters: " + JSON.stringify(parameters, null, 4))
+//    }
+
 }
