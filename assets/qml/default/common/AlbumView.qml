@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import "States.js" as States
 
 CollectionView {
     id: view
@@ -55,6 +56,10 @@ CollectionView {
             }
 
         }
+    }
 
+    onItemPressed: {
+        var state = States.createAlbumBrowse(ui.state, data.album)
+        ui.pushState(state)
     }
 }

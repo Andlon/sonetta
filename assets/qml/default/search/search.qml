@@ -14,15 +14,7 @@ FocusScope {
         anchors.fill: parent
         anchors.topMargin: ui.misc.topSectionHeight
 
-        currentIndex: {
-            var state = ui.state
-            if (state.search.stage === "query")
-                return 0
-            else if (state.search.stage === "results")
-                return 1
-
-            return 0
-        }
+        currentIndex: 0
 
         model: ObjectModel {
             QueryPage {
@@ -44,5 +36,29 @@ FocusScope {
                 ui.updateState(state)
             }
         }
+    }
+
+    Connections {
+        target: ui
+
+        onStatePushed: updateCurrentIndex()
+        onStatePopped: updateCurrentIndex()
+        onStateReset: {
+            if (ui.state.page === "search" && ui.state.search.stage === "query")
+            {
+                root.highlightFollowsCurrentItem = false
+                updateCurrentIndex()
+                root.highlightFollowsCurrentItem = true
+            }
+        }
+    }
+
+    function updateCurrentIndex()
+    {
+        var state = ui.state
+        if (state.search.stage === "query")
+            root.currentIndex = 0
+        else if (state.search.stage === "results")
+            root.currentIndex = 1
     }
 }

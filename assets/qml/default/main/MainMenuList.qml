@@ -6,8 +6,22 @@ import "../common/States.js" as States
 
 ListView {
     id: root
-    model: [ "nowplaying", "playlists", "search", "session" ]
-    currentIndex: 1
+    model: [ "nowplaying", "playlists", "search", "explore", "session" ]
+    currentIndex: {
+        switch (ui.state.page)
+        {
+        case "nowplaying":
+            return 0
+        case "playlists":
+            return 1
+        case "search":
+            return 2
+        case "explore":
+            return 3
+        case "session":
+            return 4
+        }
+    }
 
     delegate: MainMenuEntry {
         id: entry
@@ -49,13 +63,14 @@ ListView {
         }
     }
 
-    Navigation.onDown: incrementCurrentIndex()
-    Navigation.onUp: decrementCurrentIndex()
+    Navigation.onDown: updateIndex(currentIndex + 1)
+    Navigation.onUp: updateIndex(currentIndex - 1)
 
-    onCurrentIndexChanged: {
-        if (currentItem)
+    function updateIndex(index)
+    {
+        if (index >= 0 && index < count)
         {
-            ui.resetState(States.createPage(ui.state, currentItem.page))
+            ui.resetState(States.createPage(ui.state, root.model[index]))
         }
     }
 }

@@ -28,16 +28,16 @@ function createInitialState()
     // "results": displays results for the given query
     state.search.stage = "query"
 
-    /* Browse options */
-    state.browse = {}
+    /* Explore options */
+    state.explore = {}
 
     // Possible types (self-explanatory):
     // "artist", "album", "playlist"
-    // "": no browse
-    state.browse.type = ""
-    state.browse.artist = undefined
-    state.browse.album = undefined
-    state.browse.playlist = undefined
+    // "": no browse (default page for explore)
+    state.explore.type = ""
+    state.explore.artist = undefined
+    state.explore.album = undefined
+    state.explore.playlist = undefined
 
     return state
 }
@@ -48,18 +48,30 @@ function createPage(state, page)
     state.pageLabel = getLabel(page)
     state.showTopSection = page !== "nowplaying"
 
-    state.browse.type = ""
-    state.browse.artist = undefined
-    state.browse.album = undefined
-    state.browse.playlist = undefined
+    state.explore.type = ""
+    state.explore.artist = undefined
+    state.explore.album = undefined
+    state.explore.playlist = undefined
 
     return state
 }
 
 function createArtistBrowse(state, artist)
 {
-    state.browse.type = "artist"
-    state.browse.artist = artist
+    state = createPage(createInitialState(), "explore")
+
+    state.explore.type = "artist"
+    state.explore.artist = artist
+
+    return state
+}
+
+function createAlbumBrowse(state, album)
+{
+    state = createPage(createInitialState(), "explore")
+
+    state.explore.type = "album"
+    state.explore.album = album
 
     return state
 }
@@ -76,7 +88,10 @@ function getLabel(page)
         return "search"
     case "session":
         return "session"
+    case "explore":
+        return "explore"
     default:
+        console.error("Error: Label requested for unknown page " + page)
         return ""
     }
 }

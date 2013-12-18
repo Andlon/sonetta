@@ -34,20 +34,4 @@ FocusScope {
             topMargin: ui.misc.globalPadding
         }
     }
-
-//    Image {
-//        anchors {
-//            bottom: root.bottom
-//            //left: root.left
-//            //right: root.right
-//            horizontalCenter: root.horizontalCenter
-//            margins: ui.misc.globalPadding
-//        }
-
-//        width: 140
-//        height: width / sourceSize.width * sourceSize.height
-
-//        source: "../images/spotify.png"
-//        //height: width / sourceSize.width * sourceSize.height
-//    }
 }

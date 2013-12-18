@@ -13,8 +13,6 @@ FocusScope {
         value: topSection.height + 2 * topSection.anchors.margins
     }
 
-
-
     Sidebar {
         id: sidebar
         width: 220
@@ -30,7 +28,8 @@ FocusScope {
 
     PageView {
         id: pager
-        model: ["nowplaying/nowplaying.qml", "playlists/playlists.qml", "search/search.qml", "session/session.qml"]
+        model: ["nowplaying/nowplaying.qml", "playlists/playlists.qml",
+            "search/search.qml", "explore/explore.qml", "session/session.qml"]
         focus: true
         flow: Qt.LeftToRight
         anchors {
@@ -42,7 +41,7 @@ FocusScope {
         }
 
         // Make sure we buffer everything (tweak this in the future?)
-        cacheBuffer: 4 * pager.height
+        cacheBuffer: 5 * pager.height
         currentIndex: sidebar.currentIndex
 
         delegate: Loader {
