@@ -37,7 +37,6 @@ HEADERS += \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
     src/models/albumlistmodel.h \
-    src/models/albumbrowsemodel.h \
     src/models/tracklistmodel.h \
     src/models/abstractartistcollectionmodel.h \
     src/models/artistlistmodel.h \
@@ -48,7 +47,6 @@ HEADERS += \
     src/utilities/session.h \
     src/models/playlistmodel.h \
     src/models/playlistcontainermodel.h \
-    src/quick/quicksearch.h \
     src/quick/quicktrackinfo.h \
     src/quick/enums.h \
     src/quick/models.h \
@@ -60,7 +58,8 @@ HEADERS += \
     src/utilities/qobjectscopedpointer.h \
     src/settings.h \
     src/utilities/mosaicgenerator.h \
-    src/quick/quickmosaicgenerator.h
+    src/quick/quickmosaicgenerator.h \
+    src/models/albummodel.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -71,9 +70,7 @@ SOURCES += \
     src/models/abstracttrackcollectionmodel.cpp \
     src/models/abstractalbumcollectionmodel.cpp \
     src/models/albumlistmodel.cpp \
-    src/models/albumbrowsemodel.cpp \
     src/quick/quicktrackinfo.cpp \
-    src/quick/quicksearch.cpp \
     src/models/tracklistmodel.cpp \
     src/models/abstractartistcollectionmodel.cpp \
     src/models/artistlistmodel.cpp \
@@ -89,7 +86,8 @@ SOURCES += \
     src/models/queuemodel.cpp \
     src/utilities/persistentplaylistindex.cpp \
     src/settings.cpp \
-    src/utilities/mosaicgenerator.cpp
+    src/utilities/mosaicgenerator.cpp \
+    src/models/albummodel.cpp
 
 OTHER_FILES += \
     assets/qml/default/main.qml \
@@ -113,7 +111,6 @@ OTHER_FILES += \
     assets/qml/default/common/Selectable.qml \
     assets/qml/default/search/search.qml \
     assets/qml/default/nowplaying/nowplaying.qml \
-    assets/qml/default/discover/discover.qml \
     assets/qml/default/common/VirtualKeyboardInput.qml \
     assets/qml/default/search/QueryPage.qml \
     assets/qml/default/search/ResultsPage.qml \
@@ -140,5 +137,8 @@ OTHER_FILES += \
     assets/qml/default/common/Pattern.qml \
     assets/qml/default/common/CollectionHighlight.qml \
     assets/qml/default/nowplaying/Playback.qml \
-    assets/qml/default/nowplaying/Trackbar.qml
+    assets/qml/default/nowplaying/Trackbar.qml \
+    assets/qml/default/explore/explore.qml \
+    assets/qml/default/common/StackView.qml \
+    assets/qml/default/explore/AlbumBrowse.qml
 

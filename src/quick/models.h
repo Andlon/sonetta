@@ -2,6 +2,7 @@
 
 #include "../models/playlistcontainermodel.h"
 #include "../models/playlistmodel.h"
+#include "../models/albummodel.h"
 #include "../utilities/session.h"
 namespace Sonetta {
 
@@ -17,6 +18,13 @@ class QuickPlaylistModel : public PlaylistModel {
 public:
     explicit QuickPlaylistModel(QObject * parent = 0)
         :   PlaylistModel(getCurrentSession(), parent) { }
+};
+
+class QuickAlbumModel : public AlbumModel {
+    Q_OBJECT
+public:
+    explicit QuickAlbumModel(QObject * parent = 0)
+        :   AlbumModel(getCurrentSession(), parent) { }
 };
 
 }

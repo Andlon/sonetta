@@ -102,7 +102,7 @@ void SearchEngine::performQuery(int trackDelta, int albumDelta,
     m_lastAlbumDelta = albumDelta;
     m_lastArtistDelta = artistDelta;
 
-    sp::Search search = m_session->createSearch(m_query, m_trackOffset, trackDelta,
+    sp::Search search = m_session->search(m_query, m_trackOffset, trackDelta,
                                                 m_albumOffset, albumDelta,
                                                 m_artistOffset, artistDelta,
                                                 m_playlistOffset, playlistDelta, sp::Search::Type::Standard);
@@ -202,7 +202,7 @@ void SearchEngine::predict(const QString &partial)
     }
     if (!m_session.isNull())
     {
-        sp::Search search = m_session->createSearch(partial, 0, 6, 0, 3, 0, 3, 0, 0, sp::Search::Type::Suggest);
+        sp::Search search = m_session->search(partial, 0, 6, 0, 3, 0, 3, 0, 0, sp::Search::Type::Suggest);
         m_predictionWatcher->watch(search);
 
         if (search.isLoaded())

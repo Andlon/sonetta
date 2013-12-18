@@ -10,9 +10,6 @@
 
 #include "imageprovider.h"
 
-#include "models/albumlistmodel.h"
-#include "models/albumbrowsemodel.h"
-
 #include "quick/enums.h"
 #include "quick/models.h"
 #include "quick/quicktrackinfo.h"
@@ -155,6 +152,7 @@ void Application::registerQmlTypes()
 
     qmlRegisterType<QuickPlaylistContainerModel>("Sonetta", 0, 1, "PlaylistContainerModel");
     qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");
+    qmlRegisterType<QuickAlbumModel>("Sonetta", 0, 1, "AlbumModel");
     qmlRegisterType<QuickTrackInfo>("Sonetta", 0, 1, "TrackInfo");
     qmlRegisterType<QuickSearch>("Sonetta", 0, 1, "SearchEngine");
     qmlRegisterType<QuickMosaicGenerator>("Sonetta", 0, 1, "MosaicGenerator");
