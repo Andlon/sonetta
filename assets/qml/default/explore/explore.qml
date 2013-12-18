@@ -2,8 +2,8 @@ import QtQuick 2.2
 import Sonetta 0.1
 import "../common"
 
-FocusScope {
-    focus: true
+Page {
+    page: "explore"
 
     StackView {
         id: stack
@@ -11,6 +11,22 @@ FocusScope {
         anchors {
             topMargin: ui.misc.topSectionHeight
             fill: parent
+        }
+    }
+
+    Connections {
+        target: UI
+
+        onParametersChanged: {
+            if (UI.page === page)
+            {
+                if (UI.parameters.type === "album")
+                {
+                    var properties = { album: UI.parameters.album }
+                    stack.pop()
+                    stack.push(Qt.resolvedUrl("AlbumBrowse.qml"), properties)
+                }
+            }
         }
     }
 

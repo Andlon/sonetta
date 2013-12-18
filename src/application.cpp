@@ -13,8 +13,8 @@
 #include "quick/enums.h"
 #include "quick/models.h"
 #include "quick/quicktrackinfo.h"
-#include "quick/quicksearch.h"
 #include "quick/quickmosaicgenerator.h"
+#include "quick/quickfactory.h"
 
 #include "../appkey.c"
 
@@ -154,14 +154,20 @@ void Application::registerQmlTypes()
     qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");
     qmlRegisterType<QuickAlbumModel>("Sonetta", 0, 1, "AlbumModel");
     qmlRegisterType<QuickTrackInfo>("Sonetta", 0, 1, "TrackInfo");
-    qmlRegisterType<QuickSearch>("Sonetta", 0, 1, "SearchEngine");
     qmlRegisterType<QuickMosaicGenerator>("Sonetta", 0, 1, "MosaicGenerator");
 
     qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
+    qmlRegisterSingletonType<QuickFactory>("Sonetta", 0, 1, "Factory", &quickFactorySingletonProvider);
 
     // Enums
     qmlRegisterUncreatableType<AlbumEnums>("Sonetta", 0, 1, "Album", "Cannot instantiate Album.");
     qmlRegisterUncreatableType<TrackEnums>("Sonetta", 0, 1, "Track", "Cannot instantiate Track.");
+
+    // Register the UI Singleton type. This is a temporary workaround. Consider creating
+    // a loader that dynamically loads any singleton files from a certain directory for greater
+    // separation between UI and logic
+    qmlRegisterSingletonType(QUrl::fromLocalFile(applicationDirPath() + "/qml/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
+
 }
 
 void Application::setupQuickEnvironment()

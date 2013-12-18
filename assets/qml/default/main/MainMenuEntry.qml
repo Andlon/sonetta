@@ -22,7 +22,25 @@ Item {
             margins: ui.misc.globalPadding
         }
 
-        text: States.getLabel(page)
+        text: {
+            switch (page)
+            {
+            case "playlists":
+                return "playlists"
+            case "nowplaying":
+                return "now playing"
+            case "search":
+                return "search"
+            case "session":
+                return "session"
+            case "explore":
+                return "explore"
+            default:
+                console.error("Error: Label requested for unknown page " + page)
+                return ""
+            }
+        }
+
         color: ui.colors.standard
         font: ui.fonts.h4
     }

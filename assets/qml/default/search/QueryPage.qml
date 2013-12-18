@@ -2,13 +2,14 @@ import QtQuick 2.2
 import Sonetta 0.1
 
 import "../common"
-import "../common/States.js" as States
 
 FocusScope
 {
     id: root
 
     property var activeList: history
+
+    signal searchCompleted(var query)
 
     onActiveFocusChanged: if (activeFocus) keyboard.focus = true
 
@@ -95,7 +96,7 @@ FocusScope
 
         model: search.history
 
-        onItemPressed: performSearch(currentItem.internalModelData)
+        onItemPressed: searchCompleted(currentItem.internalModelData)
         Navigation.onLeft: keyboard.focus = true
     }
 
@@ -127,7 +128,7 @@ FocusScope
 
         model: search.predictions
 
-        onItemPressed: performSearch(currentItem.internalModelData)
+        onItemPressed: searchCompleted(currentItem.internalModelData)
         Navigation.onLeft: keyboard.focus = true
     }
 
@@ -164,21 +165,14 @@ FocusScope
             wrapNavigationRight: false
 
             onComplete: {
-                performSearch(text)
+                if (text !== "")
+                    searchCompleted(text)
             }
 
-            onTextChanged: { search.predict(text) }
+            onTextChanged: search.predict(text)
 
             Navigation.onRight: activeList.focus = true
         }
-    }
-
-    function performSearch(text)
-    {
-        search.go(text)
-        var state = ui.state
-        state.search.stage = "results"
-        ui.pushState(state)
     }
 
     Connections {

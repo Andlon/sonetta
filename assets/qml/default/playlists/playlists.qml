@@ -3,10 +3,41 @@ import QtQml.Models 2.1
 import Sonetta 0.1
 
 import "../common"
-import "../common/States.js" as States
 
-FocusScope {
-    focus: true
+Page {
+    id: root
+    page: "playlists"
+
+    states: [
+        State {
+            name: "container"
+            PropertyChanges { target: pager; currentIndex: 0 }
+        },
+        State {
+            name: "playlists"
+            PropertyChanges { target: pager; currentIndex: 1 }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "container"
+            to: "playlists"
+            SequentialAnimation {
+                PauseAnimation { duration: pager.highlightMoveDuration }
+                ScriptAction { script: playlistStage.playlist = UI.parameters.playlist }
+            }
+        },
+        Transition {
+            from: "playlists"
+            to: "container"
+            SequentialAnimation {
+                PauseAnimation { duration: pager.highlightMoveDuration }
+                ScriptAction { script: playlistStage.playlist = Factory.createPlaylist() }
+            }
+        }
+    ]
+
     PageView {
         id: pager
         anchors {
@@ -15,15 +46,7 @@ FocusScope {
         }
 
         focus: true
-        currentIndex: {
-            var state = ui.state
-            if (state.playlists.stage === "container")
-                return 0
-            else if (state.playlists.stage === "playlist")
-                return 1
-
-            return 0
-        }
+        currentIndex: 0
 
         model: ObjectModel {
             ContainerPage {
@@ -31,11 +54,40 @@ FocusScope {
                 width: pager.cellWidth
                 height: pager.cellHeight
                 focus: true
+
+                onPlaylistSelected: UI.push("playlists", { stage: "playlists", playlist: playlist })
             }
 
             PlaylistPage {
+                id: playlistStage
+
                 width: pager.cellWidth
                 height: pager.cellHeight
+            }
+        }
+    }
+
+    onEnter: {
+        if (parameters && parameters.stage && parameters.stage === "playlists")
+        {
+            pager.positionViewAtEnd()
+        }
+        else
+        {
+            pager.positionViewAtBeginning()
+        }
+    }
+
+    Connections {
+        target: UI
+
+        onTransition: {
+            if (page === root.page)
+            {
+                if (parameters.stage === "playlists")
+                    root.state = "playlists"
+                else
+                    root.state = "container"
             }
         }
     }

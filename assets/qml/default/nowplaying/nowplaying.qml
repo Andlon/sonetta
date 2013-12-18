@@ -2,9 +2,9 @@ import QtQuick 2.2
 import Sonetta 0.1
 import "../common"
 
-FocusScope {
+Page {
     id: root
-    focus: true
+    page: "nowplaying"
 
     TrackInfo {
         id: track

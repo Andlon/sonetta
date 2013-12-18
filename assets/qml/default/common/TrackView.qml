@@ -2,6 +2,7 @@ import QtQuick 2.2
 import Sonetta 0.1
 
 import "Time.js" as Time
+import "States.js" as States
 
 CollectionView {
     id: root
@@ -19,6 +20,11 @@ CollectionView {
         ListElement {
             display: "Queue"
             name: "queue"
+        }
+
+        ListElement {
+            display: "Browse album"
+            name: "browsealbum"
         }
     }
 
@@ -46,14 +52,20 @@ CollectionView {
     }
 
     onContextPressed: {
-        if (name == "play")
+        switch (name)
         {
+        case "play":
             player.play(data.track)
             trackPlayed(data.index)
-        }
-        else if (name == "queue")
-        {
+            break;
+        case "queue":
             player.enqueue(data.track)
+            break;
+        case "browsealbum":
+            UI.push("explore", States.createAlbumBrowseParameters(data.album))
+            break;
+        default:
+            break
         }
     }
 

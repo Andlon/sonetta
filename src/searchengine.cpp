@@ -94,6 +94,17 @@ void SearchEngine::go(const QString &query)
     }
 }
 
+void SearchEngine::clear()
+{
+    m_trackModel->clear();
+    m_albumModel->clear();
+    m_artistModel->clear();
+    m_query.clear();
+    m_watcher->watch(sp::Search());
+
+    emit queryChanged();
+}
+
 void SearchEngine::performQuery(int trackDelta, int albumDelta,
                                 int artistDelta, int playlistDelta)
 {

@@ -2,11 +2,12 @@ import QtQuick 2.2
 import Sonetta 0.1
 
 import "../common"
-import "../common/States.js" as States
 
 CollectionView {
     id: view
     model: container
+
+    signal playlistSelected(var playlist)
 
     PlaylistContainerModel {
         id: container
@@ -55,10 +56,5 @@ CollectionView {
         }
     }
 
-    onItemPressed: {
-        var state = ui.state
-        state.playlists.stage = "playlist"
-        state.playlists.playlist = data.playlist
-        ui.pushState(state)
-    }
+    onItemPressed: playlistSelected(data.playlist)
 }

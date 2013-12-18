@@ -2,10 +2,11 @@ import QtQuick 2.2
 import Sonetta 0.1
 
 import "../common"
-import "../common/States.js" as States
 
 FocusScope {
     id: root
+
+    property alias playlist: playlistModel.playlist
 
     BackIndicator {
         id: back
@@ -21,7 +22,7 @@ FocusScope {
 
     TrackView {
         id: view
-        model: playlist
+        model: playlistModel
         focus: true
 
         anchors {
@@ -33,25 +34,13 @@ FocusScope {
         }
 
         PlaylistModel {
-            id: playlist
+            id: playlistModel
 
             onPlaylistChanged: view.currentIndex = 0
         }
 
-        Connections {
-            target: ui
-            onStateChanged: {
-                var state = ui.state
+        onTrackPlayed: player.queue.updateContext(playlistModel.playlist, modelIndex)
 
-                if (state.playlists.playlist !== undefined)
-                {
-                    playlist.playlist = state.playlists.playlist
-                }
-            }
-        }
-
-        onTrackPlayed: player.queue.updateContext(playlist.playlist, modelIndex)
-
-        Navigation.onLeft: ui.popState()
+        Navigation.onLeft: UI.pop()
     }
 }

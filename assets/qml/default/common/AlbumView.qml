@@ -54,12 +54,8 @@ CollectionView {
                     right: parent.right
                 }
             }
-
         }
     }
 
-    onItemPressed: {
-        var state = States.createAlbumBrowse(ui.state, data.album)
-        ui.pushState(state)
-    }
+    onItemPressed: UI.push("explore", States.createAlbumBrowseParameters(data.album))
 }

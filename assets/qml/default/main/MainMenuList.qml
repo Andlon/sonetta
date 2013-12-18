@@ -8,7 +8,7 @@ ListView {
     id: root
     model: [ "nowplaying", "playlists", "search", "explore", "session" ]
     currentIndex: {
-        switch (ui.state.page)
+        switch (UI.page)
         {
         case "nowplaying":
             return 0
@@ -70,7 +70,7 @@ ListView {
     {
         if (index >= 0 && index < count)
         {
-            ui.resetState(States.createPage(ui.state, root.model[index]))
+            UI.reset(root.model[index], {})
         }
     }
 }

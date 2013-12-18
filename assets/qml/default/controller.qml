@@ -57,7 +57,8 @@ FocusScope {
     Pattern {
         id: topSection
         visible: opacity != 0
-        opacity: ui.state.showTopSection ? 1 : 0
+        // Write states for this
+        opacity: UI.page === "nowplaying" ? 0 : 1
         height: childrenRect.height + ui.misc.globalPadding
         pattern: "medium"
 
@@ -72,25 +73,12 @@ FocusScope {
             anchors {
                 top: parent.top
                 left: parent.left
-                right: pageLabel.left
+                right: parent.right
                 rightMargin: 6 * ui.misc.globalPadding
                 margins: ui.misc.globalPadding
             }
 
             clip: true
-        }
-
-        Text {
-            id: pageLabel
-            color: ui.colors.standard
-            font: ui.fonts.h1
-            text: ui.state.pageLabel
-            height: contentHeight
-            anchors {
-                right: parent.right
-                bottom: nowplaying.bottom
-                margins: ui.misc.globalPadding
-            }
         }
 
         Behavior on opacity {

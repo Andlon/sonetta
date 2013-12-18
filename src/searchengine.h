@@ -34,6 +34,7 @@ public:
 
 public slots:
     void go(const QString &query);
+    void clear();
     void predict(const QString &partial);
 
 signals:

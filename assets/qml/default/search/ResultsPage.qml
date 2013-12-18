@@ -106,5 +106,5 @@ FocusScope {
         Navigation.onLeft: selection.focus = true
     }
 
-    Navigation.onLeft: ui.popState()
+    Navigation.onLeft: UI.pop()
 }

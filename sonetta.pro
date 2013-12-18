@@ -59,7 +59,8 @@ HEADERS += \
     src/settings.h \
     src/utilities/mosaicgenerator.h \
     src/quick/quickmosaicgenerator.h \
-    src/models/albummodel.h
+    src/models/albummodel.h \
+    src/quick/quickfactory.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -141,5 +142,6 @@ OTHER_FILES += \
     assets/qml/default/explore/explore.qml \
     assets/qml/default/common/StackView.qml \
     assets/qml/default/explore/AlbumBrowse.qml \
-    assets/qml/default/common/UI.qml
+    assets/qml/default/common/UI.qml \
+    assets/qml/default/common/Page.qml
 

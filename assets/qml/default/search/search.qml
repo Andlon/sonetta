@@ -3,11 +3,45 @@ import QtQml.Models 2.1
 import Sonetta 0.1
 import "../common"
 
-FocusScope {
-    focus: true
+Page {
+    id: root
+    page: "search"
+
+    property bool ignoreStage: false
+
+    states: [
+        State {
+            name: "query"
+            PropertyChanges { target: view; currentIndex: 0 }
+        },
+        State {
+            name: "results"
+            PropertyChanges { target: view; currentIndex: 1 }
+        }
+    ]
+
+    transitions: [
+        Transition {
+            from: "query"
+            to: "results"
+            SequentialAnimation {
+                PauseAnimation { duration: view.highlightMoveDuration }
+                ScriptAction { script: search.go(UI.parameters.query) }
+            }
+        },
+
+        Transition {
+            from: "results"
+            to: "query"
+            SequentialAnimation {
+                PauseAnimation { duration: view.highlightMoveDuration }
+                ScriptAction { script: search.clear() }
+            }
+        }
+    ]
 
     PageView {
-        id: root
+        id: view
         // Apparently this is necessary, no idea why
         focus: true
 
@@ -18,47 +52,40 @@ FocusScope {
 
         model: ObjectModel {
             QueryPage {
-                width: root.cellWidth
-                height: root.cellHeight
+                width: view.cellWidth
+                height: view.cellHeight
+
+                onSearchCompleted: UI.push("search", { stage: "results", query: query })
             }
 
             ResultsPage {
-                width: root.cellWidth
-                height: root.cellHeight
+                width: view.cellWidth
+                height: view.cellHeight
             }
         }
+    }
 
-        Navigation.onBack: {
-            var state = ui.state
-            if (state.search.stage === "results")
-            {
-                state.search.stage = "query"
-                ui.updateState(state)
-            }
-        }
+    onEnter: {
+        if (parameters.stage === "results")
+            view.positionViewAtEnd()
+        else
+            view.positionViewAtBeginning()
+
+        ignoreStage = false
     }
 
     Connections {
-        target: ui
+        target: UI
 
-        onStatePushed: updateCurrentIndex()
-        onStatePopped: updateCurrentIndex()
-        onStateReset: {
-            if (ui.state.page === "search" && ui.state.search.stage === "query")
+        onTransition: {
+            if (page === root.page)
             {
-                root.highlightFollowsCurrentItem = false
-                updateCurrentIndex()
-                root.highlightFollowsCurrentItem = true
+                if (parameters.stage === "results")
+                    root.state = "results"
+                else
+                    root.state = "query"
             }
         }
     }
 
-    function updateCurrentIndex()
-    {
-        var state = ui.state
-        if (state.search.stage === "query")
-            root.currentIndex = 0
-        else if (state.search.stage === "results")
-            root.currentIndex = 1
-    }
 }

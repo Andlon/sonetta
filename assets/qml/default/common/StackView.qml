@@ -42,6 +42,4 @@ FocusScope {
     {
         repeater.model.clear()
     }
-
-
 }

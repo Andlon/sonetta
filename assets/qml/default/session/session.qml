@@ -2,8 +2,8 @@ import QtQuick 2.2
 import Sonetta 0.1
 import "../common"
 
-FocusScope {
-    focus: true
+Page {
+    page: "session"
 
     MenuView {
         id: choices

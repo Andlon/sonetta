@@ -14,7 +14,6 @@ Item {
         State {
             name: "main"
         }
-
     ]
 
     Image {
@@ -50,7 +49,7 @@ Item {
 
     Component.onCompleted: {
         // Initialize UI state system
-        ui.resetState(States.createInitialState())
+        UI.reset("playlists", {})
 
         // Set up UI visual configuration
 
@@ -124,8 +123,8 @@ Item {
         }
     }
 
-    Navigation.onBack: ui.popState()
-    //Navigation.onPlay: { console.log("Play"); player.play() }
+    Navigation.onBack: UI.pop()
+    Navigation.onPlay: player.play()
     Navigation.onPlayPause: player.playPause()
     Navigation.onPause: player.pause()
     Navigation.onStop: player.pause()

@@ -98,11 +98,15 @@ FocusScope {
         }
 
         add: Transition {
-            NumberAnimation { property: "opacity"; from: 0; to: 100; duration: ui.misc.globalAnimationTime }
+            SmoothedAnimation { property: "opacity"; from: 0; to: 1; duration: 500; velocity: -1 }
         }
 
         remove: Transition {
-            NumberAnimation { property: "opacity"; from: 100; to: 0; duration: ui.misc.globalAnimationTime }
+            SmoothedAnimation { property: "opacity"; from: 1; to: 0; duration: 500; velocity: -1 }
+        }
+
+        populate: Transition {
+            SmoothedAnimation { property: "opacity"; from: 0; to: 1; duration: 500; velocity: -1 }
         }
 
         Navigation.onRight: {
