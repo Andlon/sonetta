@@ -140,5 +140,6 @@ OTHER_FILES += \
     assets/qml/default/nowplaying/Trackbar.qml \
     assets/qml/default/explore/explore.qml \
     assets/qml/default/common/StackView.qml \
-    assets/qml/default/explore/AlbumBrowse.qml
+    assets/qml/default/explore/AlbumBrowse.qml \
+    assets/qml/default/common/UI.qml
 
