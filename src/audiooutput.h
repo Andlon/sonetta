@@ -22,12 +22,14 @@ public slots:
 
 signals:
     void bufferEmpty();
+    void audioDeviceFailed();
 
 private slots:
     void onStateChanged(QAudio::State);
 
 private:
-    void setupOutput(const QAudioFormat &format);
+    bool isDeviceReady() const;
+    bool setupOutput(const QAudioFormat &format);
 
     QPointer<QAudioOutput>  m_output;
     QPointer<QIODevice>     m_device;
@@ -57,6 +59,8 @@ public:
 signals:
     void bufferEmpty();
     void bufferPopulated();
+
+    void audioDeviceFailed();
 
 private:
     QAudioFormat            m_format;

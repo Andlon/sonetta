@@ -32,6 +32,7 @@ Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *paren
     {
         connect(output, &AudioOutput::bufferEmpty, this, &Player::onBufferEmpty);
         connect(output, &AudioOutput::bufferPopulated, this, &Player::onBufferPopulated);
+        connect(output, &AudioOutput::audioDeviceFailed, this, &Player::pause);
         connect(session, &sp::Session::endOfTrack, this, &Player::onEndOfTrack);
     }
 

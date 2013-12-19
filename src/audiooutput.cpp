@@ -44,7 +44,11 @@ void AudioOutputWorker::push()
 
     if (m_output.isNull())
     {
-        setupOutput(format);
+        if (!setupOutput(format))
+        {
+            o->m_readLock.unlock();
+            return;
+        }
     }
 
     // If the format is correct, write to output
@@ -74,7 +78,7 @@ void AudioOutputWorker::push()
             emit bufferEmpty();
         }
     }
-    // If format's not the same, recreate output
+    // If format's not the same and we're not playing anything, recreate output
     else if (m_output->state() != QAudio::ActiveState)
     {
         m_output->deleteLater();
@@ -93,12 +97,20 @@ void AudioOutputWorker::push()
     o->m_readLock.unlock();
 }
 
-void AudioOutputWorker::setupOutput(const QAudioFormat &format)
+bool AudioOutputWorker::setupOutput(const QAudioFormat &format)
 {
     m_output = new QAudioOutput(format, this);
 
     m_output->setBufferSize(INTERNALBUFFERSIZE);
     m_device = m_output->start();
+
+    if (m_output->error() != QAudio::NoError)
+    {
+        emit audioDeviceFailed();
+        m_output->deleteLater();
+        m_output.clear();
+        return false;
+    }
 
     // Update at an interval equal to one third of the duration
     // the buffer is able to hold
@@ -113,6 +125,8 @@ void AudioOutputWorker::setupOutput(const QAudioFormat &format)
 
     connect(m_output.data(), &QAudioOutput::notify, this, &AudioOutputWorker::push);
     connect(m_output.data(), &QAudioOutput::stateChanged, this, &AudioOutputWorker::onStateChanged);
+
+    return true;
 }
 
 void AudioOutputWorker::onStateChanged(QAudio::State state)
@@ -132,6 +146,7 @@ AudioOutput::AudioOutput(QObject *parent)
     connect(m_audioThread, &QThread::finished,
             m_worker, &AudioOutputWorker::deleteLater);
     connect(m_worker, &AudioOutputWorker::bufferEmpty, this, &AudioOutput::bufferEmpty);
+    connect(m_worker, &AudioOutputWorker::audioDeviceFailed, this, &AudioOutput::audioDeviceFailed);
 
     m_audioThread->start();
 }
