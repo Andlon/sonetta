@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QVector>
+#include <QPersistentModelIndex>
 #include <Spotinetta/Spotinetta>
 
 namespace Sonetta {
@@ -38,6 +40,9 @@ public:
     int rowCount(const QModelIndex &parent) const;
     QHash<int, QByteArray> roleNames() const;
 
+public slots:
+    void updateMetadata();
+
 protected:
     virtual Spotinetta::Track getTrackAt(int index) const = 0;
     virtual int getTrackCount() const = 0;
@@ -47,8 +52,22 @@ protected:
     void updateArtistData(int first, int last = -1);
     void updateData(int first, int last = -1);
 
+private slots:
+    void onRowsInserted(const QModelIndex & parent, int start, int end);
+    void onModelReset();
+
 private:
+    void checkLoadStatus(int start, int end);
+
+    void updateTrackMetadata();
+    void updateAlbumMetadata();
+    void updateArtistMetadata();
+    void batchedDataUpdate(const QVector<QPersistentModelIndex> &objects, const QVector<int> &roles);
     Q_DISABLE_COPY(AbstractTrackCollectionModel)
+
+    QVector< QPersistentModelIndex > m_pendingTracks;
+    QVector< QPersistentModelIndex > m_pendingArtists;
+    QVector< QPersistentModelIndex > m_pendingAlbums;
 };
 
 }

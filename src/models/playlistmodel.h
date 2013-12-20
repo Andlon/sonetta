@@ -29,7 +29,6 @@ protected:
     int getTrackCount() const;
 
 private slots:
-    void onMetadataUpdated();
     void onStateChanged();
     void onTracksAdded(const Spotinetta::TrackList &tracks, int position);
     void onTracksRemoved(const QVector<int> &positions);
