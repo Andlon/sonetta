@@ -13,9 +13,6 @@ Rectangle {
 
     property real seekInterval: 10000
 
-    readonly property real relativePosition: player.position / track.duration
-    onRelativePositionChanged: fillAnimation.restart()
-
     states: [
         State {
             when: root.activeFocus
@@ -71,13 +68,45 @@ Rectangle {
         }
 
         color: ui.colors.label
+        width: 0
 
         NumberAnimation {
             id: fillAnimation
             target: fill
             property: "width"
-            to: (player.position / track.duration) * bar.width
-            duration: ui.misc.globalAnimationTime
+            duration: trackbarInterpolator.interval
+            loops: 1
+        }
+
+        Timer {
+            id: trackbarInterpolator
+            interval: 500
+            triggeredOnStart: false
+
+            onTriggered: {
+                if (player.playing)
+                {
+                    interval = Math.min(500, track.duration - player.position)
+                    fillAnimation.to = calculateFillWidth(player.position + interval)
+                    fillAnimation.restart()
+                    restart()
+                }
+            }
+        }
+
+        Connections {
+            target: player
+            onPlayingChanged: {
+                if (player.playing)
+                {
+                    trackbarInterpolator.onTriggered()
+                }
+                else
+                {
+                    trackbarInterpolator.stop()
+                    fillAnimation.stop()
+                }
+            }
         }
     }
 
@@ -102,6 +131,22 @@ Rectangle {
         track: player.track
     }
 
-    Navigation.onRight: player.seek(player.position + seekInterval)
-    Navigation.onLeft: player.seek(player.position - seekInterval)
+    Navigation.onRight: seek(player.position + seekInterval)
+    Navigation.onLeft: seek(player.position - seekInterval)
+
+    function seek(position)
+    {
+        var pos = Math.min(position, track.duration)
+        pos = Math.max(position, 0)
+        trackbarInterpolator.stop()
+        fillAnimation.stop()
+        fill.width = calculateFillWidth(pos)
+        player.seek(pos)
+        trackbarInterpolator.onTriggered()
+    }
+
+    function calculateFillWidth(position)
+    {
+        return (position / track.duration) * (bar.width - 2 * bar.border.width)
+    }
 }

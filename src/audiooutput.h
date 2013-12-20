@@ -15,28 +15,47 @@ class AudioOutput;
 class AudioOutputWorker : public QObject {
     Q_OBJECT
 public:
-    explicit AudioOutputWorker(AudioOutput * output);
+    explicit AudioOutputWorker(QObject * parent = 0);
+
+    int deliver(const Spotinetta::AudioFrameCollection &collection);
+
+    bool isPaused() const;
+    void pause();
+    void unpause();
+    void reset();
+    void schedulePush();
 
 public slots:
     void push();
 
 signals:
     void bufferEmpty();
+    void bufferPopulated();
     void audioDeviceFailed();
+    void processed(int deltams);
 
 private slots:
     void onStateChanged(QAudio::State);
 
 private:
-    bool isDeviceReady() const;
+    void updatePosition();
+    bool outputIsReady() const;
+
     bool setupOutput(const QAudioFormat &format);
+
+    QAudioFormat            m_format;
+    QMutex                  m_formatLock;
+    QMutex                  m_writeLock;
+    mutable QMutex          m_readLock;
 
     QPointer<QAudioOutput>  m_output;
     QPointer<QIODevice>     m_device;
-    QPointer<AudioOutput>   m_audioOutput;
+
+    Spotinetta::detail::RingBuffer<char, 1024> m_buffer;
 
     QByteArray              m_intermediate;
-    int                     m_processedMs;
+    qint64                  m_processedMs;
+    QAtomicInt              m_paused;
 };
 
 class AudioOutput : public QObject, public Spotinetta::AudioOutputInterface
@@ -45,36 +64,32 @@ class AudioOutput : public QObject, public Spotinetta::AudioOutputInterface
 public:
     explicit AudioOutput(QObject * parent = 0);
     ~AudioOutput();
-    int deliver(const Spotinetta::AudioFrameCollection &collection);
-    void reset();
 
-    bool isPlaying() const;
+    int deliver(const Spotinetta::AudioFrameCollection &collection);
 
     int position() const;
-    void resetPosition(int pos);
 
-    void start();
-    void stop();
+    bool isPaused() const;
+    void pause();
+    void unpause();
+    void reset();
+    void reset(int position);
 
 signals:
     void bufferEmpty();
     void bufferPopulated();
-
+    void isPausedChanged();
+    void positionChanged();
     void audioDeviceFailed();
 
-private:
-    QAudioFormat            m_format;
-    QMutex                  m_formatLock;
-    QMutex                  m_writeLock;
-    mutable QMutex          m_readLock;
+private slots:
+    void onProcessed(int deltams);
 
+private:
     QThread *               m_audioThread;
     AudioOutputWorker *     m_worker;
 
-    QAtomicInt              m_position;
-    bool                    m_paused;
-
-    Spotinetta::detail::RingBuffer<char, 1024> m_buffer;
+    int                     m_position;
 
     friend class AudioOutputWorker;
 };

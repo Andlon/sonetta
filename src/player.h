@@ -71,8 +71,6 @@ private:
     Spotinetta::TrackWatcher *      m_watcher;
     QueueModel *                    m_queue;
 
-    QTimer *                        m_positionTimer;
-
     bool m_endOfTrack;
     bool m_bufferEmpty;
 

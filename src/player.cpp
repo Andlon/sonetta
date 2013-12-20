@@ -7,7 +7,7 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *parent)
+Player::Player(Spotinetta::Session *session, AudioOutput * output, QObject *parent)
     :   QObject(parent), m_session(session), m_output(output),
       m_queue(new QueueModel(this)), m_endOfTrack(false),
       m_bufferEmpty(false), m_shuffle(false), m_repeat(false)
@@ -16,11 +16,6 @@ Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *paren
     Q_ASSERT(output != nullptr);
 
     m_watcher = new sp::TrackWatcher(session, this);
-    m_positionTimer = new QTimer(this);
-
-    // Set up connections
-    // to do: change the behavior of the position timer (check if changed etc.)
-    connect(m_positionTimer, &QTimer::timeout, this, &Player::positionChanged);
 
     // This ensures a track is eventually played whether it's loaded
     // or not
@@ -28,15 +23,13 @@ Player::Player(Spotinetta::Session *session, AudioOutput *output, QObject *paren
         play(m_watcher->watched());
     });;
 
-    if (output)
-    {
-        connect(output, &AudioOutput::bufferEmpty, this, &Player::onBufferEmpty);
-        connect(output, &AudioOutput::bufferPopulated, this, &Player::onBufferPopulated);
-        connect(output, &AudioOutput::audioDeviceFailed, this, &Player::pause);
-        connect(session, &sp::Session::endOfTrack, this, &Player::onEndOfTrack);
-    }
-
-    m_positionTimer->start(150);
+    connect(output, &AudioOutput::bufferEmpty, this, &Player::onBufferEmpty);
+    connect(output, &AudioOutput::bufferPopulated, this, &Player::onBufferPopulated);
+    connect(output, &AudioOutput::positionChanged, this, &Player::positionChanged);
+    connect(output, &AudioOutput::isPausedChanged, this, &Player::playingChanged);
+    connect(output, &AudioOutput::audioDeviceFailed, this, &Player::pause);
+    connect(this, &Player::trackChanged, this, &Player::playingChanged);
+    connect(session, &sp::Session::endOfTrack, this, &Player::onEndOfTrack);
 }
 
 void Player::onBufferEmpty()
@@ -74,7 +67,7 @@ bool Player::repeat() const
 
 bool Player::playing() const
 {
-    return !m_output.isNull() ? m_output->isPlaying() : false;
+    return !m_output.isNull() ? !m_output->isPaused() && track().isValid() : false;
 }
 
 int Player::position() const
@@ -119,6 +112,9 @@ void Player::transitionTrack()
         //   pushed all audio data belonging to the current track to our output buffers.
         // - The output must be idle, meaning all delivered audio data has been played.
         // The result is hopefully a perfect transition between tracks
+
+        // Make sure position timer gets reset
+        m_output->reset(0);
         next();
     }
 }
@@ -133,10 +129,7 @@ void Player::play(const Spotinetta::Track &track)
         m_session->unload();
 
         // Clear buffers
-        if (!m_output.isNull())
-        {
-            m_output->reset();
-        }
+        m_output->reset(0);
     }
 
     if (track.isLoaded())
@@ -144,14 +137,8 @@ void Player::play(const Spotinetta::Track &track)
         sp::Track loadedTrack = m_session->load(track);
         if (loadedTrack.isValid())
         {
+            m_output->unpause();
             m_session->play();
-
-            if (!m_output.isNull())
-            {
-                m_output->start();
-                emit playingChanged();
-                m_output->resetPosition(0);
-            }
         }
 
         if (loadedTrack != this->track())
@@ -180,16 +167,14 @@ void Player::seek(int position)
         int pos = qMax(position, 0);
         pos = qMin(track.duration(), pos);
         m_session->seek(pos);
-        m_output->reset();
-        m_output->resetPosition(pos);
+        m_output->reset(pos);
     }
 }
 
 void Player::play()
 {
     m_session->play();
-    m_output->start();
-    emit playingChanged();
+    m_output->unpause();
 }
 
 void Player::playPause()
@@ -207,8 +192,7 @@ void Player::playPause()
 void Player::pause()
 {
     m_session->pause();
-    m_output->stop();
-    emit playingChanged();
+    m_output->pause();
 }
 
 void Player::next()

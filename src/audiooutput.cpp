@@ -15,149 +15,14 @@ const qint64 INTERNALBUFFERSIZE = 50000;
 
 namespace Sonetta {
 
-AudioOutputWorker::AudioOutputWorker(AudioOutput *output)
-    :   QObject(nullptr), m_audioOutput(output), m_processedMs(0)
+AudioOutputWorker::AudioOutputWorker(QObject * parent)
+    :   QObject(parent), m_format(QAudioDeviceInfo::defaultOutputDevice().preferredFormat()),
+      m_buffer(RINGBUFFERSIZE), m_processedMs(0), m_paused(0)
 {
-
+    connect(this, &AudioOutputWorker::bufferPopulated, this, &AudioOutputWorker::push);
 }
 
-void AudioOutputWorker::push()
-{
-    AudioOutput * o = m_audioOutput;
-
-    // Try to lock the read lock. If we fail, it means a reset is in progress,
-    // in which case we don't want to wait around (might cause skipping in audio).
-    if (!o->m_readLock.tryLock())
-        return;
-
-    if (o->m_paused)
-    {
-        o->m_readLock.unlock();
-        return;
-    }
-
-    QAudioFormat format;
-    {
-        QMutexLocker locker(&o->m_formatLock);
-        format = o->m_format;
-    }
-
-    if (m_output.isNull())
-    {
-        if (!setupOutput(format))
-        {
-            o->m_readLock.unlock();
-            return;
-        }
-    }
-
-    // If the format is correct, write to output
-    if (m_output->format() == format)
-    {
-        if (o->m_buffer.used() > 0)
-        {
-            qint64 bytesPerFrame = format.bytesPerFrame();
-            qint64 toRead = qMin(o->m_buffer.used(), (qint64) m_output->bytesFree());
-
-            // Adjust toRead for frame boundaries
-            toRead -= (toRead % bytesPerFrame);
-
-            // Read to intermediate buffer. Should be the size of the output buffer,
-            // and should thus be able to hold all the data
-            qint64 read = o->m_buffer.read(m_intermediate.data(), toRead);
-
-            // Transfer data from intermediate buffer to output device.
-            qint64 written = m_device->write(m_intermediate.data(), read);
-
-            Q_ASSERT(read == toRead);
-            Q_ASSERT(written == read);
-        }
-        else
-        {
-            // There is no data in buffer, signal
-            emit bufferEmpty();
-        }
-    }
-    // If format's not the same and we're not playing anything, recreate output
-    else if (m_output->state() != QAudio::ActiveState)
-    {
-        m_output->deleteLater();
-        m_output.clear();
-        setupOutput(format);
-    }
-
-    // Update position with the amount of processed milliseconds
-    // since the last time this function was called
-    int processedMs = m_output->processedUSecs() / 1000;
-    int deltaProcess = processedMs - m_processedMs;
-    m_processedMs = processedMs;
-
-    m_audioOutput->m_position.fetchAndAddOrdered(deltaProcess);
-
-    o->m_readLock.unlock();
-}
-
-bool AudioOutputWorker::setupOutput(const QAudioFormat &format)
-{
-    m_output = new QAudioOutput(format, this);
-
-    m_output->setBufferSize(INTERNALBUFFERSIZE);
-    m_device = m_output->start();
-
-    if (m_output->error() != QAudio::NoError)
-    {
-        emit audioDeviceFailed();
-        m_output->deleteLater();
-        m_output.clear();
-        return false;
-    }
-
-    // Update at an interval equal to one third of the duration
-    // the buffer is able to hold
-    int notifyMs = format.durationForBytes(m_output->bufferSize()) / 3000;
-    m_output->setNotifyInterval(notifyMs);
-
-    // Make sure sufficient space is allocated for the intermediate buffer
-    m_intermediate.resize(m_output->bufferSize());
-
-    // Reset amount of processed milliseconds (used in position tracking)
-    m_processedMs = 0;
-
-    connect(m_output.data(), &QAudioOutput::notify, this, &AudioOutputWorker::push);
-    connect(m_output.data(), &QAudioOutput::stateChanged, this, &AudioOutputWorker::onStateChanged);
-
-    return true;
-}
-
-void AudioOutputWorker::onStateChanged(QAudio::State state)
-{
-    Q_UNUSED(state)
-}
-
-AudioOutput::AudioOutput(QObject *parent)
-    :   QObject(parent), m_paused(false), m_buffer(RINGBUFFERSIZE)
-{
-    m_position.store(0);
-
-    m_audioThread = new QThread(this);
-    m_worker = new AudioOutputWorker(this);
-    m_worker->moveToThread(m_audioThread);
-
-    connect(m_audioThread, &QThread::finished,
-            m_worker, &AudioOutputWorker::deleteLater);
-    connect(m_worker, &AudioOutputWorker::bufferEmpty, this, &AudioOutput::bufferEmpty);
-    connect(m_worker, &AudioOutputWorker::audioDeviceFailed, this, &AudioOutput::audioDeviceFailed);
-
-    m_audioThread->start();
-}
-
-AudioOutput::~AudioOutput()
-{
-    m_audioThread->exit();
-    m_audioThread->wait();
-}
-
-int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
+int AudioOutputWorker::deliver(const Spotinetta::AudioFrameCollection &collection)
 {
     // If tryLock fails, a reset is in progress, in which case we don't want to
     // try to write anything, as it will only block Spotify's music thread
@@ -184,20 +49,19 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
 
     if (formatsEqual)
     {
+        qint64 freeBytes = m_buffer.free();
         qint64 bytesPerFrame = newFormat.bytesPerFrame();
-        qint64 toWrite = qMin(collection.bytes(), (int) m_buffer.free());
+        qint64 toWrite = qMin((qint64) collection.bytes(), freeBytes);
         toWrite -= (toWrite % bytesPerFrame);
 
         qint64 written = m_buffer.write(collection.data(), toWrite);
         Q_ASSERT(written == toWrite);
 
-        if (written > 0)
+        if (written > 0 && freeBytes == m_buffer.size())
         {
             // Signal that we've populated the buffer
             emit bufferPopulated();
         }
-
-        QMetaObject::invokeMethod(m_worker, "push", Qt::QueuedConnection);
 
         // Return number of frames consumed
         consumed = toWrite / bytesPerFrame;
@@ -207,7 +71,23 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
     return consumed;
 }
 
-void AudioOutput::reset()
+bool AudioOutputWorker::isPaused() const
+{
+    return m_paused.load();
+}
+
+void AudioOutputWorker::pause()
+{
+    m_paused.store(1);
+}
+
+void AudioOutputWorker::unpause()
+{
+    m_paused.store(0);
+    schedulePush();
+}
+
+void AudioOutputWorker::reset()
 {
     // Make sure we have exclusive read and write access
     QMutexLocker writeLocker(&m_writeLock);
@@ -216,32 +96,206 @@ void AudioOutput::reset()
     m_buffer.clear();
 }
 
-bool AudioOutput::isPlaying() const
+void AudioOutputWorker::schedulePush()
 {
-    QMutexLocker readLocker(&m_readLock);
-    return !m_paused;
+    QMetaObject::invokeMethod(this, "push", Qt::QueuedConnection);
 }
 
-void AudioOutput::resetPosition(int pos)
+void AudioOutputWorker::push()
 {
-    m_position.store(pos);
+    // Try to lock the read lock. If we fail, it means a reset is in progress,
+    // in which case we don't want to wait around (might cause skipping in audio).
+    if (!m_readLock.tryLock())
+        return;
+
+    if (isPaused())
+    {
+        m_readLock.unlock();
+        return;
+    }
+
+    QAudioFormat format;
+    {
+        QMutexLocker locker(&m_formatLock);
+        format = m_format;
+    }
+
+    if (!outputIsReady())
+    {
+        if (!setupOutput(format))
+        {
+            m_readLock.unlock();
+            return;
+        }
+    }
+
+    // If the format is correct, write to output
+    if (m_output->format() == format)
+    {
+        if (m_buffer.used() > 0)
+        {
+            qint64 bytesPerFrame = format.bytesPerFrame();
+            qint64 toRead = qMin(m_buffer.used(), (qint64) m_output->bytesFree());
+
+            // Adjust toRead for frame boundaries
+            toRead -= (toRead % bytesPerFrame);
+
+            // Read to intermediate buffer. Should be the size of the output buffer,
+            // and should thus be able to hold all the data
+            qint64 read = m_buffer.read(m_intermediate.data(), toRead);
+
+            // Transfer data from intermediate buffer to output device.
+            qint64 written = m_device->write(m_intermediate.data(), read);
+
+            Q_UNUSED(written)
+            Q_ASSERT(read == toRead);
+            Q_ASSERT(written == read);
+        }
+        else
+        {
+            // There is no data in buffer, signal
+            emit bufferEmpty();
+        }
+    }
+    // If format's not the same and we're not playing anything, recreate output
+    else if (m_output->state() != QAudio::ActiveState)
+    {
+        setupOutput(format);
+    }
+
+    updatePosition();
+    m_readLock.unlock();
+}
+
+bool AudioOutputWorker::setupOutput(const QAudioFormat &format)
+{
+    if (!m_output.isNull() && m_output->format() != format)
+    {
+        m_output->deleteLater();
+        m_output.clear();
+    }
+
+    if (m_output.isNull())
+    {
+        m_output = new QAudioOutput(format, this);
+    }
+
+    m_output->setBufferSize(INTERNALBUFFERSIZE);
+    m_device = m_output->start();
+
+    if (m_output->error() != QAudio::NoError)
+    {
+        emit audioDeviceFailed();
+        return false;
+    }
+
+    // Update at an interval equal to one third of the duration
+    // the buffer is able to hold
+    int notifyMs = format.durationForBytes(m_output->bufferSize()) / 3000;
+    m_output->setNotifyInterval(notifyMs);
+
+    // Make sure sufficient space is allocated for the intermediate buffer
+    m_intermediate.resize(m_output->bufferSize());
+
+    // Reset amount of processed milliseconds (used in position tracking)
+    m_processedMs = 0;
+
+    connect(m_output.data(), &QAudioOutput::notify, this, &AudioOutputWorker::push);
+    connect(m_output.data(), &QAudioOutput::stateChanged, this, &AudioOutputWorker::onStateChanged);
+
+    return true;
+}
+
+void AudioOutputWorker::onStateChanged(QAudio::State state)
+{
+    if (state == QAudio::IdleState)
+    {
+        // Schedule a push in the rare case that data is delivered just after
+        // checking if the buffer is non-empty (in push())
+        schedulePush();
+    }
+
+    Q_UNUSED(state)
+}
+
+void AudioOutputWorker::updatePosition()
+{
+    qint64 processedMs = m_output->processedUSecs() / 1000;
+    qint64 deltaProcess = processedMs - m_processedMs;
+    m_processedMs = processedMs;
+    emit processed(deltaProcess);
+}
+
+bool AudioOutputWorker::outputIsReady() const
+{
+    return !(m_output.isNull() || m_output->error() == QAudio::FatalError || m_output->error() == QAudio::OpenError || m_output->error() == QAudio::IOError);
+}
+
+AudioOutput::AudioOutput(QObject *parent)
+    :   QObject(parent)
+{
+    m_audioThread = new QThread(this);
+    m_worker = new AudioOutputWorker;
+    m_worker->moveToThread(m_audioThread);
+
+    connect(m_worker, &AudioOutputWorker::bufferEmpty, this, &AudioOutput::bufferEmpty);
+    connect(m_worker, &AudioOutputWorker::bufferPopulated, this, &AudioOutput::bufferPopulated);
+    connect(m_worker, &AudioOutputWorker::audioDeviceFailed, this, &AudioOutput::audioDeviceFailed);
+    connect(m_worker, &AudioOutputWorker::processed, this, &AudioOutput::onProcessed);
+
+    m_audioThread->start();
+}
+
+AudioOutput::~AudioOutput()
+{
+    m_audioThread->exit();
+    m_audioThread->wait();
+    delete m_worker;
+}
+
+int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
+{
+    return m_worker->deliver(collection);
+}
+
+void AudioOutput::reset(int position)
+{
+    reset();
+    m_position = position;
+    emit positionChanged();
+}
+
+bool AudioOutput::isPaused() const
+{
+    return m_worker->isPaused();
 }
 
 int AudioOutput::position() const
 {
-    return m_position.load();
+    return m_position;
 }
 
-void AudioOutput::start()
+void AudioOutput::pause()
 {
-    QMutexLocker readLocker(&m_readLock);
-    m_paused = false;
+    m_worker->pause();
+    emit isPausedChanged();
 }
 
-void AudioOutput::stop()
+void AudioOutput::unpause()
 {
-    QMutexLocker readLocker(&m_readLock);
-    m_paused = true;
+    m_worker->unpause();
+    emit isPausedChanged();
+}
+
+void AudioOutput::reset()
+{
+    m_worker->reset();
+}
+
+void AudioOutput::onProcessed(int deltams)
+{
+    m_position += deltams;
+    emit positionChanged();
 }
 
 }
