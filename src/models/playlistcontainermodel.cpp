@@ -1,5 +1,7 @@
 #include "playlistcontainermodel.h"
 
+#include <QDebug>
+
 namespace sp = Spotinetta;
 
 namespace Sonetta {
@@ -85,18 +87,8 @@ void PlaylistContainerModel::setPlaylistContainer(const Spotinetta::PlaylistCont
     {
         beginResetModel();
         m_playlists.clear();
-        m_watcher->watch(container);
-
-        // It seems, though I'm not sure, that we get onPlaylistAdded callbacks
-        // whether the container is loaded or not, so it looks like we don't need
-        // to add any playlists to our list at this point (if we do it messes up the model with duplicate
-        // playlists and too low count)
-//        if (container.isLoaded())
-//        {
-//            onLoaded();
-//        }
-
         endResetModel();
+        m_watcher->watch(container);
 
         emit playlistContainerChanged();
     }
@@ -155,18 +147,16 @@ void PlaylistContainerModel::onLoaded()
 
     if (container.playlistCount() > 0)
     {
-        beginInsertRows(QModelIndex(), 0, container.playlistCount() - 1);
+        beginResetModel();
         m_playlists.reserve(container.playlistCount());
 
         for (int i = 0; i < container.playlistCount(); ++i)
         {
             m_playlists.append(createWatcher(i));
         }
-        endInsertRows();
+        endResetModel();
     }
 }
-
-
 
 void PlaylistContainerModel::onPlaylistAdded(int position)
 {
