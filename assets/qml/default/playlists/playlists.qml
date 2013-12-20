@@ -8,6 +8,7 @@ Page {
     id: root
     page: "playlists"
 
+    state: "container"
     states: [
         State {
             name: "container"
@@ -68,7 +69,7 @@ Page {
     }
 
     onEnter: {
-        if (parameters && parameters.stage && parameters.stage === "playlists")
+        if (parameters.stage === "playlists")
         {
             pager.positionViewAtEnd()
         }
