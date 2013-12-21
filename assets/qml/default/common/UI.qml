@@ -10,7 +10,7 @@ Item {
     signal enteringPage(var page, var parameters)
     signal leavingPage(var page)
 
-    signal transition(var page, var parameters)
+    signal transition(var prev, var current, var type)
 
     QtObject {
         id: m
@@ -39,7 +39,7 @@ Item {
         m.parameters = parameters
         m.updateCount()
 
-        transition(page, parameters)
+        transition(state, { page: page, parameters: parameters }, "push")
     }
 
     function pop()
@@ -47,6 +47,7 @@ Item {
         if (count > 1)
         {
             var state = m.history.pop()
+            var prev = { page: root.page, parameters: root.parameters }
 
             if (root.page !== state.page)
             {
@@ -58,12 +59,13 @@ Item {
             m.parameters = state.parameters
             m.updateCount()
 
-            transition(page, parameters)
+            transition(prev, state, "pop")
         }
     }
 
     function reset(page, parameters)
     {
+        var prev = { page: root.page, parameters: parameters }
         if (page !== root.page)
         {
             leavingPage(root.page)
@@ -71,13 +73,12 @@ Item {
         }
 
         m.history = [ ]
-
         m.page = page
         m.parameters = parameters
 
         m.updateCount()
 
-        transition(page, parameters)
+        transition(prev, { page: page, parameters: parameters }, "reset")
     }
 
     function update(page, parameters)
@@ -85,11 +86,4 @@ Item {
         console.assert(page === root.page)
         m.parameters = parameters
     }
-
-//    function printState(page, parameters)
-//    {
-//        console.log("Page: " + page)
-//        console.log("Parameters: " + JSON.stringify(parameters, null, 4))
-//    }
-
 }
