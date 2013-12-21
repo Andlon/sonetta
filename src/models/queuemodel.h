@@ -12,18 +12,18 @@ public:
     enum class Type {
         Playlist,
         AlbumBrowse,
-        Search,
         TrackList
     };
 
     QueueContext() : m_type(Type::TrackList) { }
     explicit QueueContext(const Spotinetta::Playlist &playlist);
     explicit QueueContext(const Spotinetta::TrackList &tracks);
-    //QueueContext(const Spotinetta::AlbumBrowse &browse);
+    explicit QueueContext(const Spotinetta::AlbumBrowse &browse);
 
     bool isValid() const;
 
     Spotinetta::Playlist    playlist() const;
+    Spotinetta::AlbumBrowse albumBrowse() const;
     Spotinetta::TrackList   tracks() const;
     Type                    type() const;
 
@@ -31,6 +31,7 @@ private:
     Type                    m_type;
     Spotinetta::Playlist    m_playlist;
     Spotinetta::TrackList   m_tracks;
+    Spotinetta::AlbumBrowse m_browse;
 };
 
 class QueueModel : public AbstractTrackCollectionModel
@@ -41,7 +42,7 @@ public:
         Explicit = AbstractTrackCollectionModel::LastTrackCollectionModelRole + 1
     };
 
-    explicit QueueModel(QObject *parent = 0);
+    explicit QueueModel(const Spotinetta::Session * session, QObject *parent = 0);
 
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role) const;
@@ -60,16 +61,24 @@ public slots:
     void clearContext();
     void updateContext(const Spotinetta::Playlist &playlist, int index);
     void updateContext(const Spotinetta::TrackList &tracks, int index);
+    void updateContext(const Spotinetta::Album &album, int index);
 
 protected:
     int getTrackCount() const;
     Spotinetta::Track getTrackAt(int index) const;
 
+private slots:
+    void onLoaded();
+
 private:
     QueueContext m_context;
+    int          m_index;
 
     QQueue<Spotinetta::Track> m_explicit;
     QQueue<Spotinetta::Track> m_implicit;
+
+    QPointer<const Spotinetta::Session> m_session;
+    Spotinetta::AlbumBrowseWatcher *    m_albumBrowseWatcher;
 
 };
 

@@ -12,6 +12,8 @@ FocusScope {
         anchors {
             fill: parent
         }
+
+        onTrackPlayed: player.queue.updateContext(albumModel.album, modelIndex)
     }
 
     AlbumModel {

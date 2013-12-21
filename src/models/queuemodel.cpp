@@ -9,20 +9,26 @@ namespace Sonetta {
  */
 
 QueueContext::QueueContext(const Spotinetta::Playlist &playlist)
-    :   m_playlist(playlist)
+    :   m_playlist(playlist), m_type(Type::Playlist)
 {
 
 }
 
 QueueContext::QueueContext(const Spotinetta::TrackList &tracks)
-    :   m_tracks(tracks)
+    :   m_tracks(tracks), m_type(Type::TrackList)
+{
+
+}
+
+QueueContext::QueueContext(const Spotinetta::AlbumBrowse &browse)
+    :   m_browse(browse), m_type(Type::AlbumBrowse)
 {
 
 }
 
 bool QueueContext::isValid() const
 {
-    return m_playlist.isValid() || !m_tracks.isEmpty();
+    return m_playlist.isValid() || !m_tracks.isEmpty() || m_browse.isValid();
 }
 
 sp::Playlist QueueContext::playlist() const
@@ -30,9 +36,14 @@ sp::Playlist QueueContext::playlist() const
     return m_playlist;
 }
 
+Spotinetta::AlbumBrowse QueueContext::albumBrowse() const
+{
+    return m_browse;
+}
+
 sp::TrackList QueueContext::tracks() const
 {
-    return m_tracks;
+    return m_tracks + m_playlist.tracks() + m_browse.tracks();
 }
 
 QueueContext::Type QueueContext::type() const
@@ -44,9 +55,14 @@ QueueContext::Type QueueContext::type() const
  *  QueueModel
  */
 
-QueueModel::QueueModel(QObject *parent) :
-    AbstractTrackCollectionModel(parent)
+QueueModel::QueueModel(const Spotinetta::Session *session, QObject *parent)
+    :    AbstractTrackCollectionModel(parent), m_session(session), m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session, parent)),
+      m_index(0)
 {
+    connect(m_albumBrowseWatcher, &sp::AlbumBrowseWatcher::loaded,
+            this, &QueueModel::onLoaded);
+    connect(m_albumBrowseWatcher, &sp::AlbumBrowseWatcher::loaded,
+            this, &QueueModel::updateMetadata);
 }
 
 QHash<int, QByteArray> QueueModel::roleNames() const
@@ -78,12 +94,9 @@ QueueContext QueueModel::context() const
 
 void QueueModel::setContext(const QueueContext &context, int index)
 {
-    sp::TrackList tracks;
-    tracks.append(context.tracks());
-    tracks.append(context.playlist().tracks());
+    m_index = index;
 
     int begin = m_explicit.count();
-
     if (m_implicit.count() > 0)
     {
         int end = qMax(0, begin + m_implicit.count() - 1);
@@ -92,13 +105,14 @@ void QueueModel::setContext(const QueueContext &context, int index)
         endRemoveRows();
     }
 
-    if (tracks.count() > 0 && index + 1 < tracks.count())
+    if (context.type() == QueueContext::Type::AlbumBrowse && !context.albumBrowse().isLoaded())
     {
-        sp::TrackList queueTracks = tracks.mid(index + 1);
-        int end = qMax(0, begin + queueTracks.count() - 1);
-        beginInsertRows(QModelIndex(), begin, end);
-        m_implicit.append(queueTracks);
-        endInsertRows();
+        m_albumBrowseWatcher->watch(context.albumBrowse());
+    }
+    else
+    {
+        m_albumBrowseWatcher->watch(sp::AlbumBrowse());
+        onLoaded();
     }
 
     m_context = context;
@@ -119,6 +133,21 @@ sp::Track QueueModel::getTrackAt(int index) const
     else
     {
         return m_implicit[index - explicitCount];
+    }
+}
+
+void QueueModel::onLoaded()
+{
+    sp::TrackList tracks = m_context.tracks();
+
+    int begin = m_explicit.count();
+    if (tracks.count() > 0 && m_index + 1 < tracks.count())
+    {
+        sp::TrackList queueTracks = tracks.mid(m_index + 1);
+        int end = qMax(0, begin + queueTracks.count() - 1);
+        beginInsertRows(QModelIndex(), begin, end);
+        m_implicit.append(queueTracks);
+        endInsertRows();
     }
 }
 
@@ -190,6 +219,12 @@ void QueueModel::updateContext(const Spotinetta::Playlist &playlist, int index)
 void QueueModel::updateContext(const Spotinetta::TrackList &tracks, int index)
 {
     setContext(QueueContext(tracks), index);
+}
+
+void QueueModel::updateContext(const Spotinetta::Album &album, int index)
+{
+    Q_ASSERT(!m_session.isNull());
+    setContext(QueueContext(m_session->browse(album)), index);
 }
 
 }
