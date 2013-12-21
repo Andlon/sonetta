@@ -118,6 +118,7 @@ FocusScope {
     function positionViewAtIndex(index)
     {
         scroller.stop()
-        flickable.contentY = index * root.height
+        flickable.contentY = root.vertical ? index * root.height : 0
+        flickable.contentX = root.vertical ? 0 : index * root.width
     }
 }
