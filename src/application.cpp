@@ -129,12 +129,8 @@ bool Application::notify(QObject *receiver, QEvent *event)
     {
         QKeyEvent * keyEvent = static_cast<QKeyEvent *>(event);
 
-        // Ignore Alt + Enter
-        if (!(keyEvent->key() == Qt::Key_Return && keyEvent->modifiers() & Qt::AltModifier))
-        {
-            if (Navigation::dispatchKeyEvent(keyEvent))
-                return true;
-        }
+        if (Navigation::dispatchKeyEvent(keyEvent))
+            return true;
     }
         break;
     default:
@@ -165,7 +161,7 @@ void Application::registerQmlTypes()
 
     // Register the UI Singleton type. This is a temporary workaround. Consider creating
     // a loader that dynamically loads any singleton files from a certain directory for greater
-    // separation between UI and logic
+    // separation between UI and logic. NOTE TO SELF: It's possible to avoid C++ altogether with modules
     qmlRegisterSingletonType(QUrl::fromLocalFile(applicationDirPath() + "/qml/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
 
 }
@@ -202,6 +198,7 @@ void Application::showUi()
     QPoint windowCenter = m_view->geometry().center();
     m_view->setPosition(screenCenter - windowCenter);
     m_view->showFullScreen();
+    //m_view->showNormal();
 }
 
 void Application::createSession()

@@ -44,11 +44,13 @@ Page {
         id: view
         // Apparently this is necessary, no idea why
         focus: true
+        clip: true
 
         anchors.fill: parent
         anchors.topMargin: ui.misc.topSectionHeight
 
         currentIndex: 0
+        vertical: false
 
         model: ObjectModel {
             QueryPage {

@@ -62,7 +62,6 @@ FocusScope {
 
             function repositionItems()
             {
-                console.log("Repositioning")
                 // Adjust size
                 for (var i = 0; i < count; ++i)
                 {
