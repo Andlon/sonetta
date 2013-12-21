@@ -33,7 +33,7 @@ Page {
             right: view.left
             top: view.top
             bottom: playback.top
-            bottomMargin: ui.misc.globalPadding / 2
+            bottomMargin: ui.misc.globalPadding
             rightMargin: ui.misc.globalPadding
         }
 

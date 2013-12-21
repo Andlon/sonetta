@@ -54,7 +54,7 @@ FocusScope {
             height: childrenRect.height
             clip: true
 
-            H4 {
+            H3 {
                 anchors {
                     left: parent.left
                 }
@@ -63,14 +63,14 @@ FocusScope {
                 text: trackName
             }
 
-            Text {
+            H4 {
                 anchors {
                     left: parent.left
                 }
 
                 text: artistName
                 color: root.textColor
-                font: ui.fonts.standard
+                //font: ui.fonts.standard
                 elide: Text.ElideRight
             }
         }

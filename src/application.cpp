@@ -7,6 +7,8 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QDir>
+#include <QFontDatabase>
+#include <QFile>
 
 #include "imageprovider.h"
 
@@ -49,6 +51,7 @@ Application::Application(int &argc, char **argv)
 
 int Application::run()
 {
+    loadFonts();
     registerQmlTypes();
 
     if (m_session->error() == sp::Error::Ok)
@@ -199,6 +202,33 @@ void Application::showUi()
     m_view->setPosition(screenCenter - windowCenter);
     m_view->showFullScreen();
     //m_view->showNormal();
+}
+
+void Application::loadFonts()
+{
+    qDebug() << "Loading supplied applications fonts...";
+
+    QDir fontDir (applicationDirPath() + "/fonts");
+    if (fontDir.exists())
+    {
+        QStringList paths = fontDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+        for (const QString & path : paths)
+        {
+            QFile file(fontDir.absoluteFilePath(path));
+            if (file.open(QIODevice::ReadOnly))
+            {
+                QByteArray data = file.readAll();
+                int id = QFontDatabase::addApplicationFontFromData(data);
+                qDebug() << "Loaded font families:" << QFontDatabase::applicationFontFamilies(id);
+            }
+            else
+            {
+                qDebug() << "Failed to open font file " << path;
+            }
+        }
+    }
+
+    qDebug() << "Font loading complete.";
 }
 
 void Application::createSession()

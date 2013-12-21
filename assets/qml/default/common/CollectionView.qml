@@ -32,6 +32,7 @@ FocusScope {
     property alias removeDisplaced: list.removeDisplaced
 
     property alias snapMode: list.snapMode
+    property alias section: list.section
 
     property alias verticalLayoutDirection: list.verticalLayoutDirection
 

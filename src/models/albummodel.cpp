@@ -14,7 +14,7 @@ AlbumModel::AlbumModel(const Spotinetta::Session *session, QObject *parent)
     connect(m_watcher, &sp::AlbumBrowseWatcher::loaded,
             this, &AlbumModel::onLoaded);
     connect(m_watcher, &sp::AlbumBrowseWatcher::loaded,
-            this, &AlbumModel::albumMetadataChanged);
+            this, &AlbumModel::albumChanged);
     connect(this, &AlbumModel::albumChanged,
             this, &AlbumModel::albumMetadataChanged);
 }
@@ -22,6 +22,11 @@ AlbumModel::AlbumModel(const Spotinetta::Session *session, QObject *parent)
 QString AlbumModel::name() const
 {
     return album().name();
+}
+
+QString AlbumModel::artistName() const
+{
+    return m_watcher->watched().artist().name();
 }
 
 bool AlbumModel::isAvailable() const
@@ -65,6 +70,22 @@ void AlbumModel::setAlbum(const sp::Album &album)
         endResetModel();
         emit albumChanged();
     }
+}
+
+QString AlbumModel::smallCoverUri() const
+{
+
+    return sp::Link::fromAlbumCover(album(), sp::ImageSize::Small).uri();
+}
+
+QString AlbumModel::normalCoverUri() const
+{
+    return sp::Link::fromAlbumCover(album(), sp::ImageSize::Normal).uri();
+}
+
+QString AlbumModel::largeCoverUri() const
+{
+    return sp::Link::fromAlbumCover(album(), sp::ImageSize::Large).uri();
 }
 
 void AlbumModel::onLoaded()

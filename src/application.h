@@ -42,6 +42,7 @@ private:
     void registerQmlTypes();
     void setupQuickEnvironment();
     void showUi();
+    void loadFonts();
 
     QScopedPointer<QQuickView> m_view;
     Navigation * m_nav;

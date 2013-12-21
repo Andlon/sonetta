@@ -12,13 +12,19 @@ class AlbumModel : public AbstractTrackCollectionModel
     Q_PROPERTY(Spotinetta::Album album READ album WRITE setAlbum NOTIFY albumChanged)
     Q_PROPERTY(Spotinetta::Artist artist READ artist NOTIFY albumMetadataChanged)
     Q_PROPERTY(QString name READ name NOTIFY albumMetadataChanged)
+    Q_PROPERTY(QString artistName READ artistName NOTIFY albumMetadataChanged)
     Q_PROPERTY(bool isAvailable READ isAvailable NOTIFY albumMetadataChanged)
     Q_PROPERTY(int year READ year NOTIFY albumMetadataChanged)
+
+    Q_PROPERTY(QString smallCoverUri READ smallCoverUri NOTIFY albumChanged)
+    Q_PROPERTY(QString normalCoverUri READ normalCoverUri NOTIFY albumChanged)
+    Q_PROPERTY(QString largeCoverUri READ largeCoverUri NOTIFY albumChanged)
 
 public:
     explicit AlbumModel(const Spotinetta::Session * session, QObject * parent = 0);
 
     QString name() const;
+    QString artistName() const;
     bool    isAvailable() const;
     int     year() const;
 
@@ -27,6 +33,10 @@ public:
 
     Spotinetta::Album album() const;
     void setAlbum(const Spotinetta::Album &album);
+
+    QString smallCoverUri() const;
+    QString normalCoverUri() const;
+    QString largeCoverUri() const;
 
 protected:
     int getTrackCount() const;

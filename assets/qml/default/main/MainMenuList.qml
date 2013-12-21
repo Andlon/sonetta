@@ -26,6 +26,7 @@ ListView {
     delegate: MainMenuEntry {
         id: entry
         page: modelData
+        height: root.height / root.count
 
         Rectangle {
             anchors {

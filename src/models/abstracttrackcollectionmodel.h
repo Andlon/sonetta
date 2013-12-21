@@ -31,7 +31,7 @@ public:
         DurationRole,
         PopularityRole,
         DiscRole,
-        IndexRole,
+        AlbumIndexRole,
         IsStarred,
         IsPlaceholder,
         IsLocal,

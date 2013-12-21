@@ -61,13 +61,12 @@ FocusScope {
         model: ["Done", "Back", "Caps", "Shift", "Symbol"]
         width: contentItem.childrenRect.width
         height: childrenRect.height
-        delegate: Text {
+        delegate: H4 {
             height: root.cellSize.height
             width: contentWidth
+            elide: Text.ElideNone
             text: modelData
             color: actions.activeFocus && ListView.isCurrentItem ? ui.colors.highlight : ui.colors.standard
-            font.pixelSize: 32
-            font.family: "Roboto"
             verticalAlignment: Text.AlignVCenter
         }
 
@@ -268,12 +267,10 @@ FocusScope {
     Component {
         id: defaultTextComponent
 
-        Text {
+        H4 {
             id: text
             anchors.fill: parent
             color: "White"
-            font.pixelSize: 36
-            font.family: "Roboto"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }

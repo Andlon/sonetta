@@ -22,7 +22,7 @@ QHash<int, QByteArray> createRoles() {
     r.insert(AbstractTrackCollectionModel::DurationRole, "duration");
     r.insert(AbstractTrackCollectionModel::PopularityRole, "popularity");
     r.insert(AbstractTrackCollectionModel::DiscRole, "disc");
-    r.insert(AbstractTrackCollectionModel::IndexRole, "index");
+    r.insert(AbstractTrackCollectionModel::AlbumIndexRole, "albumIndex");
     r.insert(AbstractTrackCollectionModel::IsStarred, "starred");
     r.insert(AbstractTrackCollectionModel::IsPlaceholder, "placeholder");
     r.insert(AbstractTrackCollectionModel::IsLocal, "local");
@@ -117,7 +117,7 @@ QVariant AbstractTrackCollectionModel::data(const QModelIndex &index, int role) 
         return track.popularity();
     case DiscRole:
         return track.disc();
-    case IndexRole:
+    case AlbumIndexRole:
         return track.index();
     case IsStarred:
         return track.isStarred(m_session);

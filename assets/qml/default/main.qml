@@ -71,6 +71,7 @@ Item {
         var standard = {}
         standard.family = "Roboto"
         standard.pointSize = 19
+        standard.weight = 40
         fonts.standard = Qt.font(standard)
 
         // Create disclaimer font
@@ -88,16 +89,19 @@ Item {
         var h2 = {}
         h2.family = "Roboto"
         h2.pointSize = 35
+        h2.weight = Font.Light
         fonts.h2 = Qt.font(h2)
 
         var h3 = {}
         h3.family = "Roboto"
         h3.pointSize = 25
+        h3.weight = 40
         fonts.h3 = Qt.font(h3)
 
         var h4 = {}
         h4.family = "Roboto"
         h4.pointSize = 22
+        h4.weight = 40
         fonts.h4 = Qt.font(h4)
 
         ui.setMiscProperties(misc)
