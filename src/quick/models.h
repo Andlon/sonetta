@@ -2,9 +2,17 @@
 
 #include "../models/playlistcontainermodel.h"
 #include "../models/playlistmodel.h"
+#include "../models/tracklistmodel.h"
 #include "../models/albummodel.h"
 #include "../utilities/session.h"
 namespace Sonetta {
+
+class QuickTrackListModel : public TrackListModel {
+    Q_OBJECT
+public:
+    explicit QuickTrackListModel(QObject * parent = 0)
+        :   TrackListModel(getCurrentSession(), parent) { }
+};
 
 class QuickPlaylistContainerModel : public PlaylistContainerModel {
     Q_OBJECT

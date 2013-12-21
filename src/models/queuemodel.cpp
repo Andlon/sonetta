@@ -56,7 +56,7 @@ QueueContext::Type QueueContext::type() const
  */
 
 QueueModel::QueueModel(const Spotinetta::Session *session, QObject *parent)
-    :    AbstractTrackCollectionModel(parent), m_session(session), m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session, parent)),
+    :    AbstractTrackCollectionModel(session, parent), m_session(session), m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session, parent)),
       m_index(0)
 {
     connect(m_albumBrowseWatcher, &sp::AlbumBrowseWatcher::loaded,

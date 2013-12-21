@@ -6,8 +6,8 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-TrackListModel::TrackListModel(QObject *parent)
-    :   AbstractTrackCollectionModel(parent)
+TrackListModel::TrackListModel(const Spotinetta::Session * session, QObject * parent)
+    :   AbstractTrackCollectionModel(session, parent)
 {
 }
 

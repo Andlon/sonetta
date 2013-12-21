@@ -2,6 +2,7 @@
 
 #include <QAbstractListModel>
 #include <QVector>
+#include <QPointer>
 #include <QPersistentModelIndex>
 #include <Spotinetta/Spotinetta>
 
@@ -29,12 +30,19 @@ public:
         AlbumNameRole,
         DurationRole,
         PopularityRole,
+        DiscRole,
+        IndexRole,
+        IsStarred,
+        IsPlaceholder,
+        IsLocal,
+        IsAutoLinked,
+        Availability,
 
         // Used in subclasses
         LastTrackCollectionModelRole
     };
 
-    explicit AbstractTrackCollectionModel(QObject *parent = 0);
+    explicit AbstractTrackCollectionModel(const Spotinetta::Session * session, QObject *parent = 0);
 
     QVariant data(const QModelIndex &index, int role) const;
     int rowCount(const QModelIndex &parent) const;
@@ -63,6 +71,8 @@ private:
     QVector< QPersistentModelIndex > m_pendingTracks;
     QVector< QPersistentModelIndex > m_pendingArtists;
     QVector< QPersistentModelIndex > m_pendingAlbums;
+
+    QPointer<const Spotinetta::Session> m_session;
 };
 
 }

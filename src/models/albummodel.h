@@ -16,7 +16,7 @@ class AlbumModel : public AbstractTrackCollectionModel
     Q_PROPERTY(int year READ year NOTIFY albumMetadataChanged)
 
 public:
-    explicit AlbumModel(Spotinetta::Session * session, QObject * parent = 0);
+    explicit AlbumModel(const Spotinetta::Session * session, QObject * parent = 0);
 
     QString name() const;
     bool    isAvailable() const;
@@ -41,7 +41,7 @@ private slots:
 
 private:
     Q_DISABLE_COPY(AlbumModel)
-    QPointer<Spotinetta::Session>       m_session;
+    QPointer<const Spotinetta::Session> m_session;
     Spotinetta::AlbumBrowseWatcher *    m_watcher;
     Spotinetta::TrackList               m_tracks;
 };

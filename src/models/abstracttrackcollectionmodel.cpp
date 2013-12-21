@@ -14,13 +14,20 @@ QHash<int, QByteArray> createRoles() {
     r.insert(AbstractTrackCollectionModel::TrackRole, "track");
     r.insert(AbstractTrackCollectionModel::ArtistsRole, "artists");
     r.insert(AbstractTrackCollectionModel::AlbumRole, "album");
-    r.insert(AbstractTrackCollectionModel::IsLoadedRole, "isLoaded");
-    r.insert(AbstractTrackCollectionModel::IsValidRole, "isValid");
+    r.insert(AbstractTrackCollectionModel::IsLoadedRole, "loaded");
+    r.insert(AbstractTrackCollectionModel::IsValidRole, "valid");
     r.insert(AbstractTrackCollectionModel::NameRole, "name");
     r.insert(AbstractTrackCollectionModel::ArtistNamesRole, "artistNames");
     r.insert(AbstractTrackCollectionModel::AlbumNameRole, "albumName");
     r.insert(AbstractTrackCollectionModel::DurationRole, "duration");
     r.insert(AbstractTrackCollectionModel::PopularityRole, "popularity");
+    r.insert(AbstractTrackCollectionModel::DiscRole, "disc");
+    r.insert(AbstractTrackCollectionModel::IndexRole, "index");
+    r.insert(AbstractTrackCollectionModel::IsStarred, "starred");
+    r.insert(AbstractTrackCollectionModel::IsPlaceholder, "placeholder");
+    r.insert(AbstractTrackCollectionModel::IsLocal, "local");
+    r.insert(AbstractTrackCollectionModel::IsAutoLinked, "autolinked");
+    r.insert(AbstractTrackCollectionModel::Availability, "availability");
     return r;
 }
 
@@ -64,8 +71,8 @@ void rowSort(QVector<QPersistentModelIndex> & indices)
 
 }
 
-AbstractTrackCollectionModel::AbstractTrackCollectionModel(QObject *parent) :
-    QAbstractListModel(parent)
+AbstractTrackCollectionModel::AbstractTrackCollectionModel(const Spotinetta::Session * session, QObject *parent) :
+    QAbstractListModel(parent), m_session(session)
 {
     connect(this, &AbstractTrackCollectionModel::rowsInserted,
             this, &AbstractTrackCollectionModel::onRowsInserted);
@@ -106,10 +113,22 @@ QVariant AbstractTrackCollectionModel::data(const QModelIndex &index, int role) 
         break;
     case DurationRole:
         return track.duration();
-        break;
     case PopularityRole:
         return track.popularity();
-        break;
+    case DiscRole:
+        return track.disc();
+    case IndexRole:
+        return track.index();
+    case IsStarred:
+        return track.isStarred(m_session);
+    case IsPlaceholder:
+        return track.isPlaceholder();
+    case IsLocal:
+        return track.isLocal(m_session);
+    case IsAutoLinked:
+        return track.isAutoLinked(m_session);
+    case Availability:
+        return static_cast<unsigned int>(track.availability(m_session));
 
     default:
         break;

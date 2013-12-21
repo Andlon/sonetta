@@ -21,7 +21,7 @@ SearchEngine::SearchEngine(const Spotinetta::Session *session, QSharedPointer<Se
 
     m_watcher = new sp::SearchWatcher(session, this);
     m_predictionWatcher = new sp::SearchWatcher(session, this);
-    m_trackModel = new TrackListModel(this);
+    m_trackModel = new TrackListModel(session, this);
     m_albumModel = new AlbumListModel(this);
     m_artistModel = new ArtistListModel(this);
 

@@ -9,7 +9,7 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 PlaylistModel::PlaylistModel(const Spotinetta::Session *session, QObject *parent)
-    :   AbstractTrackCollectionModel(parent)
+    :   AbstractTrackCollectionModel(session, parent)
 {
     m_watcher = new sp::PlaylistWatcher(session, this);
 
