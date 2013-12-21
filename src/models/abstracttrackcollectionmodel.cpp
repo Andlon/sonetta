@@ -1,6 +1,7 @@
 #include "abstracttrackcollectionmodel.h"
 #include <QStringList>
 #include <QPair>
+#include <QDebug>
 
 namespace sp = Spotinetta;
 
@@ -242,40 +243,13 @@ void AbstractTrackCollectionModel::batchedDataUpdate(const QVector<QPersistentMo
         QModelIndex last = objects[j];
         emit dataChanged(first, last, roles);
 
+        if (i != j)
+        {
+            qDebug() << "Batched from " << i << "to" << j;
+        }
+
         i = j + 1;
     }
-}
-
-void AbstractTrackCollectionModel::updateTrackData(int first, int last)
-{
-    QModelIndex begin = index(first);
-    QModelIndex end = last == -1 ? index(first) : index(last);
-
-    emit dataChanged(begin, end, g_trackRoles);
-}
-
-void AbstractTrackCollectionModel::updateAlbumData(int first, int last)
-{
-    QModelIndex begin = index(first);
-    QModelIndex end = last == -1 ? index(first) : index(last);
-
-    emit dataChanged(begin, end, g_albumRoles);
-}
-
-void AbstractTrackCollectionModel::updateArtistData(int first, int last)
-{
-    QModelIndex begin = index(first);
-    QModelIndex end = last == -1 ? index(first) : index(last);
-
-    emit dataChanged(begin, end, g_artistRoles);
-}
-
-void AbstractTrackCollectionModel::updateData(int first, int last)
-{
-    QModelIndex begin = index(first);
-    QModelIndex end = last == -1 ? index(first) : index(last);
-
-    emit dataChanged(begin, end);
 }
 
 void AbstractTrackCollectionModel::onRowsInserted(const QModelIndex &, int start, int end)
@@ -293,7 +267,6 @@ void AbstractTrackCollectionModel::onModelReset()
 
 void AbstractTrackCollectionModel::checkLoadStatus(int start, int end)
 {
-    if (start )
     for (int i = start; i <= end; ++i)
     {
         QPersistentModelIndex modelIndex = index(i);

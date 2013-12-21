@@ -48,7 +48,6 @@ FocusScope {
             leftMargin: ui.misc.globalPadding
         }
 
-        flow: Qt.LeftToRight
         currentIndex: selection.currentIndex
 
         model: ObjectModel {

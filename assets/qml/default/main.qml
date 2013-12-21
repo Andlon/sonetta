@@ -10,34 +10,27 @@ Item {
     states: [
         State {
             name: "login"
+            PropertyChanges { target: loader; source: "login/login.qml" }
         },
         State {
             name: "main"
+            PropertyChanges { target: loader; source: "controller.qml" }
         }
     ]
 
-    Image {
+    Pattern {
         // background
         anchors.fill: parent
-        source: "images/medium.png"
+        pattern: "medium"
         fillMode: Image.Tile
     }
 
     Loader {
+        id: loader
         anchors.fill: parent
         focus: true
 
-        source: {
-            if (root.state == "login")
-                return "login/login.qml"
-            else if (root.state == "main")
-                return "controller.qml"
-            else
-                return ""
-        }
-
         onSourceChanged: item.focus = true
-
         onStatusChanged: ui.misc.ready = status == Loader.Ready
     }
 
@@ -48,11 +41,9 @@ Item {
     }
 
     Component.onCompleted: {
-        // Initialize UI state system
         UI.reset("playlists", {})
 
         // Set up UI visual configuration
-
         var misc = {}
         misc.globalBottomMargin = 100
         misc.globalTopMargin = 100

@@ -31,7 +31,7 @@ FocusScope {
         model: ["nowplaying/nowplaying.qml", "playlists/playlists.qml",
             "search/search.qml", "explore/explore.qml", "session/session.qml"]
         focus: true
-        flow: Qt.LeftToRight
+
         anchors {
             top: root.top
             left: sidebar.right
@@ -40,23 +40,49 @@ FocusScope {
             margins: ui.misc.globalPadding
         }
 
-        // Make sure we buffer everything (tweak this in the future?)
-        cacheBuffer: 5 * pager.height
-        currentIndex: sidebar.currentIndex
-
         delegate: Loader {
             source: modelData
-            width: pager.cellWidth
-            height: pager.cellHeight
             focus: true
         }
 
         Navigation.onLeft: sidebar.focus = true
+
+        Connections {
+            target: UI
+            onPageChanged: pager.updateCurrentIndex()
+        }
+
+        Component.onCompleted: { currentIndex = 1; positionViewAtIndex(1) }
+
+        function updateCurrentIndex()
+        {
+            var index = 0
+            switch (UI.page)
+            {
+            case "nowplaying":
+                index = 0
+                break
+            case "playlists":
+                index = 1
+                break
+            case "search":
+                index = 2
+                break
+            case "explore":
+                index = 3
+                break
+            case "session":
+                index = 4
+                break
+            }
+
+            currentIndex = index;
+        }
     }
 
     Pattern {
         id: topSection
-        visible: opacity != 0
+        visible: true //opacity != 0
         // Write states for this
         opacity: UI.page === "nowplaying" ? 0 : 1
         height: childrenRect.height + ui.misc.globalPadding
@@ -82,7 +108,10 @@ FocusScope {
         }
 
         Behavior on opacity {
-            SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+            OpacityAnimator {
+                duration: ui.misc.globalAnimationTime;
+                easing.type: Easing.InOutQuad
+            }
         }
     }
 

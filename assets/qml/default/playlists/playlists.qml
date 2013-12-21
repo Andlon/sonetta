@@ -25,7 +25,7 @@ Page {
             from: "container"
             to: "playlists"
             SequentialAnimation {
-                PauseAnimation { duration: pager.highlightMoveDuration }
+                PauseAnimation { duration: 2 * ui.misc.globalAnimationTime }
                 ScriptAction { script: playlistStage.playlist = UI.parameters.playlist }
             }
         },
@@ -33,7 +33,7 @@ Page {
             from: "playlists"
             to: "container"
             SequentialAnimation {
-                PauseAnimation { duration: pager.highlightMoveDuration }
+                PauseAnimation { duration: 2 * ui.misc.globalAnimationTime }
                 ScriptAction { script: playlistStage.playlist = Factory.createPlaylist() }
             }
         }
@@ -48,6 +48,8 @@ Page {
 
         focus: true
         currentIndex: 0
+        vertical: false
+        clip: true
 
         model: ObjectModel {
             ContainerPage {

@@ -47,11 +47,6 @@ protected:
     virtual Spotinetta::Track getTrackAt(int index) const = 0;
     virtual int getTrackCount() const = 0;
 
-    void updateTrackData(int first, int last = -1);
-    void updateAlbumData(int first, int last = -1);
-    void updateArtistData(int first, int last = -1);
-    void updateData(int first, int last = -1);
-
 private slots:
     void onRowsInserted(const QModelIndex & parent, int start, int end);
     void onModelReset();
