@@ -143,5 +143,6 @@ OTHER_FILES += \
     assets/qml/default/explore/AlbumBrowse.qml \
     assets/qml/default/common/UI.qml \
     assets/qml/default/common/Page.qml \
-    assets/qml/default/common/PageView.qml
+    assets/qml/default/common/PageView.qml \
+    assets/qml/default/explore/tophits.qml
 

@@ -25,7 +25,7 @@ Page {
             from: "query"
             to: "results"
             SequentialAnimation {
-                PauseAnimation { duration: view.highlightMoveDuration }
+                PauseAnimation { duration: 2 * ui.misc.globalAnimationTime }
                 ScriptAction { script: search.go(UI.parameters.query) }
             }
         },
@@ -80,9 +80,9 @@ Page {
         target: UI
 
         onTransition: {
-            if (page === root.page)
+            if (current.page === root.page)
             {
-                if (parameters.stage === "results")
+                if (current.parameters.stage === "results")
                     root.state = "results"
                 else
                     root.state = "query"

@@ -85,9 +85,9 @@ Page {
         target: UI
 
         onTransition: {
-            if (page === root.page)
+            if (current.page === root.page)
             {
-                if (parameters.stage === "playlists")
+                if (current.parameters.stage === "playlists")
                     root.state = "playlists"
                 else
                     root.state = "container"
