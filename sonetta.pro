@@ -105,7 +105,6 @@ OTHER_FILES += \
     assets/qml/default/common/CollectionView.qml \
     assets/qml/default/common/CollectionDelegate.qml \
     assets/qml/default/common/states.js \
-    assets/qml/default/common/PageView.qml \
     assets/qml/default/playlists/ContainerPage.qml \
     assets/qml/default/playlists/PlaylistPage.qml \
     assets/qml/default/NowPlaying.qml \
@@ -144,5 +143,5 @@ OTHER_FILES += \
     assets/qml/default/explore/AlbumBrowse.qml \
     assets/qml/default/common/UI.qml \
     assets/qml/default/common/Page.qml \
-    assets/qml/default/common/VerticalPageView.qml
+    assets/qml/default/common/PageView.qml
 
