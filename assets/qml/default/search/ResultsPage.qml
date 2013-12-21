@@ -54,10 +54,6 @@ FocusScope {
             TrackView {
                 id: tracks
                 focus: true
-
-                width: pager.cellWidth
-                height: pager.cellHeight
-
                 model: search.tracks
 
                 onTrackPlayed: player.queue.updateContext(search.tracks.list, modelIndex)
@@ -72,10 +68,6 @@ FocusScope {
             ArtistView {
                 id: artists
                 focus: true
-
-                width: pager.cellWidth
-                height: pager.cellHeight
-
                 model: search.artists
 
                 Connections {
@@ -88,11 +80,7 @@ FocusScope {
             AlbumView {
                 id: albums
                 focus: true
-
                 model: search.albums
-
-                width: pager.cellWidth
-                height: pager.cellHeight
 
                 Connections {
                     target: search

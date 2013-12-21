@@ -138,6 +138,7 @@ FocusScope
         anchors {
             left: parent.left
             right: parent.horizontalCenter
+            rightMargin: ui.misc.globalPadding
             verticalCenter: parent.verticalCenter
         }
 
