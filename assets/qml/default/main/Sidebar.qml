@@ -19,8 +19,12 @@ FocusScope {
         anchors {
             top: root.top
             horizontalCenter: root.horizontalCenter
-            topMargin: 20
+            topMargin: ui.misc.globalPadding
         }
+
+        fillMode: Image.PreserveAspectFit
+
+        height: ui.misc.topSectionHeight - 2 * ui.misc.globalPadding
     }
 
     MainMenuList {

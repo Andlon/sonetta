@@ -60,7 +60,7 @@ Item {
         colors.selected = "#4F7000"
         colors.standard = "#ffffff"
         colors.highlightText = "#292929"
-        colors.label = "#bbbbbb"
+        colors.label = "#999999"
 
         colors.dark = "#151515"
         colors.medium = "#202020"

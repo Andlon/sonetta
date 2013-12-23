@@ -85,7 +85,7 @@ FocusScope {
         visible: true //opacity != 0
         // Write states for this
         opacity: UI.page === "nowplaying" ? 0 : 1
-        height: childrenRect.height + ui.misc.globalPadding
+        height: childrenRect.height + 2 * ui.misc.globalPadding
         pattern: "medium"
 
         anchors {
@@ -113,6 +113,18 @@ FocusScope {
                 easing.type: Easing.InOutQuad
             }
         }
+    }
+
+    Rectangle {
+        anchors {
+            top: topSection.bottom
+            left: sidebar.right
+            right: parent.right
+        }
+
+        height: 1
+        color: ui.colors.light
+        visible: UI.page !== "nowplaying"
     }
 
 }

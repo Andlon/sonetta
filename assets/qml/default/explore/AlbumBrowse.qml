@@ -1,65 +1,101 @@
 import QtQuick 2.2
+import QtQuick.Layouts 1.1
 import Sonetta 0.1
 import "../common"
 import "../common/Time.js" as Time
 
 FocusScope {
+    id: root
     focus: true
     property alias album: albumModel.album
 
     SpotifyImage {
         id: cover
         anchors {
-            left: parent.left
-            right: tracks.left
+            left: tracks.right
+            right: parent.right
             top: parent.top
+            bottom: parent.bottom
 
-            rightMargin: ui.misc.globalPadding
+            leftMargin: ui.misc.globalPadding
         }
 
         fillMode: Image.PreserveAspectFit
+        verticalAlignment: Image.AlignTop
         uri: albumModel.largeCoverUri
     }
 
-    H2 {
-        id: name
-
-        anchors {
-            left: parent.left
-            right: tracks.left
-            top: cover.bottom
-            rightMargin: ui.misc.globalPadding
-            topMargin: ui.misc.globalPadding
+    RowLayout {
+        id: albumAndYear
+        spacing: 0
+        anchors
+        {
+            left: tracks.left
+            right: tracks.right
+            top: parent.top
+            leftMargin: ui.misc.globalPadding
         }
 
-        horizontalAlignment: Text.AlignHCenter
+        Text {
+            text: albumModel.name
+            color: ui.colors.standard
+            font: ui.fonts.h2
+            clip: true
+            elide: Text.ElideRight
 
-        text: albumModel.name + " (" + albumModel.year + ")"
+            // This is a semi-ugly hack, but it's the only way I managed intended behavior...
+            Layout.preferredWidth: implicitWidth + 5
+            Layout.maximumWidth: albumAndYear.width - year.contentWidth
+        }
+
+        Text {
+            id: year
+            color: ui.colors.label
+            font: ui.fonts.h2
+            text: " (" + albumModel.year + ")"
+            Layout.minimumWidth: contentWidth
+            Layout.fillWidth: true
+        }
     }
 
-    H2 {
-        id: artist
+    RowLayout {
+        id: byArtist
+        spacing: 0
         anchors {
-            left: parent.left
-            right: tracks.left
-            top: name.bottom
-            rightMargin: ui.misc.globalPadding
+            left: albumAndYear.left
+            right: tracks.right
+            top: albumAndYear.bottom
+            topMargin: ui.misc.globalPadding / 2
         }
 
-        horizontalAlignment: Text.AlignHCenter
+        Text {
+            color: ui.colors.label
+            font: ui.fonts.h2
+            text: "by "
+            Layout.minimumWidth: implicitWidth
+        }
 
-        text: albumModel.artistName
+        Text {
+            text: albumModel.artistName
+            color: ui.colors.standard
+            font: ui.fonts.h2
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+        }
     }
 
     TrackView {
         id: tracks
         focus: true
         model: albumModel
+        width: root.width * 0.5
+
         anchors {
-            right: parent.right
             bottom: parent.bottom
-            top: parent.top
-            left: parent.horizontalCenter
+            top: byArtist.bottom
+            left: parent.left
+
+            topMargin: 2 * ui.misc.globalPadding
         }
 
         onTrackPlayed: player.queue.updateContext(albumModel.album, modelIndex)
@@ -73,7 +109,6 @@ FocusScope {
                 id: albumIndex
                 anchors {
                     left: parent.left
-                    margins: ui.misc.globalPadding
                 }
 
                 text: model.albumIndex + "."
