@@ -74,7 +74,7 @@ FocusScope {
 
             function getCurrentItem()
             {
-                return root.currentIndex >= 0 && root.currentIndex < count ? repeater.itemAt(root.currentIndex) : undefined
+                return root.currentIndex >= 0 && root.currentIndex < count ? repeater.itemAt(root.currentIndex) : null
             }
         }
     }
