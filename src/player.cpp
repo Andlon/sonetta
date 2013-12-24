@@ -27,7 +27,6 @@ Player::Player(Spotinetta::Session *session, AudioOutput * output, QObject *pare
     connect(output, &AudioOutput::bufferPopulated, this, &Player::onBufferPopulated);
     connect(output, &AudioOutput::positionChanged, this, &Player::positionChanged);
     connect(output, &AudioOutput::isPausedChanged, this, &Player::playingChanged);
-    connect(output, &AudioOutput::audioDeviceFailed, this, &Player::pause);
     connect(this, &Player::trackChanged, this, &Player::playingChanged);
     connect(session, &sp::Session::endOfTrack, this, &Player::onEndOfTrack);
 }

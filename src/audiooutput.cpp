@@ -19,7 +19,14 @@ AudioOutputWorker::AudioOutputWorker(QObject * parent)
     :   QObject(parent), m_format(QAudioDeviceInfo::defaultOutputDevice().preferredFormat()),
       m_buffer(RINGBUFFERSIZE), m_processedMs(0), m_paused(0)
 {
+    qDebug() << "Listing available audio devices...";
+    for (const QAudioDeviceInfo & info : QAudioDeviceInfo::availableDevices(QAudio::AudioOutput))
+    {
+        qDebug() << info.deviceName();
+    }
+
     connect(this, &AudioOutputWorker::bufferPopulated, this, &AudioOutputWorker::push);
+    connect(this, &AudioOutputWorker::audioDeviceFailed, this, &AudioOutputWorker::pause);
 }
 
 int AudioOutputWorker::deliver(const Spotinetta::AudioFrameCollection &collection)
@@ -180,11 +187,20 @@ bool AudioOutputWorker::setupOutput(const QAudioFormat &format)
         m_output = new QAudioOutput(format, this);
     }
 
+    QAudioDeviceInfo defaultDevice = QAudioDeviceInfo::defaultOutputDevice();
+    qDebug() << "Created new audio output, using device" << defaultDevice.deviceName();
+
+    if (!defaultDevice.isFormatSupported(format))
+    {
+        qDebug() << "Default device does not support requested format" << format;
+    }
+
     m_output->setBufferSize(INTERNALBUFFERSIZE);
     m_device = m_output->start();
 
     if (m_output->error() != QAudio::NoError)
     {
+        qDebug() << "Starting audio output device failed. Error: " << m_output->error();
         emit audioDeviceFailed();
         return false;
     }
