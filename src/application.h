@@ -45,7 +45,6 @@ private:
     void loadFonts();
 
     QScopedPointer<QQuickView> m_view;
-    Navigation * m_nav;
 
     Player *                    m_player;
     Spotinetta::Session *       m_session;

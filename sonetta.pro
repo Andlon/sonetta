@@ -32,7 +32,6 @@ include("dependencies/spotinetta/link.pri")
 
 HEADERS += \
     src/navigation/navigation.h \
-    src/navigation/navigationnativeeventfilter.h \
     src/navigation/lircremote.h \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
@@ -64,7 +63,6 @@ HEADERS += \
 
 SOURCES += \
     src/navigation/navigation.cpp \
-    src/navigation/navigationnativeeventfilter.cpp \
     src/navigation/lircremote.cpp \
     src/main.cpp \
     appkey.c \

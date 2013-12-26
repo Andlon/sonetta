@@ -33,11 +33,9 @@ void LircRemote::readData()
             if (ok && (repeatCount == 0 || repeatCount >= 3))
             {
                 QString button = parts[2];
-                QString remote = parts[3];
+                //QString remote = parts[3];
 
-                //                    if (remote == "mceusb")
-                //                    {
-                Navigation::Key key = Navigation::Undefined;
+                Navigation::Button key = Navigation::Undefined;
 
                 if (button == "KEY_BACK")
                     key = Navigation::Back;
@@ -82,12 +80,8 @@ void LircRemote::readData()
 
                 if (key != Navigation::Undefined)
                 {
-                    NavEvent navEvent(key, repeatCount > 0);
-                    Navigation::dispatchNavigationEvent(&navEvent);
+                    Navigation::dispatchNavigationEvent(key, repeatCount > 0);
                 }
-                //                    }
-
-
             }
         }
         else

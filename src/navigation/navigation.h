@@ -6,13 +6,6 @@
 #include <QtQml>
 #include <QPointer>
 
-#include "navigationnativeeventfilter.h"
-
-#ifdef Q_OS_LINUX
-#include "lircremote.h"
-#endif
-
-
 static const QEvent::Type NavEventType = (QEvent::Type) (QEvent::User + 4032);
 
 class QKeyEvent;
@@ -26,6 +19,8 @@ class NavigationAttached : public QObject
 
 public:
     explicit NavigationAttached(QObject *parent = 0);
+
+    bool event(QEvent *);
 
 signals:
     void left(QuickNavEvent *event);
@@ -45,16 +40,16 @@ signals:
 
 protected:
     void customEvent(QEvent *);
-
 };
 
 /************************************************************/
+
 class Navigation : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(Key)
+    Q_ENUMS(Button)
 public:
-    enum Key {
+    enum Button {
         Undefined,
         Left,
         Right,
@@ -78,49 +73,41 @@ public:
         ChannelUp
     };
 
-    explicit Navigation(QObject *parent = 0);
-    ~Navigation();
-
     static NavigationAttached * qmlAttachedProperties(QObject *object);
 
-    static bool dispatchNavigationEvent(NavEvent *event);
-    static bool dispatchKeyEvent(QKeyEvent *keyEvent);
-    static Navigation::Key translateKey(Qt::Key key);
+    static void dispatchNavigationEvent(Button button, bool autoRepeat);
 
+    static Navigation::Button translateKey(Qt::Key key);
+    static Qt::Key translateButton(Navigation::Button button);
 
 private:
-    NavigationNativeEventFilter * m_filter;
-
-#ifdef Q_OS_LINUX
-    LircRemote * m_lirc;
-#endif
 };
 
 class NavEvent : public QEvent {
 public:
-    NavEvent(Navigation::Key key, bool isAutoRepeat = false)
+    NavEvent(Navigation::Button key, bool isAutoRepeat = false)
         :   QEvent(NavEventType), m_isAutoRepeat(isAutoRepeat), m_key(key) { setAccepted(false); }
 
     bool isAutoRepeat() const { return m_isAutoRepeat; }
-    Navigation::Key key() const { return m_key; }
+    Navigation::Button key() const { return m_key; }
 
 private:
     bool m_isAutoRepeat;
-    Navigation::Key m_key;
+    Navigation::Button m_key;
 };
 
 class QuickNavEvent : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(bool isAutoRepeat READ isAutoRepeat CONSTANT)
-    Q_PROPERTY(Navigation::Key key READ key CONSTANT)
+    Q_PROPERTY(Navigation::Button key READ key CONSTANT)
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 public:
-    QuickNavEvent(Navigation::Key key, bool isAutoRepeat = false)
+    QuickNavEvent(Navigation::Button key, bool isAutoRepeat = false)
         :   event(key, isAutoRepeat) {  }
 
     bool isAutoRepeat() const { return event.isAutoRepeat(); }
-    Navigation::Key key() const { return event.key(); }
+    Navigation::Button key() const { return event.key(); }
 
     bool isAccepted() const { return event.isAccepted(); }
     void setAccepted(bool accepted) { event.setAccepted(accepted); }

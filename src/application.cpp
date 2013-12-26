@@ -32,7 +32,7 @@ void deleteSettingsLater(Settings * settings) { settings->deleteLater(); }
 }
 
 Application::Application(int &argc, char **argv)
-    :   QGuiApplication(argc, argv), m_view(new QQuickView), m_nav(new Navigation(this)),
+    :   QGuiApplication(argc, argv), m_view(new QQuickView),
       m_output(new AudioOutput, deleteAudioOutputLater), m_settings(new Settings, deleteSettingsLater), m_exiting(false)
 {
     QGuiApplication::addLibraryPath(applicationDirPath() + QStringLiteral("/plugins"));
@@ -128,14 +128,6 @@ bool Application::notify(QObject *receiver, QEvent *event)
     case QEvent::MouseButtonRelease:
         if (!m_settings->mouseEnabled())
             break;
-    case QEvent::KeyPress:
-    {
-        QKeyEvent * keyEvent = static_cast<QKeyEvent *>(event);
-
-        if (Navigation::dispatchKeyEvent(keyEvent))
-            return true;
-    }
-        break;
     default:
         return QGuiApplication::notify(receiver, event);
     }

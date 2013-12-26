@@ -13,6 +13,23 @@ NavigationAttached::NavigationAttached(QObject *parent)
 
 }
 
+bool NavigationAttached::event(QEvent * event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent * keyEvent = static_cast<QKeyEvent *>(event);
+
+        Navigation::Button key = Navigation::translateKey(static_cast<Qt::Key>(keyEvent->key()));
+        NavEvent navEvent(key, keyEvent->isAutoRepeat());
+        customEvent(&navEvent);
+
+        event->setAccepted(navEvent.isAccepted());
+        return event->isAccepted();
+    }
+
+    return QObject::event(event);
+}
+
 void NavigationAttached::customEvent(QEvent *event)
 {
     if (event->type() == NavEventType)
@@ -129,104 +146,93 @@ void NavigationAttached::customEvent(QEvent *event)
     }
 }
 
-Navigation::Navigation(QObject *parent) :
-    QObject(parent), m_filter(new NavigationNativeEventFilter)
+void Navigation::dispatchNavigationEvent(Navigation::Button button, bool autoRepeat)
 {
-    QCoreApplication::instance()->installNativeEventFilter(m_filter);
-
-#ifdef Q_OS_LINUX
-    m_lirc = new LircRemote;
-    m_lirc->attach();
-#endif
+    QKeyEvent * keyEvent = new QKeyEvent(QEvent::KeyPress, translateButton(button), Qt::NoModifier, QString(), autoRepeat);
+    QCoreApplication::postEvent(QGuiApplication::focusObject(), keyEvent);
 }
 
-Navigation::~Navigation()
-{
-    delete m_filter;
-}
-
-bool Navigation::dispatchNavigationEvent(NavEvent *event)
-{
-    if (event->key() == Navigation::Undefined)
-        return false;
-
-    QObject * receiver = QGuiApplication::focusObject();
-
-    while (receiver && !event->isAccepted())
-    {
-        // Send to object
-        QCoreApplication::sendEvent(receiver, event);
-
-        if (!event->isAccepted())
-        {
-            // Send to attached item
-            QObject * attachee = qmlAttachedPropertiesObject<Navigation>(receiver, false);
-
-            if (attachee)
-                QCoreApplication::sendEvent(attachee, event);
-
-            // Try parent next, visual items if Quick items
-            QQuickItem * qItem = qobject_cast<QQuickItem *>(receiver);
-            if (qItem && qItem->parentItem())
-                receiver = qItem->parentItem();
-            else
-                receiver = receiver->parent();
-        }
-    }
-
-    return event->isAccepted();
-}
-
-bool Navigation::dispatchKeyEvent(QKeyEvent *keyEvent)
-{
-    Navigation::Key key = translateKey(static_cast<Qt::Key>(keyEvent->key()));
-    NavEvent navEvent(key, keyEvent->isAutoRepeat());
-    return dispatchNavigationEvent(&navEvent);
-}
-
-Navigation::Key Navigation::translateKey(Qt::Key key)
+Navigation::Button Navigation::translateKey(Qt::Key key)
 {
     switch (key)
     {
     case Qt::Key_Left:
         return Navigation::Left;
-        break;
     case Qt::Key_Right:
         return Navigation::Right;
-        break;
     case Qt::Key_Up:
         return Navigation::Up;
-        break;
     case Qt::Key_Down:
         return Navigation::Down;
-        break;
+    case Qt::Key_Enter:
     case Qt::Key_Return:
         return Navigation::OK;
-        break;
+    case Qt::Key_Back:
     case Qt::Key_Backspace:
         return Navigation::Back;
-        break;
     case Qt::Key_MediaPlay:
         return Navigation::Play;
-        break;
     case Qt::Key_MediaPause:
         return Navigation::Pause;
-        break;
     case Qt::Key_MediaTogglePlayPause:
         return Navigation::PlayPause;
-        break;
     case Qt::Key_MediaStop:
         return Navigation::Stop;
-        break;
     case Qt::Key_MediaNext:
         return Navigation::Next;
-        break;
     case Qt::Key_MediaPrevious:
         return Navigation::Previous;
-        break;
+    case Qt::Key_VolumeUp:
+        return Navigation::VolumeUp;
+    case Qt::Key_VolumeDown:
+        return Navigation::VolumeDown;
+    case Qt::Key_VolumeMute:
+        return Navigation::Mute;
 
     default:
         return Navigation::Undefined;
+    }
+}
+
+Qt::Key Navigation::translateButton(Navigation::Button button)
+{
+    switch (button)
+    {
+        case Navigation::Left:
+            return Qt::Key_Left;
+    case Navigation::Right:
+        return Qt::Key_Right;
+    case Navigation::Up:
+        return Qt::Key_Up;
+    case Navigation::Down:
+        return Qt::Key_Down;
+    case Navigation::OK:
+        return Qt::Key_Return;
+    case Navigation::Back:
+        return Qt::Key_Backspace;
+    case Navigation::Play:
+        return Qt::Key_MediaPlay;
+    case Navigation::Pause:
+        return Qt::Key_MediaPause;
+    case Navigation::Stop:
+        return Qt::Key_MediaStop;
+    case Navigation::PlayPause:
+        return Qt::Key_MediaTogglePlayPause;
+    case Navigation::Next:
+        return Qt::Key_MediaNext;
+    case Navigation::Previous:
+        return Qt::Key_MediaPrevious;
+    case Navigation::VolumeDown:
+        return Qt::Key_VolumeDown;
+    case Navigation::VolumeUp:
+        return Qt::Key_VolumeUp;
+    case Navigation::Mute:
+        return Qt::Key_VolumeMute;
+    case Navigation::Record:
+        return Qt::Key_MediaRecord;
+
+    default:
+        return Qt::Key_unknown;
     }
 }
 
