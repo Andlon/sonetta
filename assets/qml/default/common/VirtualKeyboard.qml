@@ -25,15 +25,7 @@ FocusScope {
     property bool wrapNavigationLeft: false
     property bool wrapNavigationRight: false
 
-    //    property url backspaceImage: "../images/keys/backspace.png"
-    //    property url returnImage: "../images/keys/return.png"
-    //    property url shiftUpImage: "../images/keys/shiftup.png"
-    //    property url shiftDownImage: "../images/keys/shiftdown.png"
-    //    property url symbolsImage: "../images/keys/symbols.png"
-    //    property url lettersImage: "../images/keys/letters.png"
     property url spaceImage: "../images/keys/space.png"
-    //    property url prevImage: "../images/keys/prev.png" // Cursor
-    //    property url nextImage: "../images/keys/next.png" // Cursor
 
     property color highlightColor: ui.colors.highlight
     property color color: ui.colors.standard
@@ -73,8 +65,8 @@ FocusScope {
 
         Keys.forwardTo: Nav {
             onRight: focusGrid()
-            onUp: decrementCurrentIndex()
-            onDown: incrementCurrentIndex()
+            onUp: actions.decrementCurrentIndex()
+            onDown: actions.incrementCurrentIndex()
             onOk: {
                 if (actions.currentItem)
                 {
