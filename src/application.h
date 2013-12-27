@@ -6,6 +6,7 @@
 
 #include <Spotinetta/Spotinetta>
 
+#include "navigation/lircclient.h"
 #include "navigation/navigation.h"
 #include "player.h"
 #include "uistatecoordinator.h"
@@ -52,6 +53,7 @@ private:
     QSharedPointer<AudioOutput> m_output;
     QSharedPointer<Settings>    m_settings;
     SearchEngine *              m_search;
+    LircClient *                m_lirc;
 
     bool m_exiting;
 

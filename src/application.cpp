@@ -33,7 +33,8 @@ void deleteSettingsLater(Settings * settings) { settings->deleteLater(); }
 
 Application::Application(int &argc, char **argv)
     :   QGuiApplication(argc, argv), m_view(new QQuickView),
-      m_output(new AudioOutput, deleteAudioOutputLater), m_settings(new Settings, deleteSettingsLater), m_exiting(false)
+      m_output(new AudioOutput, deleteAudioOutputLater), m_settings(new Settings, deleteSettingsLater),
+      m_lirc(new LircClient(this)), m_exiting(false)
 {
     QGuiApplication::addLibraryPath(applicationDirPath() + QStringLiteral("/plugins"));
 
@@ -47,6 +48,8 @@ Application::Application(int &argc, char **argv)
     connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
 
     connect(m_settings.data(), &Settings::mouseEnabledChanged, this, &Application::updateCursor);
+
+    m_lirc->attach();
 }
 
 int Application::run()

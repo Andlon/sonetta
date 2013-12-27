@@ -33,10 +33,10 @@ QHash<QString, Navigation::Button> createInternalToNavigationMapping()
     return mapping;
 }
 
-Navigation::Button translateInternalButton(const QStringRef & internalButton)
+Navigation::Button translateInternalButton(const QString & internalButton)
 {
     static auto mapping = createInternalToNavigationMapping();
-    return mapping.value(internalButton.string()->toLower(), Navigation::Undefined);
+    return mapping.value(internalButton.toLower(), Navigation::Undefined);
 }
 
 /**
@@ -81,16 +81,13 @@ bool Lircmap::parse(const QString &filepath)
     {
         m_reader.setDevice(&file);
 
-        while (!m_reader.atEnd())
+        while (m_reader.readNextStartElement() && QStringRef::compare(m_reader.name(), QLatin1Literal("lircmap"), Qt::CaseInsensitive) == 0)
         {
-            if (m_reader.readNextStartElement() && QStringRef::compare(m_reader.name(), QLatin1Literal("lircmap"), Qt::CaseInsensitive) == 0)
-            {
-                readLircmapElement();
-                break;
-            }
+            readLircmapElement();
+            break;
         }
 
-        return false;
+        return true;
     }
 
     return false;
@@ -104,20 +101,17 @@ void Lircmap::clear()
 void Lircmap::readLircmapElement()
 {
     // Assumes current element is "lircmap"
-    while (!m_reader.atEnd() && !m_reader.isEndElement())
+    while (m_reader.readNextStartElement())
     {
-        if (m_reader.readNextStartElement())
+        if (QStringRef::compare(m_reader.name(), QLatin1Literal("remote"), Qt::CaseInsensitive) == 0)
         {
-            if (QStringRef::compare(m_reader.name(), QLatin1Literal("remote"), Qt::CaseInsensitive) == 0)
-            {
-                readRemoteElement();
-            }
-            else
-            {
-                qCritical() << (QStringLiteral("Lircmap.xml: Unexpected element in lircmap. Expected \"remote\", got \"")
-                                + *m_reader.name().string() + QStringLiteral("\"."));
-                return;
-            }
+            readRemoteElement();
+        }
+        else
+        {
+            qCritical() << (QStringLiteral("Lircmap.xml: Unexpected element in lircmap. Expected \"remote\", got \"")
+                            + m_reader.name().toString() + QStringLiteral("\"."));
+            return;
         }
     }
 }
@@ -130,23 +124,21 @@ void Lircmap::readRemoteElement()
     if (!device.isEmpty())
     {
         // Retrieve existing mapping or create new if necessary
-        RemoteMapping & mapping = m_remotes[*device.string()];
+        RemoteMapping & mapping = m_remotes[device.toString()];
 
-        while (!m_reader.atEnd() && !m_reader.isEndElement())
+        while (m_reader.readNextStartElement())
         {
-            if (m_reader.readNextStartElement())
-            {
-                Navigation::Button button = translateInternalButton(m_reader.name());
-                QString lircName = m_reader.readElementText();
+            Navigation::Button button = translateInternalButton(m_reader.name().toString());
+            QString lircName = m_reader.readElementText();
 
-                if (m_reader.error() == QXmlStreamReader::NoError)
-                {
-                    mapping[lircName] = button;
-                }
-                else
-                {
-                    qCritical("Lircmap.xml: Unexpected element inside button element.");
-                }
+            if (m_reader.error() == QXmlStreamReader::NoError)
+            {
+                mapping[lircName] = button;
+                m_reader.readNext();
+            }
+            else
+            {
+                qCritical("Lircmap.xml: Unexpected element inside button element.");
             }
         }
     }
@@ -182,6 +174,7 @@ void LircClient::readData()
         QString line = QString(m_socket->readLine()).simplified();
 
         QStringList parts = line.split(" ", QString::SkipEmptyParts);
+
         if (parts.count() == 4)
         {
             bool ok; // Holds whether the conversion to integer was successful
@@ -191,19 +184,17 @@ void LircClient::readData()
             {
                 QString lircButton = parts[2];
                 QString remote = parts[3];
-
                 Navigation::Button button = m_map.lookup(remote, lircButton);
 
                 if (button != Navigation::Undefined)
                 {
-                    qDebug() << "Dispatching button" << button;
                     Navigation::dispatchNavigationEvent(button, repeatCount > 0);
                 }
             }
         }
         else
         {
-            qDebug() << ("Unhandled data received from LIRC. Raw message: " + line);
+            qDebug() << ("LIRC: Unhandled data received. Raw message: " + line);
         }
     }
 }
@@ -241,6 +232,9 @@ void LircClient::populateLircmap()
     // will take priority over all preceding
     for (int i = maps.count() - 1; i >= 0; --i)
     {
-        m_map.parse(maps[i]);
+        if (m_map.parse(maps[i]))
+        {
+            qDebug() << "LIRC: Successfully loaded " << maps[i];
+        }
     }
 }
