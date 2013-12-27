@@ -6,7 +6,27 @@ CollectionView {
 
     delegate: CollectionDelegate {
         height: 75
+
+        states: [
+            State {
+                when: root.activeFocus && isCurrentItem
+                PropertyChanges { target: label; color: ui.colors.highlightText }
+            },
+            State {
+                when: !root.activeFocus || !isCurrentItem
+                PropertyChanges { target: label; color: ui.colors.standard }
+            }
+        ]
+
+        transitions: Transition {
+            ColorAnimation {
+                duration: ui.misc.globalAnimationTime
+                easing.type: Easing.InOutQuad
+            }
+        }
+
         Text {
+            id: label
             anchors {
                 fill: parent
                 leftMargin: ui.misc.globalPadding
@@ -15,7 +35,6 @@ CollectionView {
 
             text: modelData
             font: ui.fonts.h4
-            color: (activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
 

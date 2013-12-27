@@ -28,6 +28,7 @@ ListView {
         id: entry
         page: modelData
         height: root.height / root.count
+        selected: ListView.isCurrentItem
 
         Rectangle {
             anchors {

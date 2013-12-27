@@ -91,7 +91,7 @@ CollectionView {
             }
 
             Behavior on textColor {
-                ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuint }
+                ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuad }
             }
 
             Column {

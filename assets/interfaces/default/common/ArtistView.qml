@@ -7,6 +7,24 @@ CollectionView {
     delegate: CollectionDelegate {
         height: 180
 
+        states: [
+            State {
+                when: activeFocus
+                PropertyChanges { target: artistName; color: ui.colors.highlightText }
+            },
+            State {
+                when: !activeFocus
+                PropertyChanges { target: artistName; color: ui.colors.standard }
+            }
+        ]
+
+        transitions: Transition {
+            ColorAnimation {
+                duration: ui.misc.globalAnimationTime
+                easing.type: Easing.InOutQuad
+            }
+        }
+
         property string name: model ? model.name : ""
         property url normalPortraitUri: model ? model.normalPortraitUri : ""
 
@@ -29,6 +47,7 @@ CollectionView {
         }
 
         H3 {
+            id: artistName
             anchors {
                 left: portrait.right
                 leftMargin: ui.misc.globalPadding

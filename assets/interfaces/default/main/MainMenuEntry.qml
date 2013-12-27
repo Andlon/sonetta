@@ -8,15 +8,33 @@ Item {
     id: root
 
     property string page
-    property bool selected: ui.state.page === page
+    property bool selected: false
 
-    height: 150
+    states: [
+        State {
+            when: selected && root.activeFocus
+            PropertyChanges { target: label; color: ui.colors.highlightText }
+        },
+        State {
+            when: !selected || !root.activeFocus
+            PropertyChanges { target: label; color: ui.colors.standard }
+        }
+    ]
+
+    transitions: Transition {
+        ColorAnimation {
+            duration: ui.misc.globalAnimationTime
+            easing.type: Easing.InOutQuad
+        }
+    }
+
     anchors {
         left: parent.left
         right: parent.right
     }
 
     Text {
+        id: label
         anchors {
             centerIn: parent
             margins: ui.misc.globalPadding
@@ -26,22 +44,21 @@ Item {
             switch (page)
             {
             case "playlists":
-                return "playlists"
+                return "Playlists"
             case "nowplaying":
-                return "now playing"
+                return "Now Playing"
             case "search":
-                return "search"
+                return "Search"
             case "session":
-                return "session"
+                return "Session"
             case "explore":
-                return "explore"
+                return "Explore"
             default:
                 console.error("Error: Label requested for unknown page " + page)
                 return ""
             }
         }
 
-        color: ui.colors.standard
         font: ui.fonts.h4
     }
 }

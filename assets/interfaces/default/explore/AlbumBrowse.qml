@@ -9,6 +9,13 @@ FocusScope {
     focus: true
     property alias album: albumModel.album
 
+    transitions: Transition {
+        ColorAnimation {
+            duration: ui.misc.globalAnimationTime
+            easing.type: Easing.InOutQuad
+        }
+    }
+
     SpotifyImage {
         id: cover
         anchors {
@@ -102,6 +109,26 @@ FocusScope {
 
         delegate: CollectionDelegate {
             id: del
+            states: [
+                State {
+                    when: activeFocus
+                    PropertyChanges { target: del; textColor: ui.colors.highlightText }
+                },
+                State {
+                    when: !activeFocus
+                    PropertyChanges { target: del; textColor: ui.colors.standard }
+                }
+            ]
+
+            transitions: Transition {
+                ColorAnimation {
+                    duration: ui.misc.globalAnimationTime
+                    easing.type: Easing.InOutQuad
+                }
+            }
+
+            property alias textColor: albumIndex.color
+
             height: childrenRect.height + ui.misc.globalPadding
             y: ui.misc.globalPadding / 2
 
@@ -119,6 +146,7 @@ FocusScope {
 
             H4 {
                 text: model.name
+                color: textColor
                 anchors {
                     left: albumIndex.right
                     right: duration.left
@@ -129,6 +157,7 @@ FocusScope {
 
             H4 {
                 id: duration
+                color: textColor
                 anchors {
                     right: parent.right
                     margins: ui.misc.globalPadding
