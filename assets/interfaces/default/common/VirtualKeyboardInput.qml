@@ -19,6 +19,7 @@ FocusScope {
 
     property bool active: false
     property bool collapsible: false
+    property bool allowDownToActive: true
 
     signal complete
 
@@ -51,7 +52,6 @@ FocusScope {
                 restoreEntryValues: true
             }
         }
-
     ]
 
     transitions: Transition {
@@ -73,8 +73,29 @@ FocusScope {
         clip: true
 
         Item {
-            width: keyboard.width //- 2 * ui.misc.globalPadding
-            //x: ui.misc.globalPadding
+            states: [
+                State {
+                    name: "hint"
+                    when: root.activeFocus && !root.active && root.text === ""
+                    PropertyChanges { target: input; opacity: 0; }
+                    PropertyChanges { target: hintLabel; opacity: 0.8 }
+                },
+                State {
+                    name: "nohint"
+                    when: !root.activeFocus || root.active || root.text !== ""
+                    PropertyChanges { target: input; opacity: 1; }
+                    PropertyChanges { target: hintLabel; opacity: 0 }
+                }
+            ]
+
+            transitions: Transition {
+                OpacityAnimator {
+                    easing.type: Easing.InOutQuad
+                    duration: 2 * ui.misc.globalAnimationTime
+                }
+            }
+
+            width: keyboard.width
             height: childrenRect.height
 
             property color barColor: root.activeFocus ? ui.colors.highlight : ui.colors.standard
@@ -138,6 +159,15 @@ FocusScope {
                 font: ui.fonts.h2
                 color: ui.colors.standard
             }
+
+            Text {
+                id: hintLabel
+                anchors.fill: input
+                font: input.font
+                color: ui.colors.label
+
+                text: "Press to type..."
+            }
         }
 
         VirtualKeyboard {
@@ -147,9 +177,16 @@ FocusScope {
 
             onCharacter: root.insert(c)
             onBackspace: root.backspace()
-            onEnter: root.complete()
+            onEnter: {
+                active = false;
+                root.complete()
+            }
 
             highlightColor: ui.colors.highlight
+
+            Keys.forwardTo: Nav {
+                onUp: root.active = false
+            }
         }
     }
 
@@ -174,6 +211,17 @@ FocusScope {
         input.text = ""
     }
 
+    Keys.onPressed: {
+        // Match any "word" character
+        var validChars = /\w+/
+        if (!active && validChars.test(event.text))
+        {
+            insert(event.text)
+            active = true
+            event.accepted = true
+        }
+    }
+
     Keys.forwardTo: Nav {
         onOk: {
             if (!active && !event.isAutoRepeat)
@@ -181,8 +229,10 @@ FocusScope {
         }
 
         onDown: {
-            if (!active && !event.isAutoRepeat)
+            if (!active && !event.isAutoRepeat && allowDownToActive)
                 active = true
+            else
+                event.accepted = false
         }
     }
 }

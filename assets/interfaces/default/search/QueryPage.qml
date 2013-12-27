@@ -178,8 +178,8 @@ FocusScope
         }
     }
 
-    Connections {
-        target: ui
-        onStateChanged: keyboard.clear()
+    function reset()
+    {
+        keyboard.clear()
     }
 }

@@ -28,6 +28,7 @@ FocusScope {
         VirtualKeyboardInput {
             id: input
             collapsible: true
+            allowDownToActive: false
             focus: true
 
             onComplete: root.complete()

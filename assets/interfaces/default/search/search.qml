@@ -7,8 +7,6 @@ Page {
     id: root
     page: "search"
 
-    property bool ignoreStage: false
-
     states: [
         State {
             name: "query"
@@ -26,7 +24,11 @@ Page {
             to: "results"
             SequentialAnimation {
                 PauseAnimation { duration: 2 * ui.misc.globalAnimationTime }
-                ScriptAction { script: search.go(UI.parameters.query) }
+                ScriptAction { script: {
+                        queryPage.reset()
+                        search.go(UI.parameters.query)
+                    }
+                }
             }
         },
 
@@ -35,7 +37,7 @@ Page {
             to: "query"
             SequentialAnimation {
                 PauseAnimation { duration: view.highlightMoveDuration }
-                ScriptAction { script: search.clear() }
+                ScriptAction { script: { search.clear(); resultsPage.reset() } }
             }
         }
     ]
@@ -54,6 +56,7 @@ Page {
 
         model: ObjectModel {
             QueryPage {
+                id: queryPage
                 width: view.cellWidth
                 height: view.cellHeight
 
@@ -61,6 +64,7 @@ Page {
             }
 
             ResultsPage {
+                id: resultsPage
                 width: view.cellWidth
                 height: view.cellHeight
             }
@@ -71,9 +75,10 @@ Page {
         if (parameters.stage === "results")
             view.positionViewAtEnd()
         else
+        {
+            queryPage.reset()
             view.positionViewAtBeginning()
-
-        ignoreStage = false
+        }
     }
 
     Connections {

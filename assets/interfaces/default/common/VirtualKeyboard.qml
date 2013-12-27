@@ -65,8 +65,28 @@ FocusScope {
 
         Keys.forwardTo: Nav {
             onRight: focusGrid()
-            onUp: actions.decrementCurrentIndex()
-            onDown: actions.incrementCurrentIndex()
+            onUp: {
+                if (actions.currentIndex > 0)
+                    actions.decrementCurrentIndex()
+                else
+                {
+                    if (root.wrapNavigationTop)
+                        actions.currentIndex = actions.count - 1
+                    else
+                        event.accepted = false
+                }
+            }
+            onDown: {
+                if (actions.currentIndex + 1 < actions.count)
+                    actions.incrementCurrentIndex()
+                else
+                {
+                    if (root.wrapNavigationBottom)
+                        actions.currentIndex = 0
+                    else
+                        event.accepted = false;
+                }
+            }
             onOk: {
                 if (actions.currentItem)
                 {
@@ -124,9 +144,6 @@ FocusScope {
             model: keys
             delegate: key
         }
-
-
-
 
         onActiveFocusChanged: if (activeFocus) VK.updateFocusItem()
 
@@ -285,6 +302,15 @@ FocusScope {
 
     Keys.forwardTo: Nav { onBack: backspace() }
 
+    Keys.onPressed: {
+        // Accept text from keyboard
+        if (event.text !== "")
+        {
+            character(event.text)
+            event.accepted = true
+        }
+    }
+
     onCurrentRowChanged: VK.updateFocusItem()
     onCurrentColumnChanged: VK.updateFocusItem()
 
@@ -293,14 +319,6 @@ FocusScope {
             isLowercase = false
         else if (keystate == "lower")
             isLowercase = true
-    }
-
-    Keys.onPressed: {
-        // Accept text from keyboard
-        if (event.text !== "")
-        {
-            character(event.text)
-        }
     }
 
     Component.onCompleted: {

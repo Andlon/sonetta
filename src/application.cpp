@@ -158,8 +158,7 @@ void Application::registerQmlTypes()
     // Register the UI Singleton type. This is a temporary workaround. Consider creating
     // a loader that dynamically loads any singleton files from a certain directory for greater
     // separation between UI and logic. NOTE TO SELF: It's possible to avoid C++ altogether with modules
-    qmlRegisterSingletonType(QUrl::fromLocalFile(applicationDirPath() + "/qml/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
-
+    qmlRegisterSingletonType(QUrl::fromLocalFile(applicationDirPath() + "/interfaces/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
 }
 
 void Application::setupQuickEnvironment()

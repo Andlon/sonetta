@@ -8,6 +8,18 @@ import "../common"
 FocusScope {
     id: root
 
+    function reset()
+    {
+        selection.currentIndex = 0
+    }
+
+    onActiveFocusChanged: {
+        if (activeFocus)
+        {
+            selection.focus = true
+        }
+    }
+
     BackIndicator {
         id: backIndicator
         anchors {
