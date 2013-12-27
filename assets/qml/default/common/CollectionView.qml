@@ -272,12 +272,15 @@ FocusScope {
             Keys.forwardTo: Nav {
                 onRight:
                 {
-                    if (root.contextModel != undefined && !delegateRoot.contextActive)
-                        delegateRoot.contextActive = true
-                    else
+                    if (!event.isAutoRepeat)
                     {
-                        delegateRoot.contextActive = false
-                        event.accepted = false
+                        if (root.contextModel != undefined && !delegateRoot.contextActive)
+                            delegateRoot.contextActive = true
+                        else
+                        {
+                            delegateRoot.contextActive = false
+                            event.accepted = false
+                        }
                     }
                 }
             }

@@ -120,7 +120,7 @@ Item {
     }
 
     Keys.forwardTo: Nav {
-        onBack: UI.pop()
+        onBack: if (!event.isAutoRepeat) UI.pop()
         onPlay: player.play()
         onPlayPause: player.playPause()
         onPause: player.pause()

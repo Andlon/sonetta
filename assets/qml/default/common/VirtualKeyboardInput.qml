@@ -176,7 +176,12 @@ FocusScope {
 
     Keys.forwardTo: Nav {
         onOk: {
-            if (!active)
+            if (!active && !event.isAutoRepeat)
+                active = true
+        }
+
+        onDown: {
+            if (!active && !event.isAutoRepeat)
                 active = true
         }
     }
