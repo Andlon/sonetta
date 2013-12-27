@@ -32,7 +32,6 @@ include("dependencies/spotinetta/link.pri")
 
 HEADERS += \
     src/navigation/navigation.h \
-    src/navigation/lircremote.h \
     src/models/abstracttrackcollectionmodel.h \
     src/models/abstractalbumcollectionmodel.h \
     src/models/albumlistmodel.h \
@@ -59,11 +58,11 @@ HEADERS += \
     src/utilities/mosaicgenerator.h \
     src/quick/quickmosaicgenerator.h \
     src/models/albummodel.h \
-    src/quick/quickfactory.h
+    src/quick/quickfactory.h \
+    src/navigation/lircclient.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
-    src/navigation/lircremote.cpp \
     src/main.cpp \
     appkey.c \
     src/models/abstracttrackcollectionmodel.cpp \
@@ -86,7 +85,8 @@ SOURCES += \
     src/utilities/persistentplaylistindex.cpp \
     src/settings.cpp \
     src/utilities/mosaicgenerator.cpp \
-    src/models/albummodel.cpp
+    src/models/albummodel.cpp \
+    src/navigation/lircclient.cpp
 
 OTHER_FILES += \
     assets/qml/default/main.qml \
