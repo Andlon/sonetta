@@ -1,6 +1,7 @@
 import QtQuick 2.2
 import QtQml.Models 2.1
 import Sonetta 0.1
+import Navigation 0.1
 import "../common"
 import "../common/States.js" as States
 
@@ -64,8 +65,10 @@ ListView {
         }
     }
 
-    Navigation.onDown: updateIndex(currentIndex + 1)
-    Navigation.onUp: updateIndex(currentIndex - 1)
+    Keys.forwardTo: Nav {
+        onDown: updateIndex(currentIndex + 1)
+        onUp: updateIndex(currentIndex - 1)
+    }
 
     function updateIndex(index)
     {

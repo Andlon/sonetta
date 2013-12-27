@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 import "../common"
 import "../common/Time.js" as Time
 
@@ -131,8 +132,10 @@ Rectangle {
         track: player.track
     }
 
-    Navigation.onRight: seek(player.position + seekInterval)
-    Navigation.onLeft: seek(player.position - seekInterval)
+    Keys.forwardTo: Nav {
+        onRight: seek(player.position + seekInterval)
+        onLeft: seek(player.position - seekInterval)
+    }
 
     function seek(position)
     {

@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 FocusScope {
     id: root
@@ -173,8 +174,10 @@ FocusScope {
         input.text = ""
     }
 
-    Navigation.onOk: {
-        if (!active)
-            active = true
+    Keys.forwardTo: Nav {
+        onOk: {
+            if (!active)
+                active = true
+        }
     }
 }

@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 Item {
     id: root
@@ -33,8 +34,10 @@ Item {
         height: list ? list.visibleArea.heightRatio * root.height > minimumScrollerHeight ? list.visibleArea.heightRatio * root.height : minimumScrollerHeight : minimumScrollerHeight
     }
 
-    Navigation.onUp: scroll(list.contentY - list.height)
-    Navigation.onDown: scroll(list.contentY + list.height)
+    Keys.forwardTo: Nav {
+        onUp: scroll(list.contentY - list.height)
+        onDown: scroll(list.contentY + list.height)
+    }
 
     function scroll(preferred)
     {

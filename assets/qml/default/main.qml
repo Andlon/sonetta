@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 import "common"
 import "common/States.js" as States
@@ -118,12 +119,14 @@ Item {
         }
     }
 
-    Navigation.onBack: UI.pop()
-    Navigation.onPlay: player.play()
-    Navigation.onPlayPause: player.playPause()
-    Navigation.onPause: player.pause()
-    Navigation.onStop: player.pause()
-    Navigation.onNext: player.next()
+    Keys.forwardTo: Nav {
+        onBack: UI.pop()
+        onPlay: player.play()
+        onPlayPause: player.playPause()
+        onPause: player.pause()
+        onStop: player.pause()
+        onNext: player.next()
+    }
 
     Keys.onSpacePressed: player.playPause()
 }

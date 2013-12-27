@@ -1,6 +1,7 @@
 import QtQuick 2.2
 import QtQml.Models 2.1
 import Sonetta 0.1
+import Navigation 0.1
 
 import "../common"
 
@@ -34,7 +35,7 @@ FocusScope {
 
         model: ["Tracks", "Artists", "Albums"]
 
-        Navigation.onRight: pager.focus = true
+        Keys.forwardTo:  Nav { onRight: pager.focus = true }
     }
 
     PageView {
@@ -90,8 +91,8 @@ FocusScope {
             }
         }
 
-        Navigation.onLeft: selection.focus = true
+        Keys.forwardTo: Nav { onLeft: selection.focus = true }
     }
 
-    Navigation.onLeft: UI.pop()
+    Keys.forwardTo: Nav { onLeft: UI.pop() }
 }

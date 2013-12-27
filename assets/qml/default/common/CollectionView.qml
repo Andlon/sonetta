@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 /*
   - CollectionView:
@@ -65,33 +66,41 @@ FocusScope {
         interactive: false
         currentIndex: 0
 
-        Navigation.onDown: {
-            if (currentIndex < count - 1)
-            {
-                if (verticalLayoutDirection == ListView.TopToBottom)
-                    incrementCurrentIndex()
+        Keys.forwardTo: Nav {
+            onDown: {
+                if (list.currentIndex < list.count - 1)
+                {
+                    if (list.verticalLayoutDirection == ListView.TopToBottom)
+                        list.incrementCurrentIndex()
+                    else
+                        list.decrementCurrentIndex()
+                }
                 else
-                    decrementCurrentIndex()
+                {
+                    event.accepted = false
+                }
             }
-            else
-            {
-                event.accepted = false
-            }
-        }
-        Navigation.onUp: {
-            if (currentIndex > 0)
-            {
-                if (verticalLayoutDirection == ListView.TopToBottom)
-                    decrementCurrentIndex()
+            onUp: {
+                if (list.currentIndex > 0)
+                {
+                    if (list.verticalLayoutDirection == ListView.TopToBottom)
+                        list.decrementCurrentIndex()
+                    else
+                        list.incrementCurrentIndex()
+                }
                 else
-                    incrementCurrentIndex()
+                {
+                    event.accepted = false
+                }
             }
-            else
-            {
-                event.accepted = false
+            onRight: {
+                if (scrollbar.visible)
+                    scrollbar.focus = true
+                else
+                    event.accepted = false
             }
+            onOk: root.itemPressed(list.currentItem.internalModel)
         }
-        Navigation.onOk: root.itemPressed(currentItem.internalModel)
 
         displaced: move
         move: Transition {
@@ -109,13 +118,6 @@ FocusScope {
         populate: Transition {
             SmoothedAnimation { property: "opacity"; from: 0; to: 1; duration: 500; velocity: -1 }
         }
-
-        Navigation.onRight: {
-            if (scrollbar.visible)
-                scrollbar.focus = true
-            else
-                event.accepted = false
-        }
     }
 
     VerticalScrollbar {
@@ -127,7 +129,7 @@ FocusScope {
             top: root.top
         }
 
-        Navigation.onLeft: list.focus = true
+        Keys.forwardTo: Nav { onLeft: list.focus = true }
     }
 
     Component {
@@ -250,29 +252,33 @@ FocusScope {
                     leftMargin: 2 * ui.misc.globalPadding
                 }
 
-                Navigation.onNavigationEvent: {
-                    event.accepted = false
-                    switch (event.key)
-                    {
-                    case Navigation.OK:
-                    case Navigation.Left:
-                    case Navigation.Down:
-                    case Navigation.Up:
-                        delegateRoot.contextActive = false
-                        event.accepted = true
-                        break;
+                Keys.forwardTo: Nav {
+                    onButtonPressed: {
+                        event.accepted = false
+                        switch (event.button)
+                        {
+                        case Navigation.OK:
+                        case Navigation.Left:
+                        case Navigation.Down:
+                        case Navigation.Up:
+                            delegateRoot.contextActive = false
+                            event.accepted = true
+                            break;
+                        }
                     }
                 }
             }
 
-            Navigation.onRight:
-            {
-                if (root.contextModel != undefined && !contextActive)
-                    contextActive = true
-                else
+            Keys.forwardTo: Nav {
+                onRight:
                 {
-                    contextActive = false
-                    event.accepted = false
+                    if (root.contextModel != undefined && !delegateRoot.contextActive)
+                        delegateRoot.contextActive = true
+                    else
+                    {
+                        delegateRoot.contextActive = false
+                        event.accepted = false
+                    }
                 }
             }
         }

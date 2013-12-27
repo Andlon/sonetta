@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 import "main"
 import "common"
@@ -23,7 +24,9 @@ FocusScope {
             top: root.top
         }
 
-        Navigation.onRight: pager.focus = true
+        Keys.forwardTo: Nav {
+            onRight: pager.focus = true
+        }
     }
 
     PageView {
@@ -45,7 +48,9 @@ FocusScope {
             focus: true
         }
 
-        Navigation.onLeft: sidebar.focus = true
+        Keys.forwardTo: Nav {
+            onLeft: sidebar.focus = true
+        }
 
         Connections {
             target: UI

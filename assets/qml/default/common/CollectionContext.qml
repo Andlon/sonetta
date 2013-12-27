@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 ListView {
     id: root
@@ -59,23 +60,25 @@ ListView {
         }
     }
 
-    Navigation.onUp: {
-        if (currentIndex > 0)
-            decrementCurrentIndex()
-        else
-            event.accepted = false
-    }
+    Keys.forwardTo:  Nav {
+        onUp: {
+            if (root.currentIndex > 0)
+                root.decrementCurrentIndex()
+            else
+                event.accepted = false
+        }
 
-    Navigation.onDown: {
-        if (currentIndex < count - 1)
-            incrementCurrentIndex()
-        else
-            event.accepted = false
-    }
+        onDown: {
+            if (root.currentIndex < root.count - 1)
+                root.incrementCurrentIndex()
+            else
+                event.accepted = false
+        }
 
-    Navigation.onOk: {
-        if (currentItem)
-            contextPressed(currentItem.name)
+        onOk: {
+            if (root.currentItem)
+                root.contextPressed(root.currentItem.name)
+        }
     }
 
     Component {

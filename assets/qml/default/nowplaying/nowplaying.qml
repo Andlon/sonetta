@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 import "../common"
 
 Page {
@@ -55,8 +56,10 @@ Page {
         trackName: track.name
         artistName: track.artistNames.join(", ")
 
-        Navigation.onRight: view.focus = true
-        Navigation.onDown: trackbar.focus = true
+        Keys.forwardTo: Nav {
+            onRight: view.focus = true
+            onDown: trackbar.focus = true
+        }
     }
 
     Trackbar {
@@ -67,7 +70,7 @@ Page {
             right: playback.right
         }
 
-        Navigation.onUp: playback.focus = true
+        Keys.forwardTo: Nav { onUp: playback.focus = true }
     }
 
     Label {
@@ -99,6 +102,6 @@ Page {
         onCountChanged: view.currentIndex = 0
         onTrackPlayed: player.queue.pop(modelIndex)
 
-        Navigation.onLeft: playback.focus = true
+        Keys.forwardTo: Nav { onLeft: playback.focus = true }
     }
 }

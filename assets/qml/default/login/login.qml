@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 import "../common"
 
 FocusScope {
@@ -31,7 +32,7 @@ FocusScope {
             label: "Username"
             focus: true
 
-            Navigation.onDown: password.focus = true
+            Keys.forwardTo: Nav { onDown: password.focus = true }
 
             onComplete: password.focus = true
         }
@@ -39,8 +40,10 @@ FocusScope {
         LoginField {
             id: password
             label: "Password"
-            Navigation.onUp: username.focus = true
-            Navigation.onDown: menu.focus = true
+            Keys.forwardTo: Nav {
+                onUp: username.focus = true
+                onDown: menu.focus = true
+            }
             onComplete: menu.focus = true
         }
 
@@ -57,44 +60,18 @@ FocusScope {
 
             MenuAction {
                 text: "Login"
-                Navigation.onOk: {
-                    console.log("Logging in")
-                    session.login(username.text, password.text, rememberMe.toggled)
-                }
+                onOk: session.login(username.text, password.text, rememberMe.toggled)
             }
 
             MenuAction {
                 text: "Exit"
-                Navigation.onOk:
-                {
-                    console.log("Quitting")
-                    Qt.quit()
-                }
+                onOk: Qt.quit()
             }
 
-            Navigation.onUp: password.focus = true
+            Keys.forwardTo: Nav {
+                onUp: password.focus = true
+            }
         }
-
-//        ToggleView {
-//            id: menu
-//            width: password.width
-//            model: ["Login", "Exit"]
-//            alternate: false
-
-//            Navigation.onUp: password.focus = true
-
-//            onItemPressed: {
-//                if (currentIndex == 0)
-//                {
-//                    session.login(username.text, password.text, true)
-//                }
-//                else if (currentIndex == 1)
-//                {
-//                    Qt.quit()
-//                }
-//            }
-
-//        }
     }
 
 }

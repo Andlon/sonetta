@@ -122,7 +122,6 @@ OTHER_FILES += \
     assets/qml/default/common/MenuView.qml \
     assets/qml/default/common/ArtistView.qml \
     assets/qml/default/common/AlbumView.qml \
-    assets/qml/default/nowplaying/Controls.qml \
     assets/qml/default/nowplaying/Control.qml \
     assets/qml/default/common/CollectionContext.qml \
     assets/qml/default/common/BackIndicator.qml \

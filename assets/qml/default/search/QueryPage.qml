@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 import "../common"
 
@@ -97,7 +98,8 @@ FocusScope
         model: search.history
 
         onItemPressed: searchCompleted(currentItem.internalModelData)
-        Navigation.onLeft: keyboard.focus = true
+
+        Keys.forwardTo: Nav { onLeft: keyboard.focus = true }
     }
 
     Label {
@@ -129,7 +131,7 @@ FocusScope
         model: search.predictions
 
         onItemPressed: searchCompleted(currentItem.internalModelData)
-        Navigation.onLeft: keyboard.focus = true
+        Keys.forwardTo: Nav { onLeft: keyboard.focus = true }
     }
 
     Item {
@@ -172,7 +174,7 @@ FocusScope
 
             onTextChanged: search.predict(text)
 
-            Navigation.onRight: activeList.focus = true
+            Keys.forwardTo: Nav { onRight: activeList.focus = true }
         }
     }
 

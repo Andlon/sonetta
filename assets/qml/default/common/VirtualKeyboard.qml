@@ -4,6 +4,7 @@ import QtQml.Models 2.1
 import QtGraphicalEffects 1.0
 
 import Sonetta 0.1
+import Navigation 0.1
 
 import "VirtualKeyboard.js" as VK
 
@@ -70,33 +71,33 @@ FocusScope {
             verticalAlignment: Text.AlignVCenter
         }
 
-        Navigation.onRight: focusGrid()
-
-        Navigation.onOk: {
-            if (currentItem)
-            {
-                switch (currentIndex)
+        Keys.forwardTo: Nav {
+            onRight: focusGrid()
+            onUp: decrementCurrentIndex()
+            onDown: incrementCurrentIndex()
+            onOk: {
+                if (actions.currentItem)
                 {
-                case 0:
-                    VK.handleAction("return")
-                    break
-                case 1:
-                    VK.handleAction("backspace")
-                    break
-                case 2:
-                    VK.handleAction("shift")
-                    break
-                case 3:
-                    VK.handleAction("shift")
-                    break
-                case 4:
-                    VK.handleAction("togglesymbols")
+                    switch (actions.currentIndex)
+                    {
+                    case 0:
+                        VK.handleAction("return")
+                        break
+                    case 1:
+                        VK.handleAction("backspace")
+                        break
+                    case 2:
+                        VK.handleAction("shift")
+                        break
+                    case 3:
+                        VK.handleAction("shift")
+                        break
+                    case 4:
+                        VK.handleAction("togglesymbols")
+                    }
                 }
             }
         }
-
-        Navigation.onUp: decrementCurrentIndex()
-        Navigation.onDown: incrementCurrentIndex()
     }
 
     Rectangle {
@@ -133,19 +134,23 @@ FocusScope {
         }
 
 
-        Navigation.onRight: event.accepted = VK.moveRight()
-        Navigation.onUp: event.accepted = VK.moveUp()
-        Navigation.onDown: event.accepted = VK.moveDown()
-        Navigation.onOk: VK.handleKeypress()
+
 
         onActiveFocusChanged: if (activeFocus) VK.updateFocusItem()
 
-        Navigation.onLeft: {
-            if (!VK.moveLeft())
-            {
-                // Could not move key left, change focus to actions
-                focusActions()
+        Keys.forwardTo: Nav {
+            onLeft: {
+                if (!VK.moveLeft())
+                {
+                    // Could not move key left, change focus to actions
+                    focusActions()
+                }
             }
+
+            onRight: event.accepted = VK.moveRight()
+            onUp: event.accepted = VK.moveUp()
+            onDown: event.accepted = VK.moveDown()
+            onOk: VK.handleKeypress()
         }
     }
 
@@ -286,7 +291,7 @@ FocusScope {
     }
 
 
-    Navigation.onBack: backspace()
+    Keys.forwardTo: Nav { onBack: backspace() }
 
     onCurrentRowChanged: VK.updateFocusItem()
     onCurrentColumnChanged: VK.updateFocusItem()

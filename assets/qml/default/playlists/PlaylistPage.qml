@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 import "../common"
 
@@ -41,6 +42,6 @@ FocusScope {
 
         onTrackPlayed: player.queue.updateContext(playlistModel.playlist, modelIndex)
 
-        Navigation.onLeft: UI.pop()
+        Keys.forwardTo: Nav { onLeft: UI.pop() }
     }
 }

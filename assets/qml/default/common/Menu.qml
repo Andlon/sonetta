@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 FocusScope {
     id: root
@@ -46,8 +47,10 @@ FocusScope {
 
         // These need to be here so they don't get stolen by any navigational handlers
         // added to the Menu instance
-        Navigation.onDown: event.accepted = incrementCurrentIndex()
-        Navigation.onUp: event.accepted = decrementCurrentIndex()
+        Keys.forwardTo: Nav {
+            onDown: event.accepted = incrementCurrentIndex()
+            onUp: event.accepted = decrementCurrentIndex()
+        }
     }
 
     function incrementCurrentIndex() {
@@ -70,9 +73,7 @@ FocusScope {
 
     onChildrenChanged: updateChildren()
     Component.onCompleted: updateChildren()
-
     onCurrentItemChanged: if (currentItem && root.activeFocus) currentItem.focus = true
-
     onActiveFocusChanged: if (activeFocus && currentItem) currentItem.focus = true
 
     function updateChildren()
@@ -90,6 +91,4 @@ FocusScope {
             }
         }
     }
-
-
 }

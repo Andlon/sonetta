@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 Item {
     id: root
@@ -11,6 +12,8 @@ Item {
     width: parent.width
 
     property int index: 0
+
+    signal ok
 
     property bool __tag: true
 
@@ -110,10 +113,16 @@ Item {
         }
     }
 
-    Navigation.onOk: {
-        if (toggleable)
-        {
-            toggled = !toggled
+    Keys.forwardTo: Nav {
+        onOk: {
+            if (toggleable)
+            {
+                toggled = !toggled
+            }
+            else
+            {
+                root.ok()
+            }
         }
     }
 }

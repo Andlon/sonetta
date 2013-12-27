@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 import "Time.js" as Time
 import "States.js" as States
@@ -30,10 +31,12 @@ CollectionView {
 
     delegate: singleRowLayout ? singleRow : dualRow
 
-    Navigation.onRecord: {
-        if (currentItem)
-        {
-            player.enqueue(currentItem.internalModel.track)
+    Keys.forwardTo: Nav {
+        onRecord: {
+            if (currentItem)
+            {
+                player.enqueue(currentItem.internalModel.track)
+            }
         }
     }
 

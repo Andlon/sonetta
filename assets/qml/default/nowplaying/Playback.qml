@@ -1,5 +1,6 @@
 import QtQuick 2.2
 import Sonetta 0.1
+import Navigation 0.1
 
 import "../common"
 
@@ -76,5 +77,7 @@ FocusScope {
         }
     }
 
-    Navigation.onOk: player.playPause()
+    Keys.forwardTo: Nav {
+        onOk: player.playPause()
+    }
 }
