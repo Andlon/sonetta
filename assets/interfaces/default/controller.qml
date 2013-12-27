@@ -91,7 +91,7 @@ FocusScope {
         // Write states for this
         opacity: UI.page === "nowplaying" ? 0 : 1
         height: childrenRect.height + 2 * ui.misc.globalPadding
-        pattern: "medium"
+        pattern: "light"
 
         anchors {
             top: root.top
@@ -128,7 +128,7 @@ FocusScope {
         }
 
         height: 1
-        color: ui.colors.light
+        color: ui.colors.dark
         visible: UI.page !== "nowplaying"
     }
 
