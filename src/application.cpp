@@ -140,9 +140,7 @@ bool Application::notify(QObject *receiver, QEvent *event)
 
 void Application::registerQmlTypes()
 {
-    qmlRegisterType<Navigation>("Sonetta", 0, 1, "Navigation");
-    qmlRegisterType<NavigationAttached>();
-    qmlRegisterUncreatableType<QuickNavEvent>("Sonetta", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
+    Navigation::registerTypes();
 
     qmlRegisterType<QuickPlaylistContainerModel>("Sonetta", 0, 1, "PlaylistContainerModel");
     qmlRegisterType<QuickPlaylistModel>("Sonetta", 0, 1, "PlaylistModel");

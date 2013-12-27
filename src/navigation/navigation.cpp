@@ -7,149 +7,17 @@
 
 #include <QtQuick>
 
-NavigationAttached::NavigationAttached(QObject *parent)
-    :   QObject(parent)
-{
-
-}
-
-bool NavigationAttached::event(QEvent * event)
-{
-    if (event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent * keyEvent = static_cast<QKeyEvent *>(event);
-
-        Navigation::Button key = Navigation::translateKey(static_cast<Qt::Key>(keyEvent->key()));
-        NavEvent navEvent(key, keyEvent->isAutoRepeat());
-        customEvent(&navEvent);
-
-        event->setAccepted(navEvent.isAccepted());
-        return event->isAccepted();
-    }
-
-    return QObject::event(event);
-}
-
-void NavigationAttached::customEvent(QEvent *event)
-{
-    if (event->type() == NavEventType)
-    {
-        NavEvent *nEvent = static_cast<NavEvent *>(event);
-        QuickNavEvent qne(nEvent->key(), nEvent->isAutoRepeat());
-
-        emit navigationEvent(&qne);
-
-        nEvent->setAccepted(qne.isAccepted());
-
-        if (!nEvent->isAccepted())
-        {
-            switch (nEvent->key())
-            {
-            case Navigation::Left:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::left)))
-                {
-                    qne.setAccepted(true);
-                    emit left(&qne);
-                }
-                break;
-            case Navigation::Right:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::right)))
-                {
-                    qne.setAccepted(true);
-                    emit right(&qne);
-                }
-                break;
-            case Navigation::Up:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::up)))
-                {
-                    qne.setAccepted(true);
-                    emit up(&qne);
-                }
-                break;
-            case Navigation::Down:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::down)))
-                {
-                    qne.setAccepted(true);
-                    emit down(&qne);
-                }
-                break;
-            case Navigation::OK:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::ok)))
-                {
-                    qne.setAccepted(true);
-                    emit ok(&qne);
-                }
-                break;
-            case Navigation::Back:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::back)))
-                {
-                    qne.setAccepted(true);
-                    emit back(&qne);
-                }
-                break;
-            case Navigation::Play:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::play)))
-                {
-                    qne.setAccepted(true);
-                    emit play(&qne);
-                }
-                break;
-            case Navigation::PlayPause:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::playPause)))
-                {
-                    qne.setAccepted(true);
-                    emit playPause(&qne);
-                }
-                break;
-            case Navigation::Pause:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::pause)))
-                {
-                    qne.setAccepted(true);
-                    emit pause(&qne);
-                }
-                break;
-            case Navigation::Stop:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::stop)))
-                {
-                    qne.setAccepted(true);
-                    emit stop(&qne);
-                }
-                break;
-            case Navigation::Next:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::next)))
-                {
-                    qne.setAccepted(true);
-                    emit next(&qne);
-                }
-                break;
-            case Navigation::Previous:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::previous)))
-                {
-                    qne.setAccepted(true);
-                    emit previous(&qne);
-                }
-                break;
-
-            case Navigation::Record:
-                if (isSignalConnected(QMetaMethod::fromSignal(&NavigationAttached::record)))
-                {
-                    qne.setAccepted(true);
-                    emit record(&qne);
-                }
-                break;
-            default:
-                break;
-            }
-
-            event->setAccepted(qne.isAccepted());
-        }
-    }
-}
-
 void Navigation::dispatchNavigationEvent(Navigation::Button button, bool autoRepeat)
 {
     QKeyEvent * keyEvent = new QKeyEvent(QEvent::KeyPress, translateButton(button), Qt::NoModifier, QString(), autoRepeat);
-    QCoreApplication::postEvent(QGuiApplication::focusObject(), keyEvent);
+    QCoreApplication::postEvent(QGuiApplication::focusWindow(), keyEvent);
+}
+
+void Navigation::registerTypes()
+{
+    qmlRegisterType<QuickNavigation>("Navigation", 0, 1, "Nav");
+    qmlRegisterUncreatableType<Navigation>("Navigation", 0, 1, "Navigation", "CAnnot instantiate Navigation.");
+    qmlRegisterUncreatableType<QuickNavEvent>("Navigation", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
 }
 
 Navigation::Button Navigation::translateKey(Qt::Key key)
@@ -198,8 +66,8 @@ Qt::Key Navigation::translateButton(Navigation::Button button)
 {
     switch (button)
     {
-        case Navigation::Left:
-            return Qt::Key_Left;
+    case Navigation::Left:
+        return Qt::Key_Left;
     case Navigation::Right:
         return Qt::Key_Right;
     case Navigation::Up:
@@ -236,7 +104,79 @@ Qt::Key Navigation::translateButton(Navigation::Button button)
     }
 }
 
-NavigationAttached * Navigation::qmlAttachedProperties(QObject *object)
+void QuickNavigation::keyPressEvent(QKeyEvent * e)
 {
-    return new NavigationAttached(object);
+    Navigation::Button button = Navigation::translateKey(static_cast<Qt::Key>(e->key()));
+    QuickNavEvent event(button, e->isAutoRepeat());
+
+    switch (event.button())
+    {
+    case Navigation::Left:
+        acceptAndEmit(&QuickNavigation::left, &event);
+        break;
+    case Navigation::Right:
+        acceptAndEmit(&QuickNavigation::right, &event);
+        break;
+    case Navigation::Up:
+        acceptAndEmit(&QuickNavigation::up, &event);
+        break;
+    case Navigation::Down:
+        acceptAndEmit(&QuickNavigation::down, &event);
+        break;
+    case Navigation::OK:
+        acceptAndEmit(&QuickNavigation::ok, &event);
+        break;
+    case Navigation::Back:
+        acceptAndEmit(&QuickNavigation::back, &event);
+        break;
+    case Navigation::Play:
+        acceptAndEmit(&QuickNavigation::play, &event);
+        break;
+    case Navigation::PlayPause:
+        acceptAndEmit(&QuickNavigation::playPause, &event);
+        break;
+    case Navigation::Pause:
+        acceptAndEmit(&QuickNavigation::pause, &event);
+        break;
+    case Navigation::Stop:
+        acceptAndEmit(&QuickNavigation::stop, &event);
+        break;
+    case Navigation::Next:
+        acceptAndEmit(&QuickNavigation::next, &event);
+        break;
+    case Navigation::Previous:
+        acceptAndEmit(&QuickNavigation::previous, &event);
+        break;
+    case Navigation::Record:
+        acceptAndEmit(&QuickNavigation::record, &event);
+        break;
+    case Navigation::VolumeDown:
+        acceptAndEmit(&QuickNavigation::volumeDown, &event);
+        break;
+    case Navigation::VolumeUp:
+        acceptAndEmit(&QuickNavigation::volumeUp, &event);
+        break;
+    case Navigation::Mute:
+        acceptAndEmit(&QuickNavigation::mute, &event);
+    default:
+        break;
+    }
+
+    if (!event.isAccepted())
+    {
+        emit buttonPressed(&event);
+    }
+
+    e->setAccepted(event.isAccepted());
+}
+
+template <typename MemberFunctionPointer>
+void QuickNavigation::acceptAndEmit(MemberFunctionPointer member, QuickNavEvent * event)
+{
+    QMetaMethod signal = QMetaMethod::fromSignal(member);
+    if (isSignalConnected(signal))
+    {
+        event->setAccepted(true);
+        signal.invoke(this, Qt::DirectConnection, Q_ARG(QuickNavEvent *, event));
+    }
 }
