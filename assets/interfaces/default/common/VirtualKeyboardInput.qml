@@ -176,7 +176,7 @@ FocusScope {
             focus: true
 
             onCharacter: root.insert(c)
-            onBackspace: root.backspace()
+            onBackspace: root.backspace(autorepeat)
             onEnter: {
                 active = false;
                 root.complete()
@@ -200,10 +200,12 @@ FocusScope {
         input.insert(input.cursorPosition, text)
     }
 
-    function backspace()
+    function backspace(autorepeat)
     {
         if (input.cursorPosition > 0)
             input.remove(input.cursorPosition - 1, input.cursorPosition)
+        else if (!autorepeat)
+            root.active = false;
     }
 
     function clear()

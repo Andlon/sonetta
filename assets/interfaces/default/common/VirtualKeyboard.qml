@@ -17,8 +17,8 @@ FocusScope {
     signal prev
     signal next
     signal enter
-    signal backspace
     signal cancel
+    signal backspace(var autorepeat)
 
     property bool wrapNavigationTop: false
     property bool wrapNavigationBottom: false
@@ -300,7 +300,7 @@ FocusScope {
     }
 
 
-    Keys.forwardTo: Nav { onBack: backspace() }
+    Keys.forwardTo: Nav { onBack: backspace(event.isAutoRepeat) }
 
     Keys.onPressed: {
         // Accept text from keyboard
