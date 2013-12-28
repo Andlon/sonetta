@@ -23,6 +23,13 @@ PlaylistModel::PlaylistModel(const Spotinetta::Session *session, QObject *parent
             this, &PlaylistModel::onTracksMoved);
     connect(m_watcher, &sp::PlaylistWatcher::tracksRemoved,
             this, &PlaylistModel::onTracksRemoved);
+
+    connect(this, &PlaylistModel::playlistChanged,
+            this, &PlaylistModel::nameChanged);
+    connect(m_watcher, &sp::PlaylistWatcher::renamed,
+            this, &PlaylistModel::nameChanged);
+    connect(m_watcher, &sp::PlaylistWatcher::stateChanged,
+            this, &PlaylistModel::nameChanged);
 }
 
 sp::Playlist PlaylistModel::playlist() const
@@ -51,6 +58,11 @@ void PlaylistModel::setPlaylist(const Spotinetta::Playlist &playlist)
 
         emit playlistChanged();
     }
+}
+
+QString PlaylistModel::name() const
+{
+    return playlist().name();
 }
 
 Spotinetta::Track PlaylistModel::getTrackAt(int index) const

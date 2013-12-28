@@ -14,6 +14,7 @@ class PlaylistModel : public AbstractTrackCollectionModel
     Q_OBJECT
 
     Q_PROPERTY(Spotinetta::Playlist playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
 
 public:
     explicit PlaylistModel(const Spotinetta::Session * session, QObject *parent = 0);
@@ -21,8 +22,11 @@ public:
     Spotinetta::Playlist playlist() const;
     void setPlaylist(const Spotinetta::Playlist &playlist);
 
+    QString name() const;
+
 signals:
     void playlistChanged();
+    void nameChanged();
 
 protected:
     Spotinetta::Track getTrackAt(int index) const;
@@ -47,10 +51,6 @@ private:
 
     Spotinetta::PlaylistWatcher *   m_watcher;
     QVector<Spotinetta::Track>      m_tracks;
-    QVector<IndexedTrack>           m_unloadedTracks;
-    QVector<IndexedArtist>          m_unloadedArtists;
-    QVector<IndexedAlbum>           m_unloadedAlbums;
-    bool                            m_isLoaded;
 };
 
 }
