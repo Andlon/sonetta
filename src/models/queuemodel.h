@@ -21,6 +21,7 @@ public:
     explicit QueueContext(const Spotinetta::AlbumBrowse &browse);
 
     bool isValid() const;
+    bool isLoaded() const;
 
     Spotinetta::Playlist    playlist() const;
     Spotinetta::AlbumBrowse albumBrowse() const;
@@ -73,12 +74,14 @@ private slots:
 private:
     QueueContext m_context;
     int          m_index;
+    bool         m_loaded;
 
     QQueue<Spotinetta::Track> m_explicit;
     QQueue<Spotinetta::Track> m_implicit;
 
     ObjectSharedPointer<const Spotinetta::Session>      m_session;
     ObjectScopedPointer<Spotinetta::AlbumBrowseWatcher> m_albumBrowseWatcher;
+    ObjectScopedPointer<Spotinetta::PlaylistWatcher>    m_playlistWatcher;
 };
 
 }

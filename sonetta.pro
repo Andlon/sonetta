@@ -60,7 +60,8 @@ HEADERS += \
     src/navigation/lircclient.h \
     src/utilities/pointers.h \
     src/navigation/windowsnavigationfilter.h \
-    src/navigation/navigationcontroller.h
+    src/navigation/navigationcontroller.h \
+    src/quick/quickartistsynopsis.h
 
 SOURCES += \
     src/navigation/navigation.cpp \

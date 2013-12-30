@@ -1,5 +1,7 @@
 #include "queuemodel.h"
 
+#include <QDebug>
+
 namespace sp = Spotinetta;
 
 namespace Sonetta {
@@ -28,7 +30,34 @@ QueueContext::QueueContext(const Spotinetta::AlbumBrowse &browse)
 
 bool QueueContext::isValid() const
 {
-    return m_playlist.isValid() || !m_tracks.isEmpty() || m_browse.isValid();
+    switch (m_type)
+    {
+    case QueueContext::Type::AlbumBrowse:
+        return m_browse.isValid();
+    case QueueContext::Type::Playlist:
+        return m_playlist.isValid();
+    case QueueContext::Type::TrackList:
+        return true;
+
+    default:
+        return false;
+    }
+}
+
+bool QueueContext::isLoaded() const
+{
+    switch (m_type)
+    {
+    case QueueContext::Type::AlbumBrowse:
+        return m_browse.isLoaded();
+    case QueueContext::Type::Playlist:
+        return m_playlist.isLoaded();
+    case QueueContext::Type::TrackList:
+        return true;
+
+    default:
+        return false;
+    }
 }
 
 sp::Playlist QueueContext::playlist() const
@@ -43,7 +72,18 @@ Spotinetta::AlbumBrowse QueueContext::albumBrowse() const
 
 sp::TrackList QueueContext::tracks() const
 {
-    return m_tracks + m_playlist.tracks() + m_browse.tracks();
+    switch (m_type)
+    {
+    case QueueContext::Type::AlbumBrowse:
+        return m_browse.tracks();
+    case QueueContext::Type::Playlist:
+        return m_playlist.tracks();
+    case QueueContext::Type::TrackList:
+        return m_tracks;
+
+    default:
+        return sp::TrackList();
+    }
 }
 
 QueueContext::Type QueueContext::type() const
@@ -57,12 +97,17 @@ QueueContext::Type QueueContext::type() const
 
 QueueModel::QueueModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
     :    AbstractTrackCollectionModel(session, parent), m_session(session),
-      m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session.data(), parent)),
-      m_index(0)
+      m_index(0), m_loaded(false),
+      m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session.data())),
+      m_playlistWatcher(new sp::PlaylistWatcher(session.data()))
 {
     connect(m_albumBrowseWatcher.data(), &sp::AlbumBrowseWatcher::loaded,
             this, &QueueModel::onLoaded);
-    connect(m_albumBrowseWatcher.data(), &sp::AlbumBrowseWatcher::loaded,
+    connect(m_playlistWatcher.data(), &sp::PlaylistWatcher::stateChanged,
+            this, &QueueModel::onLoaded);
+    connect(m_playlistWatcher.data(), &sp::PlaylistWatcher::metadataUpdated,
+            this, &QueueModel::updateMetadata);
+    connect(session.data(), &sp::Session::metadataUpdated,
             this, &QueueModel::updateMetadata);
 }
 
@@ -96,6 +141,7 @@ QueueContext QueueModel::context() const
 void QueueModel::setContext(const QueueContext &context, int index)
 {
     m_index = index;
+    m_loaded = false;
 
     int begin = m_explicit.count();
     if (m_implicit.count() > 0)
@@ -106,17 +152,14 @@ void QueueModel::setContext(const QueueContext &context, int index)
         endRemoveRows();
     }
 
-    if (context.type() == QueueContext::Type::AlbumBrowse && !context.albumBrowse().isLoaded())
+    m_context = context;
+    m_albumBrowseWatcher->watch(context.albumBrowse());
+    m_playlistWatcher->watch(context.playlist());
+
+    if (context.isLoaded())
     {
-        m_albumBrowseWatcher->watch(context.albumBrowse());
-    }
-    else
-    {
-        m_albumBrowseWatcher->watch(sp::AlbumBrowse());
         onLoaded();
     }
-
-    m_context = context;
 }
 
 int QueueModel::getTrackCount() const
@@ -139,16 +182,21 @@ sp::Track QueueModel::getTrackAt(int index) const
 
 void QueueModel::onLoaded()
 {
-    sp::TrackList tracks = m_context.tracks();
-
-    int begin = m_explicit.count();
-    if (tracks.count() > 0 && m_index + 1 < tracks.count())
+    if (!m_loaded && m_context.isLoaded())
     {
-        sp::TrackList queueTracks = tracks.mid(m_index + 1);
-        int end = qMax(0, begin + queueTracks.count() - 1);
-        beginInsertRows(QModelIndex(), begin, end);
-        m_implicit.append(queueTracks);
-        endInsertRows();
+        sp::TrackList tracks = m_context.tracks();
+
+        int begin = m_explicit.count();
+        if (tracks.count() > 0 && m_index + 1 < tracks.count())
+        {
+            sp::TrackList queueTracks = tracks.mid(m_index + 1);
+            int end = qMax(0, begin + queueTracks.count() - 1);
+            beginInsertRows(QModelIndex(), begin, end);
+            m_implicit.append(queueTracks);
+            endInsertRows();
+        }
+
+        m_loaded = true;
     }
 }
 

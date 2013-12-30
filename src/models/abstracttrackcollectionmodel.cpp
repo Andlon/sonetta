@@ -157,6 +157,9 @@ void AbstractTrackCollectionModel::updateMetadata()
 
 void AbstractTrackCollectionModel::updateTrackMetadata()
 {
+    if (m_pendingTracks.isEmpty())
+        return;
+
     decltype(m_pendingTracks) updatedTracks;
     decltype(m_pendingTracks) stillPendingTracks;
     stillPendingTracks.reserve(m_pendingTracks.count());
@@ -186,6 +189,9 @@ void AbstractTrackCollectionModel::updateTrackMetadata()
 
 void AbstractTrackCollectionModel::updateAlbumMetadata()
 {
+    if (m_pendingAlbums.isEmpty())
+        return;
+
     decltype(m_pendingAlbums) updatedAlbums;
     decltype(m_pendingAlbums) stillPendingAlbums;
     stillPendingAlbums.reserve(m_pendingAlbums.count());
@@ -212,6 +218,9 @@ void AbstractTrackCollectionModel::updateAlbumMetadata()
 
 void AbstractTrackCollectionModel::updateArtistMetadata()
 {
+    if (m_pendingArtists.isEmpty())
+        return;
+
     decltype(m_pendingArtists) updatedArtists;
     decltype(m_pendingArtists) stillPendingArtists;
     stillPendingArtists.reserve(m_pendingArtists.count());

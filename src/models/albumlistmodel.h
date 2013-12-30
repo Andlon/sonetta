@@ -7,7 +7,8 @@ namespace Sonetta {
 
 /*!
  * \brief The AlbumListModel class provides a simple model of an
- *  Spotinetta::AlbumList where the albums have already been loaded.
+ *  Spotinetta::AlbumList. Connect a signal to the updateMetadata() slot
+ *  to automatically keep up to date.
  */
 
 class AlbumListModel : public AbstractAlbumCollectionModel

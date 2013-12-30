@@ -96,12 +96,50 @@ QHash<int, QByteArray> AbstractAlbumCollectionModel::roleNames() const
     return g_roleNames;
 }
 
-void AbstractAlbumCollectionModel::updateData(int first, int last)
+void AbstractAlbumCollectionModel::updateMetadata()
 {
-    QModelIndex begin = index(first);
-    QModelIndex end = last == -1 ? index(first) : index(last);
+    decltype(m_pending) stillPending;
+    for (const auto & modelIndex : m_pending)
+    {
+        if (modelIndex.isValid())
+        {
+            sp::Album album = getAlbumAt(modelIndex.row());
+            if (album.isLoaded())
+            {
+                emit dataChanged(modelIndex, modelIndex);
+            }
+            else
+            {
+                stillPending.append(modelIndex);
+            }
+        }
+    }
+    m_pending.swap(stillPending);
+}
 
-    emit dataChanged(begin, end);
+void AbstractAlbumCollectionModel::onRowsInserted(const QModelIndex &, int start, int end)
+{
+    checkLoadStatus(start, end);
+}
+
+void AbstractAlbumCollectionModel::onModelReset()
+{
+    if (getAlbumCount() > 0)
+    {
+        checkLoadStatus(0, getAlbumCount() - 1);
+    }
+}
+
+void AbstractAlbumCollectionModel::checkLoadStatus(int start, int end)
+{
+    for (int i = start; i <= end; ++i)
+    {
+        sp::Album album = getAlbumAt(i);
+        if (!album.isLoaded())
+        {
+            m_pending.append(index(i));
+        }
+    }
 }
 
 }
