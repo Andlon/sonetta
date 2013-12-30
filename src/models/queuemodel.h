@@ -77,9 +77,8 @@ private:
     QQueue<Spotinetta::Track> m_explicit;
     QQueue<Spotinetta::Track> m_implicit;
 
-    ObjectSharedPointer<const Spotinetta::Session> m_session;
-    Spotinetta::AlbumBrowseWatcher *    m_albumBrowseWatcher;
-
+    ObjectSharedPointer<const Spotinetta::Session>      m_session;
+    ObjectScopedPointer<Spotinetta::AlbumBrowseWatcher> m_albumBrowseWatcher;
 };
 
 }

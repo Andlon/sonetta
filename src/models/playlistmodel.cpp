@@ -9,26 +9,25 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 PlaylistModel::PlaylistModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
-    :   AbstractTrackCollectionModel(session, parent)
+    :   AbstractTrackCollectionModel(session, parent),
+      m_watcher(new sp::PlaylistWatcher(session.data()))
 {
-    m_watcher = new sp::PlaylistWatcher(session.data(), this);
-
-    connect(m_watcher, &sp::PlaylistWatcher::stateChanged,
+    connect(m_watcher.data(), &sp::PlaylistWatcher::stateChanged,
             this, &PlaylistModel::onStateChanged);
-    connect(m_watcher, &sp::PlaylistWatcher::metadataUpdated,
+    connect(m_watcher.data(), &sp::PlaylistWatcher::metadataUpdated,
             this, &PlaylistModel::updateMetadata);
-    connect(m_watcher, &sp::PlaylistWatcher::tracksAdded,
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksAdded,
             this, &PlaylistModel::onTracksAdded);
-    connect(m_watcher, &sp::PlaylistWatcher::tracksMoved,
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksMoved,
             this, &PlaylistModel::onTracksMoved);
-    connect(m_watcher, &sp::PlaylistWatcher::tracksRemoved,
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksRemoved,
             this, &PlaylistModel::onTracksRemoved);
 
     connect(this, &PlaylistModel::playlistChanged,
             this, &PlaylistModel::nameChanged);
-    connect(m_watcher, &sp::PlaylistWatcher::renamed,
+    connect(m_watcher.data(), &sp::PlaylistWatcher::renamed,
             this, &PlaylistModel::nameChanged);
-    connect(m_watcher, &sp::PlaylistWatcher::stateChanged,
+    connect(m_watcher.data(), &sp::PlaylistWatcher::stateChanged,
             this, &PlaylistModel::nameChanged);
 }
 

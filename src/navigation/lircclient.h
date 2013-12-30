@@ -7,6 +7,7 @@
 #include <QString>
 
 #include "navigation.h"
+#include "../utilities/pointers.h"
 
 class Lircmap
 {
@@ -41,6 +42,6 @@ private slots:
 private:
     void populateLircmap();
 
-    Lircmap        m_map;
-    QLocalSocket * m_socket; 
+    Lircmap                             m_map;
+    ObjectScopedPointer<QLocalSocket>   m_socket;
 };

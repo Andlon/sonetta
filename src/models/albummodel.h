@@ -51,8 +51,8 @@ private slots:
 
 private:
     Q_DISABLE_COPY(AlbumModel)
-    ObjectSharedPointer<const Spotinetta::Session> m_session;
-    Spotinetta::AlbumBrowseWatcher *    m_watcher;
+    ObjectSharedPointer<const Spotinetta::Session>      m_session;
+    ObjectScopedPointer<Spotinetta::AlbumBrowseWatcher> m_watcher;
     Spotinetta::TrackList               m_tracks;
 };
 

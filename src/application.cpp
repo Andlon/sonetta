@@ -24,6 +24,8 @@
 namespace sp = Spotinetta;
 
 namespace {
+// This global is unfortunately necessary for the Qt Quick models
+// to retrieve the current session
 QWeakPointer<Spotinetta::Session> g_session;
 }
 
@@ -72,16 +74,19 @@ bool Application::initialize()
 
 void Application::onExit()
 {
-    m_exiting = true;
-    if (m_session->connectionState() == sp::Session::ConnectionState::LoggedIn
-            || m_session->connectionState() == sp::Session::ConnectionState::Offline)
+    if (!m_exiting)
     {
-        m_session->logout();
-    }
-    else
-    {
-        // Skip session logout
-        onLogout();
+        m_exiting = true;
+        if (m_session->connectionState() == sp::Session::ConnectionState::LoggedIn
+                || m_session->connectionState() == sp::Session::ConnectionState::Offline)
+        {
+            m_session->logout();
+        }
+        else
+        {
+            // Skip session logout
+            onLogout();
+        }
     }
 }
 
@@ -119,6 +124,9 @@ bool Application::eventFilter(QObject * obj, QEvent * e)
 
     switch (e->type())
     {
+    case QEvent::Close:
+        onExit();
+        return true;
     case QEvent::MouseButtonDblClick:
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
@@ -126,9 +134,6 @@ bool Application::eventFilter(QObject * obj, QEvent * e)
     case QEvent::MouseTrackingChange:
         if (!m_settings->mouseEnabled())
             return true;
-    case QEvent::Close:
-        onExit();
-        return true;
     default:
         return false;
     }
@@ -223,7 +228,7 @@ void Application::createSession()
 {
     sp::SessionConfig config;
     config.applicationKey = sp::ApplicationKey(g_appkey, g_appkey_size);
-    config.userAgent = "Sonetta";
+    config.userAgent = "sonetta";
     config.audioOutput = m_output;
 
     config.settingsLocation = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/libspotify";
@@ -235,6 +240,8 @@ void Application::createSession()
     dir.mkpath(config.cacheLocation);
 
     m_session.reset(new sp::Session(config));
+
+    // See comment above declaration for rationale
     g_session = m_session;
 }
 

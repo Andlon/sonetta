@@ -15,11 +15,11 @@ Player::Player(ObjectSharedPointer<Spotinetta::Session> session, ObjectSharedPoi
     Q_ASSERT(session != nullptr);
     Q_ASSERT(output != nullptr);
 
-    m_watcher = new sp::TrackWatcher(session.data(), this);
+    m_watcher.reset(new sp::TrackWatcher(session.data(), this));
 
     // This ensures a track is eventually played whether it's loaded
     // or not
-    connect(m_watcher, &sp::TrackWatcher::loaded, [this] {
+    connect(m_watcher.data(), &sp::TrackWatcher::loaded, [this] {
         play(m_watcher->watched());
     });;
 
@@ -99,7 +99,7 @@ void Player::setRepeat(bool enable)
 
 QObject * Player::queue() const
 {
-    return m_queue;
+    return m_queue.data();
 }
 
 void Player::transitionTrack()

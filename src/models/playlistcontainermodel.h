@@ -52,17 +52,17 @@ private slots:
 private:
     void updateWatcherIndices(int first, int last);
     void updateMappings(Spotinetta::PlaylistWatcher * watcher, int index);
-    QSharedPointer<Spotinetta::PlaylistWatcher> createWatcher(int index);
+    ObjectSharedPointer<Spotinetta::PlaylistWatcher> createWatcher(int index);
 
-    Spotinetta::PlaylistContainerWatcher *  m_watcher;
-    ObjectSharedPointer<const Spotinetta::Session>  m_session;
+    QVector< ObjectSharedPointer<Spotinetta::PlaylistWatcher> > m_playlists;
 
-    QSignalMapper   * m_stateChangedMapper;
-    QSignalMapper   * m_renamedMapper;
-    QSignalMapper   * m_imageChangedMapper;
-    QSignalMapper   * m_descriptionChangedMapper;
+    ObjectSharedPointer<const Spotinetta::Session>              m_session;
+    ObjectScopedPointer<Spotinetta::PlaylistContainerWatcher>   m_watcher;
 
-    QVector< QSharedPointer<Spotinetta::PlaylistWatcher> > m_playlists;
+    ObjectScopedPointer<QSignalMapper> m_stateChangedMapper;
+    ObjectScopedPointer<QSignalMapper> m_renamedMapper;
+    ObjectScopedPointer<QSignalMapper> m_imageChangedMapper;
+    ObjectScopedPointer<QSignalMapper> m_descriptionChangedMapper;
 };
 
 }

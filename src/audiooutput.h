@@ -8,6 +8,8 @@
 #include <QThread>
 #include <QMutex>
 
+#include "utilities/pointers.h"
+
 namespace Sonetta {
 
 class AudioOutput;
@@ -86,10 +88,10 @@ private slots:
     void onProcessed(int deltams);
 
 private:
-    QThread *               m_audioThread;
-    AudioOutputWorker *     m_worker;
+    ObjectScopedPointer<QThread>            m_audioThread;
+    ObjectScopedPointer<AudioOutputWorker>  m_worker;
 
-    int                     m_position;
+    int m_position;
 
     friend class AudioOutputWorker;
 };

@@ -4,12 +4,11 @@
 
 int main(int argc, char *argv[])
 {
-    // Register Spotinetta types
     Spotinetta::registerTypes();
 
-    QCoreApplication::setApplicationName("Sonetta");
+    QCoreApplication::setApplicationName("sonetta");
     QCoreApplication::setOrganizationDomain("sonetta.org");
-    QCoreApplication::setOrganizationName("Sonetta");
+    QCoreApplication::setOrganizationName("sonetta");
 
     QScopedPointer<QGuiApplication> application(new QGuiApplication(argc, argv));
 

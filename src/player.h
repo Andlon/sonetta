@@ -66,10 +66,10 @@ private slots:
 private:
     void updatePlaybackStatus();
 
-    ObjectSharedPointer<Spotinetta::Session>   m_session;
-    ObjectSharedPointer<AudioOutput>           m_output;
-    Spotinetta::TrackWatcher *      m_watcher;
-    QueueModel *                    m_queue;
+    ObjectSharedPointer<Spotinetta::Session>        m_session;
+    ObjectSharedPointer<AudioOutput>                m_output;
+    ObjectScopedPointer<Spotinetta::TrackWatcher>   m_watcher;
+    ObjectScopedPointer<QueueModel>                 m_queue;
 
     bool m_endOfTrack;
     bool m_bufferEmpty;

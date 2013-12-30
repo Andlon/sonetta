@@ -15,15 +15,14 @@ const int MAXHISTORY = 40;
 }
 
 SearchEngine::SearchEngine(ObjectSharedPointer<const Spotinetta::Session> session, ObjectSharedPointer<Settings> settings, QObject * parent)
-    : QObject(parent), m_session(session), m_settings(settings)
+    : QObject(parent), m_session(session), m_settings(settings),
+      m_trackModel(new TrackListModel(session, this)),
+      m_albumModel(new AlbumListModel(this)),
+      m_artistModel(new ArtistListModel(this)),
+      m_watcher(new sp::SearchWatcher(session.data(), this)),
+      m_predictionWatcher(new sp::SearchWatcher(session.data(), this))
 {
-    Q_ASSERT(session != nullptr);
-
-    m_watcher = new sp::SearchWatcher(session.data(), this);
-    m_predictionWatcher = new sp::SearchWatcher(session.data(), this);
-    m_trackModel = new TrackListModel(session, this);
-    m_albumModel = new AlbumListModel(this);
-    m_artistModel = new ArtistListModel(this);
+    Q_ASSERT(session.data() != nullptr);
 
     // Initialize offsets and deltas to reasonable values
     m_albumOffset
@@ -38,9 +37,9 @@ SearchEngine::SearchEngine(ObjectSharedPointer<const Spotinetta::Session> sessio
     m_playlistDelta = 10;
 
     // Set up connections
-    connect(m_watcher, &sp::SearchWatcher::loaded,
+    connect(m_watcher.data(), &sp::SearchWatcher::loaded,
             this, &SearchEngine::onSearchLoaded);
-    connect(m_predictionWatcher, &sp::SearchWatcher::loaded,
+    connect(m_predictionWatcher.data(), &sp::SearchWatcher::loaded,
             this, &SearchEngine::onPredictionsLoaded);
 
     loadHistory();
@@ -61,6 +60,21 @@ QStringList SearchEngine::history() const
     return m_history;
 }
 
+QObject *SearchEngine::tracks() const
+{
+    return m_trackModel.data();
+}
+
+QObject *SearchEngine::albums() const
+{
+    return m_albumModel.data();
+}
+
+QObject *SearchEngine::artists() const
+{
+    return m_artistModel.data();
+}
+
 void SearchEngine::go(const QString &query)
 {
     if (m_watcher->watched().query() != query && !m_session.isNull())
@@ -78,11 +92,11 @@ void SearchEngine::go(const QString &query)
         m_artistModel->clear();
 
         // Reconnect fetchMore if connections are broken (note UniqueConnection)
-        connect(m_trackModel, &TrackListModel::needMore,
+        connect(m_trackModel.data(), &TrackListModel::needMore,
                 this, &SearchEngine::fetchMoreTracks, Qt::UniqueConnection);
-        connect(m_artistModel, &ArtistListModel::needMore,
+        connect(m_artistModel.data(), &ArtistListModel::needMore,
                 this, &SearchEngine::fetchMoreArtists, Qt::UniqueConnection);
-        connect(m_albumModel, &AlbumListModel::needMore,
+        connect(m_albumModel.data(), &AlbumListModel::needMore,
                 this, &SearchEngine::fetchMoreAlbums, Qt::UniqueConnection);
 
         performQuery(m_trackDelta, m_albumDelta, m_artistDelta, m_playlistDelta);
@@ -156,15 +170,15 @@ void SearchEngine::onSearchLoaded()
 
     // Disconnect fetch if unable to acquire more results (tracks/albums/artists/playlists)
     if (m_lastTrackDelta > 0 && search.trackCount() < m_lastTrackDelta)
-        disconnect(m_trackModel, &TrackListModel::needMore,
+        disconnect(m_trackModel.data(), &TrackListModel::needMore,
                    this, &SearchEngine::fetchMoreTracks);
 
     if (m_lastAlbumDelta > 0 && search.albumCount() < m_lastAlbumDelta)
-        disconnect(m_albumModel, &AlbumListModel::needMore,
+        disconnect(m_albumModel.data(), &AlbumListModel::needMore,
                    this, &SearchEngine::fetchMoreAlbums);
 
     if (m_lastArtistDelta > 0 && search.artistCount() < m_lastArtistDelta)
-        disconnect(m_artistModel, &ArtistListModel::needMore,
+        disconnect(m_artistModel.data(), &ArtistListModel::needMore,
                    this, &SearchEngine::fetchMoreArtists);
 
     // Update offsets

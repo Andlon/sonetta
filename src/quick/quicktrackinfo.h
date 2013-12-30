@@ -28,7 +28,6 @@ class QuickTrackInfo : public QObject {
 
 public:
     explicit QuickTrackInfo(QObject * parent = 0);
-    ~QuickTrackInfo();
 
     bool isValid() const;
     bool isLoaded() const;
@@ -59,13 +58,12 @@ private slots:
     void onTrackLoaded();
 
 private:
-    void deleteWatchers();
     void setupWatchers();
 
-    Spotinetta::TrackWatcher *                  m_trackWatcher;
-    Spotinetta::AlbumWatcher *                  m_albumWatcher;
-    QVector<Spotinetta::ArtistWatcher *>        m_artistWatchers;
-    ObjectSharedPointer<Spotinetta::Session>    m_session;
+    ObjectScopedPointer<Spotinetta::TrackWatcher>               m_trackWatcher;
+    ObjectScopedPointer<Spotinetta::AlbumWatcher>               m_albumWatcher;
+    QVector<ObjectSharedPointer<Spotinetta::ArtistWatcher> >    m_artistWatchers;
+    ObjectSharedPointer<Spotinetta::Session>                    m_session;
 };
 
 }

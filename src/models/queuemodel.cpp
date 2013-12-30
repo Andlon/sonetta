@@ -60,9 +60,9 @@ QueueModel::QueueModel(ObjectSharedPointer<const Spotinetta::Session> session, Q
       m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session.data(), parent)),
       m_index(0)
 {
-    connect(m_albumBrowseWatcher, &sp::AlbumBrowseWatcher::loaded,
+    connect(m_albumBrowseWatcher.data(), &sp::AlbumBrowseWatcher::loaded,
             this, &QueueModel::onLoaded);
-    connect(m_albumBrowseWatcher, &sp::AlbumBrowseWatcher::loaded,
+    connect(m_albumBrowseWatcher.data(), &sp::AlbumBrowseWatcher::loaded,
             this, &QueueModel::updateMetadata);
 }
 

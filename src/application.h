@@ -29,7 +29,6 @@ public:
     static ObjectSharedPointer<Spotinetta::Session> session();
 
     bool eventFilter(QObject *, QEvent *);
-
     bool initialize();
 
 private slots:
@@ -37,7 +36,6 @@ private slots:
     void onLogout();
 
     void updateCursor();
-    
 private:
     void createSession();
     void registerQmlTypes();
@@ -56,7 +54,6 @@ private:
     ObjectSharedPointer<Spotinetta::Session>    m_session;
 
     bool m_exiting;
-
 };
 
 }

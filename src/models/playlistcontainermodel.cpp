@@ -7,31 +7,31 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 PlaylistContainerModel::PlaylistContainerModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
-    :   QAbstractListModel(parent), m_session(session)
+    :   QAbstractListModel(parent), m_session(session),
+      m_watcher(new sp::PlaylistContainerWatcher(session.data())),
+      m_stateChangedMapper(new QSignalMapper),
+      m_renamedMapper(new QSignalMapper),
+      m_imageChangedMapper(new QSignalMapper),
+      m_descriptionChangedMapper(new QSignalMapper)
 {
-    m_watcher = new sp::PlaylistContainerWatcher(session.data(), this);
 
-    connect(m_watcher, &sp::PlaylistContainerWatcher::loaded,
+
+    connect(m_watcher.data(), &sp::PlaylistContainerWatcher::loaded,
             this, &PlaylistContainerModel::onLoaded);
-    connect(m_watcher, &sp::PlaylistContainerWatcher::playlistAdded,
+    connect(m_watcher.data(), &sp::PlaylistContainerWatcher::playlistAdded,
             this, &PlaylistContainerModel::onPlaylistAdded);
-    connect(m_watcher, &sp::PlaylistContainerWatcher::playlistMoved,
+    connect(m_watcher.data(), &sp::PlaylistContainerWatcher::playlistMoved,
             this, &PlaylistContainerModel::onPlaylistMoved);
-    connect(m_watcher, &sp::PlaylistContainerWatcher::playlistRemoved,
+    connect(m_watcher.data(), &sp::PlaylistContainerWatcher::playlistRemoved,
             this, &PlaylistContainerModel::onPlaylistRemoved);
 
-    m_stateChangedMapper = new QSignalMapper(this);
-    m_renamedMapper = new QSignalMapper(this);
-    m_imageChangedMapper = new QSignalMapper(this);
-    m_descriptionChangedMapper = new QSignalMapper(this);
-
-    connect(m_stateChangedMapper, SIGNAL(mapped(int)),
+    connect(m_stateChangedMapper.data(), SIGNAL(mapped(int)),
             this, SLOT(onPlaylistStateChanged(int)));
-    connect(m_renamedMapper, SIGNAL(mapped(int)),
+    connect(m_renamedMapper.data(), SIGNAL(mapped(int)),
             this, SLOT(onPlaylistRenamed(int)));
-    connect(m_imageChangedMapper, SIGNAL(mapped(int)),
+    connect(m_imageChangedMapper.data(), SIGNAL(mapped(int)),
             this, SLOT(onPlaylistImageChanged(int)));
-    connect(m_descriptionChangedMapper, SIGNAL(mapped(int)),
+    connect(m_descriptionChangedMapper.data(), SIGNAL(mapped(int)),
             this, SLOT(onPlaylistDescriptionChanged(int)));
 }
 
@@ -109,22 +109,20 @@ void PlaylistContainerModel::updateWatcherIndices(int first, int last)
     }
 }
 
-QSharedPointer<Spotinetta::PlaylistWatcher> PlaylistContainerModel::createWatcher(int index)
+ObjectSharedPointer<Spotinetta::PlaylistWatcher> PlaylistContainerModel::createWatcher(int index)
 {
     const sp::Playlist playlist = playlistContainer().playlistAt(index);
 
-    QSharedPointer<sp::PlaylistWatcher> watcher(
-                new sp::PlaylistWatcher(m_session.data(), this),
-                &sp::PlaylistWatcher::deleteLater);
+    ObjectSharedPointer<sp::PlaylistWatcher> watcher(new sp::PlaylistWatcher(m_session.data()));
 
     connect(watcher.data(), SIGNAL(stateChanged()),
-            m_stateChangedMapper, SLOT(map()));
+            m_stateChangedMapper.data(), SLOT(map()));
     connect(watcher.data(), SIGNAL(renamed()),
-            m_renamedMapper, SLOT(map()));
+            m_renamedMapper.data(), SLOT(map()));
     connect(watcher.data(), SIGNAL(imageChanged()),
-            m_imageChangedMapper, SLOT(map()));
+            m_imageChangedMapper.data(), SLOT(map()));
     connect(watcher.data(), SIGNAL(descriptionChanged()),
-            m_descriptionChangedMapper, SLOT(map()));
+            m_descriptionChangedMapper.data(), SLOT(map()));
 
     updateMappings(watcher.data(), index);
 
@@ -181,7 +179,7 @@ void PlaylistContainerModel::onPlaylistRemoved(int position)
 void PlaylistContainerModel::onPlaylistMoved(int oldPosition, int newPosition)
 {
     beginMoveRows(QModelIndex(), oldPosition, oldPosition, QModelIndex(), newPosition);
-    QSharedPointer<sp::PlaylistWatcher> watcher = m_playlists.at(oldPosition);
+    ObjectSharedPointer<sp::PlaylistWatcher> watcher = m_playlists.at(oldPosition);
     m_playlists.remove(oldPosition);
     m_playlists.insert(newPosition, watcher);
 

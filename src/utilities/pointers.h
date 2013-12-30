@@ -30,6 +30,13 @@ struct ScopedObjectDeleter
 };
 }
 
+/*
+ *  Note: These classes are not complete. I should finish them at some point.
+ *  Also note that ObjectScopedPointer can be replaced by a template alias,
+ *  but VC++2012 (which I unfortunately have to support for now) doesn't support
+ *  this.
+ */
+
 template <typename T>
 class ObjectScopedPointer : public QScopedPointer<T, PointerDetails::ScopedObjectDeleter<T> >
 {

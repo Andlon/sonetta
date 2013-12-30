@@ -20,9 +20,9 @@ class SearchEngine : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString query READ query NOTIFY queryChanged)
-    Q_PROPERTY(QObject * tracks MEMBER m_trackModel CONSTANT)
-    Q_PROPERTY(QObject * albums MEMBER m_albumModel CONSTANT)
-    Q_PROPERTY(QObject * artists MEMBER m_artistModel CONSTANT)
+    Q_PROPERTY(QObject * tracks READ tracks CONSTANT)
+    Q_PROPERTY(QObject * albums READ albums CONSTANT)
+    Q_PROPERTY(QObject * artists READ artists CONSTANT)
     Q_PROPERTY(QStringList predictions READ predictions NOTIFY predictionsChanged)
     Q_PROPERTY(QStringList history READ history NOTIFY historyChanged)
 
@@ -33,6 +33,10 @@ public:
 
     QStringList predictions() const;
     QStringList history() const;
+
+    QObject * tracks() const;
+    QObject * albums() const;
+    QObject * artists() const;
 
 public slots:
     void go(const QString &query);
@@ -82,14 +86,14 @@ private:
     QStringList m_predictions;
     QStringList m_history;
 
-    TrackListModel *    m_trackModel;
-    AlbumListModel *    m_albumModel;
-    ArtistListModel *   m_artistModel;
+    ObjectSharedPointer<const Spotinetta::Session>  m_session;
+    ObjectSharedPointer<Settings>                   m_settings;
 
-    ObjectSharedPointer<const Spotinetta::Session>     m_session;
-    QSharedPointer<Settings>                m_settings;
-    Spotinetta::SearchWatcher *             m_watcher;
-    Spotinetta::SearchWatcher *             m_predictionWatcher;
+    ObjectScopedPointer<TrackListModel>             m_trackModel;
+    ObjectScopedPointer<AlbumListModel>             m_albumModel;
+    ObjectScopedPointer<ArtistListModel>            m_artistModel;
+    ObjectScopedPointer<Spotinetta::SearchWatcher>  m_watcher;
+    ObjectScopedPointer<Spotinetta::SearchWatcher>  m_predictionWatcher;
 };
 
 }

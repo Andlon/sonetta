@@ -149,7 +149,7 @@ void Lircmap::readRemoteElement()
 }
 
 LircClient::LircClient(QObject *parent) :
-    QObject(parent), m_socket(new QLocalSocket(this))
+    QObject(parent), m_socket(new QLocalSocket)
 {
 #ifdef Q_OS_LINUX
     connect(m_socket, SIGNAL(readyRead()), this, SLOT(readData()));

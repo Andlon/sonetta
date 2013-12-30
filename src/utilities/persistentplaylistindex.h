@@ -3,7 +3,9 @@
 #include <Spotinetta/Spotinetta>
 #include <QPointer>
 
-#include "qobjectscopedpointer.h"
+#include "pointers.h"
+
+/* NOTE: NEED TO FIX THIS CLASS WITH REGARDS TO SESSION SHARED POINTER */
 
 namespace Sonetta {
 
@@ -23,7 +25,7 @@ private:
     void setup();
     void cleanup();
 
-    QScopedPointer<Spotinetta::PlaylistWatcher, QObjectScopedPointerDeleter> m_watcher;
+    ObjectScopedPointer<Spotinetta::PlaylistWatcher> m_watcher;
     QPointer<const Spotinetta::Session> m_session;
     int m_index;
 };

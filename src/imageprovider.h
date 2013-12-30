@@ -45,8 +45,6 @@ private:
     QMultiMap<QString, QByteArray>   m_results;
 
     ObjectSharedPointer<const Spotinetta::Session>       m_session;
-
-
 };
 
 }

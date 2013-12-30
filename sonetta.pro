@@ -52,7 +52,6 @@ HEADERS += \
     src/utilities/predictioncollection.h \
     src/models/queuemodel.h \
     src/utilities/persistentplaylistindex.h \
-    src/utilities/qobjectscopedpointer.h \
     src/settings.h \
     src/utilities/mosaicgenerator.h \
     src/quick/quickmosaicgenerator.h \

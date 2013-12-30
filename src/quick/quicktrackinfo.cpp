@@ -11,23 +11,18 @@ namespace sp = Spotinetta;
 namespace Sonetta {
 
 QuickTrackInfo::QuickTrackInfo(QObject *parent)
-    :   QObject(parent), m_session(Application::session())
+    :   QObject(parent), m_session(Application::session()),
+      m_trackWatcher(new sp::TrackWatcher(m_session.data(), this)),
+      m_albumWatcher(new sp::AlbumWatcher(m_session.data(), this))
 {
     Q_ASSERT(!m_session.isNull());
 
-    m_trackWatcher = new sp::TrackWatcher(m_session.data(), this);
-    m_albumWatcher = new sp::AlbumWatcher(m_session.data(), this);
-
-    connect(m_trackWatcher, &sp::TrackWatcher::loaded,
+    connect(m_trackWatcher.data(), &sp::TrackWatcher::loaded,
             this, &QuickTrackInfo::onTrackLoaded);
-    connect(m_albumWatcher, &sp::AlbumWatcher::loaded,
+    connect(m_albumWatcher.data(), &sp::AlbumWatcher::loaded,
             this, &QuickTrackInfo::dataUpdated);
     connect(this, &QuickTrackInfo::trackChanged,
             this, &QuickTrackInfo::dataUpdated);
-}
-
-QuickTrackInfo::~QuickTrackInfo()
-{
 }
 
 bool QuickTrackInfo::isValid() const
@@ -88,7 +83,7 @@ QString QuickTrackInfo::name() const
 QStringList QuickTrackInfo::artistNames() const
 {
     QStringList names;
-    foreach(sp::ArtistWatcher * watcher, m_artistWatchers)
+    foreach(auto watcher, m_artistWatchers)
         names << watcher->watched().name();
 
     return names;
@@ -105,7 +100,7 @@ sp::Artist QuickTrackInfo::artistAt(int index) const
 sp::ArtistList QuickTrackInfo::artists() const
 {
     sp::ArtistList list;
-    foreach(sp::ArtistWatcher * watcher, m_artistWatchers)
+    foreach(auto watcher, m_artistWatchers)
         list << watcher->watched();
 
     return list;
@@ -148,33 +143,21 @@ void QuickTrackInfo::onTrackLoaded()
     emit dataUpdated();
 }
 
-void QuickTrackInfo::deleteWatchers()
-{
-    for (auto & watcher : m_artistWatchers)
-        watcher->deleteLater();
-
-    m_artistWatchers.clear();
-}
-
 void QuickTrackInfo::setupWatchers()
 {
     sp::Track track = this->track();
     m_albumWatcher->watch(track.album());
     int count = artistCount();
 
-    deleteWatchers();
-
-    Q_ASSERT(!m_session.isNull());
-
-    m_artistWatchers.resize(count);
+    m_artistWatchers.clear();
 
     for (int i = 0; i < count; ++i)
     {
         sp::Artist artist = track.artistAt(i);
-        auto watcher = new sp::ArtistWatcher(m_session.data(), this);
+        ObjectSharedPointer<sp::ArtistWatcher> watcher(new sp::ArtistWatcher(m_session.data(), this));
         watcher->watch(artist);
-        connect(watcher, &sp::ArtistWatcher::loaded, this, &QuickTrackInfo::artistsChanged);
-        m_artistWatchers[i] = watcher;
+        connect(watcher.data(), &sp::ArtistWatcher::loaded, this, &QuickTrackInfo::artistsChanged);
+        m_artistWatchers.append(watcher);
     }
 
     emit artistsChanged();

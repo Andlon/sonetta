@@ -49,8 +49,8 @@ private:
     void checkArtistsLoadStatus(int index);
     void checkAlbumLoadStatus(int index);
 
-    Spotinetta::PlaylistWatcher *   m_watcher;
-    QVector<Spotinetta::Track>      m_tracks;
+    ObjectScopedPointer<Spotinetta::PlaylistWatcher>    m_watcher;
+    QVector<Spotinetta::Track>                          m_tracks;
 };
 
 }

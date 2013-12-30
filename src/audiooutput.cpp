@@ -248,16 +248,16 @@ bool AudioOutputWorker::outputIsReady() const
 }
 
 AudioOutput::AudioOutput(QObject *parent)
-    :   QObject(parent), m_position(0)
+    :   QObject(parent), m_position(0),
+      m_audioThread(new QThread),
+      m_worker(new AudioOutputWorker)
 {
-    m_audioThread = new QThread(this);
-    m_worker = new AudioOutputWorker;
-    m_worker->moveToThread(m_audioThread);
+    m_worker->moveToThread(m_audioThread.data());
 
-    connect(m_worker, &AudioOutputWorker::bufferEmpty, this, &AudioOutput::bufferEmpty);
-    connect(m_worker, &AudioOutputWorker::bufferPopulated, this, &AudioOutput::bufferPopulated);
-    connect(m_worker, &AudioOutputWorker::audioDeviceFailed, this, &AudioOutput::audioDeviceFailed);
-    connect(m_worker, &AudioOutputWorker::processed, this, &AudioOutput::onProcessed);
+    connect(m_worker.data(), &AudioOutputWorker::bufferEmpty, this, &AudioOutput::bufferEmpty);
+    connect(m_worker.data(), &AudioOutputWorker::bufferPopulated, this, &AudioOutput::bufferPopulated);
+    connect(m_worker.data(), &AudioOutputWorker::audioDeviceFailed, this, &AudioOutput::audioDeviceFailed);
+    connect(m_worker.data(), &AudioOutputWorker::processed, this, &AudioOutput::onProcessed);
 
     m_audioThread->start();
 }
@@ -266,7 +266,6 @@ AudioOutput::~AudioOutput()
 {
     m_audioThread->exit();
     m_audioThread->wait();
-    delete m_worker;
 }
 
 int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
