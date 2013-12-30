@@ -72,9 +72,9 @@ public:
                 case APPCOMMAND_VOLUME_MUTE:
                     button = Navigation::Mute;
                     break;
-                case APPCOMMAND_BROWSER_BACKWARD: // Is this the correct one to use?
-                    button = Navigation::Back;
-                    break;
+//                case APPCOMMAND_BROWSER_BACKWARD: // Seems to come in addition to VK_BACKSPACE, ignore for now?
+//                    button = Navigation::Back;
+//                    break;
 
                 default:
                     return false;
