@@ -10,7 +10,7 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-ImageProvider::ImageProvider(const Spotinetta::Session *session, QObject *parent)
+ImageProvider::ImageProvider(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
     :   QObject(parent), QQuickImageProvider(QQmlImageProviderBase::Image, QQmlImageProviderBase::ForceAsynchronousImageLoading),
       m_cancel(false), m_waitCount(0), m_session(session)
 {
@@ -50,7 +50,7 @@ void ImageProvider::loadImage(const QString &uri)
             // Add image to vector of images waiting to be loaded,
             // and create a watcher that will notify us when the image is loaded
             m_pending.append(qMakePair(uri, image));
-            sp::ImageWatcher * watcher = new sp::ImageWatcher(m_session, this);
+            sp::ImageWatcher * watcher = new sp::ImageWatcher(m_session.data(), this);
             connect(watcher, &sp::ImageWatcher::loaded, this, &ImageProvider::onImageLoaded);
             connect(watcher, &sp::ImageWatcher::loaded, watcher, &sp::ImageWatcher::deleteLater);
             watcher->watch(image);

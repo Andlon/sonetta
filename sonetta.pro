@@ -42,7 +42,6 @@ HEADERS += \
     src/uistatecoordinator.h \
     src/application.h \
     src/imageprovider.h \
-    src/utilities/session.h \
     src/models/playlistmodel.h \
     src/models/playlistcontainermodel.h \
     src/quick/quicktrackinfo.h \
@@ -59,7 +58,8 @@ HEADERS += \
     src/quick/quickmosaicgenerator.h \
     src/models/albummodel.h \
     src/quick/quickfactory.h \
-    src/navigation/lircclient.h
+    src/navigation/lircclient.h \
+    src/utilities/pointers.h
 
 SOURCES += \
     src/navigation/navigation.cpp \

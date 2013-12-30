@@ -7,6 +7,8 @@
 #include <QSignalMapper>
 #include <QSharedPointer>
 
+#include "../utilities/pointers.h"
+
 namespace Sonetta {
 
 class PlaylistContainerModel : public QAbstractListModel
@@ -24,7 +26,7 @@ public:
         ImageUriRole
     };
 
-    explicit PlaylistContainerModel(const Spotinetta::Session * session, QObject *parent = 0);
+    explicit PlaylistContainerModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent = 0);
     
     Spotinetta::PlaylistContainer playlistContainer() const;
     void setPlaylistContainer(const Spotinetta::PlaylistContainer &container);
@@ -53,7 +55,7 @@ private:
     QSharedPointer<Spotinetta::PlaylistWatcher> createWatcher(int index);
 
     Spotinetta::PlaylistContainerWatcher *  m_watcher;
-    QPointer<const Spotinetta::Session>           m_session;
+    ObjectSharedPointer<const Spotinetta::Session>  m_session;
 
     QSignalMapper   * m_stateChangedMapper;
     QSignalMapper   * m_renamedMapper;

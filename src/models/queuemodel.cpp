@@ -55,8 +55,9 @@ QueueContext::Type QueueContext::type() const
  *  QueueModel
  */
 
-QueueModel::QueueModel(const Spotinetta::Session *session, QObject *parent)
-    :    AbstractTrackCollectionModel(session, parent), m_session(session), m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session, parent)),
+QueueModel::QueueModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
+    :    AbstractTrackCollectionModel(session, parent), m_session(session),
+      m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session.data(), parent)),
       m_index(0)
 {
     connect(m_albumBrowseWatcher, &sp::AlbumBrowseWatcher::loaded,
@@ -223,7 +224,6 @@ void QueueModel::updateContext(const Spotinetta::TrackList &tracks, int index)
 
 void QueueModel::updateContext(const Spotinetta::Album &album, int index)
 {
-    Q_ASSERT(!m_session.isNull());
     setContext(QueueContext(m_session->browse(album)), index);
 }
 

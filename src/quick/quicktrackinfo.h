@@ -5,6 +5,8 @@
 
 #include <Spotinetta/Spotinetta>
 
+#include "../utilities/pointers.h"
+
 namespace Sonetta {
 
 class QuickTrackInfo : public QObject {
@@ -60,10 +62,10 @@ private:
     void deleteWatchers();
     void setupWatchers();
 
-    Spotinetta::TrackWatcher *              m_trackWatcher;
-    Spotinetta::AlbumWatcher *              m_albumWatcher;
-    QVector<Spotinetta::ArtistWatcher *>    m_artistWatchers;
-    QPointer<Spotinetta::Session>           m_session;
+    Spotinetta::TrackWatcher *                  m_trackWatcher;
+    Spotinetta::AlbumWatcher *                  m_albumWatcher;
+    QVector<Spotinetta::ArtistWatcher *>        m_artistWatchers;
+    ObjectSharedPointer<Spotinetta::Session>    m_session;
 };
 
 }

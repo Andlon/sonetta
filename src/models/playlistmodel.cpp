@@ -8,10 +8,10 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-PlaylistModel::PlaylistModel(const Spotinetta::Session *session, QObject *parent)
+PlaylistModel::PlaylistModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
     :   AbstractTrackCollectionModel(session, parent)
 {
-    m_watcher = new sp::PlaylistWatcher(session, this);
+    m_watcher = new sp::PlaylistWatcher(session.data(), this);
 
     connect(m_watcher, &sp::PlaylistWatcher::stateChanged,
             this, &PlaylistModel::onStateChanged);

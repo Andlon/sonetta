@@ -9,6 +9,8 @@
 #include "models/albumlistmodel.h"
 #include "models/artistlistmodel.h"
 
+#include "utilities/pointers.h"
+
 #include "settings.h"
 
 namespace Sonetta {
@@ -25,7 +27,7 @@ class SearchEngine : public QObject
     Q_PROPERTY(QStringList history READ history NOTIFY historyChanged)
 
 public:
-    explicit SearchEngine(const Spotinetta::Session * session, QSharedPointer<Settings> settings, QObject *parent = 0);
+    explicit SearchEngine(ObjectSharedPointer<const Spotinetta::Session> session, ObjectSharedPointer<Settings> settings, QObject *parent = 0);
 
     QString query() const;
 
@@ -84,7 +86,7 @@ private:
     AlbumListModel *    m_albumModel;
     ArtistListModel *   m_artistModel;
 
-    QPointer<const Spotinetta::Session>     m_session;
+    ObjectSharedPointer<const Spotinetta::Session>     m_session;
     QSharedPointer<Settings>                m_settings;
     Spotinetta::SearchWatcher *             m_watcher;
     Spotinetta::SearchWatcher *             m_predictionWatcher;

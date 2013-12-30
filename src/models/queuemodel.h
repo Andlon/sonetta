@@ -42,7 +42,7 @@ public:
         Explicit = AbstractTrackCollectionModel::LastTrackCollectionModelRole + 1
     };
 
-    explicit QueueModel(const Spotinetta::Session * session, QObject *parent = 0);
+    explicit QueueModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent = 0);
 
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role) const;
@@ -77,7 +77,7 @@ private:
     QQueue<Spotinetta::Track> m_explicit;
     QQueue<Spotinetta::Track> m_implicit;
 
-    QPointer<const Spotinetta::Session> m_session;
+    ObjectSharedPointer<const Spotinetta::Session> m_session;
     Spotinetta::AlbumBrowseWatcher *    m_albumBrowseWatcher;
 
 };

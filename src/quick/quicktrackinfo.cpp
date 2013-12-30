@@ -3,21 +3,20 @@
 #include <QVector>
 #include <QDebug>
 
-#include "../utilities/session.h"
+#include "../utilities/pointers.h"
+#include "../application.h"
 
 namespace sp = Spotinetta;
 
 namespace Sonetta {
 
 QuickTrackInfo::QuickTrackInfo(QObject *parent)
-    :   QObject(parent)
+    :   QObject(parent), m_session(Application::session())
 {
-    sp::Session * session = getCurrentSession();
-    Q_ASSERT(session != nullptr);
-    m_session = session;
+    Q_ASSERT(!m_session.isNull());
 
-    m_trackWatcher = new sp::TrackWatcher(session, this);
-    m_albumWatcher = new sp::AlbumWatcher(session, this);
+    m_trackWatcher = new sp::TrackWatcher(m_session.data(), this);
+    m_albumWatcher = new sp::AlbumWatcher(m_session.data(), this);
 
     connect(m_trackWatcher, &sp::TrackWatcher::loaded,
             this, &QuickTrackInfo::onTrackLoaded);
@@ -172,7 +171,7 @@ void QuickTrackInfo::setupWatchers()
     for (int i = 0; i < count; ++i)
     {
         sp::Artist artist = track.artistAt(i);
-        auto watcher = new sp::ArtistWatcher(m_session, this);
+        auto watcher = new sp::ArtistWatcher(m_session.data(), this);
         watcher->watch(artist);
         connect(watcher, &sp::ArtistWatcher::loaded, this, &QuickTrackInfo::artistsChanged);
         m_artistWatchers[i] = watcher;

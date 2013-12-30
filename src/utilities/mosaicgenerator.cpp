@@ -36,8 +36,8 @@ sp::AlbumList analyzePlaylist(const Spotinetta::Playlist & playlist, unsigned in
 
 }
 
-MosaicGenerator::MosaicGenerator(const Spotinetta::Session * session, QObject *parent)
-    :   QObject(parent), m_watcher(new Spotinetta::PlaylistWatcher(session, this))
+MosaicGenerator::MosaicGenerator(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
+    :   QObject(parent), m_watcher(new Spotinetta::PlaylistWatcher(session.data(), this))
 {
     connect(m_watcher, &Spotinetta::PlaylistWatcher::stateChanged, this, &MosaicGenerator::onPlaylistStateChanged);
 }

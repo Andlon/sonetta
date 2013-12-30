@@ -14,23 +14,23 @@
 #include "searchengine.h"
 #include "settings.h"
 
+#include "utilities/pointers.h"
+
 class QQuickView;
 
 namespace Sonetta {
 
-class Application : public QGuiApplication
+class Application : public QObject
 {
     Q_OBJECT
 public:
-    explicit Application(int & argc, char ** argv);
+    explicit Application(QObject * parent = 0);
 
-    bool notify(QObject *receiver, QEvent *event);
+    static ObjectSharedPointer<Spotinetta::Session> session();
 
-    static Application * instance();
+    bool eventFilter(QObject *, QEvent *);
 
-    Spotinetta::Session * session() const;
-
-    int run();
+    bool initialize();
 
 private slots:
     void onExit();
@@ -45,15 +45,15 @@ private:
     void showUi();
     void loadFonts();
 
-    QScopedPointer<QQuickView> m_view;
+    ObjectScopedPointer<QQuickView>             m_view;
+    ObjectScopedPointer<Player>                 m_player;
+    ObjectScopedPointer<UIStateCoordinator>     m_ui;
+    ObjectScopedPointer<SearchEngine>           m_search;
+    ObjectScopedPointer<LircClient>             m_lirc;
 
-    Player *                    m_player;
-    Spotinetta::Session *       m_session;
-    UIStateCoordinator *        m_ui;
-    QSharedPointer<AudioOutput> m_output;
-    QSharedPointer<Settings>    m_settings;
-    SearchEngine *              m_search;
-    LircClient *                m_lirc;
+    ObjectSharedPointer<AudioOutput>            m_output;
+    ObjectSharedPointer<Settings>               m_settings;
+    ObjectSharedPointer<Spotinetta::Session>    m_session;
 
     bool m_exiting;
 

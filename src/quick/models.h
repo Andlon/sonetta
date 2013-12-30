@@ -4,35 +4,37 @@
 #include "../models/playlistmodel.h"
 #include "../models/tracklistmodel.h"
 #include "../models/albummodel.h"
-#include "../utilities/session.h"
+
+#include "../application.h"
+
 namespace Sonetta {
 
 class QuickTrackListModel : public TrackListModel {
     Q_OBJECT
 public:
     explicit QuickTrackListModel(QObject * parent = 0)
-        :   TrackListModel(getCurrentSession(), parent) { }
+        :   TrackListModel(Application::session().constCast<const Spotinetta::Session>(), parent) { }
 };
 
 class QuickPlaylistContainerModel : public PlaylistContainerModel {
     Q_OBJECT
 public:
     explicit QuickPlaylistContainerModel(QObject * parent = 0)
-        :   PlaylistContainerModel(getCurrentSession(), parent) { }
+        :   PlaylistContainerModel(Application::session().constCast<const Spotinetta::Session>(), parent) { }
 };
 
 class QuickPlaylistModel : public PlaylistModel {
     Q_OBJECT
 public:
     explicit QuickPlaylistModel(QObject * parent = 0)
-        :   PlaylistModel(getCurrentSession(), parent) { }
+        :   PlaylistModel(Application::session().constCast<const Spotinetta::Session>(), parent) { }
 };
 
 class QuickAlbumModel : public AlbumModel {
     Q_OBJECT
 public:
     explicit QuickAlbumModel(QObject * parent = 0)
-        :   AlbumModel(getCurrentSession(), parent) { }
+        :   AlbumModel(Application::session().constCast<const Spotinetta::Session>(), parent) { }
 };
 
 }

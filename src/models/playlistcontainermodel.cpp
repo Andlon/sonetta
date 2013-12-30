@@ -6,10 +6,10 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-PlaylistContainerModel::PlaylistContainerModel(const Spotinetta::Session *session, QObject *parent)
+PlaylistContainerModel::PlaylistContainerModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
     :   QAbstractListModel(parent), m_session(session)
 {
-    m_watcher = new sp::PlaylistContainerWatcher(session, this);
+    m_watcher = new sp::PlaylistContainerWatcher(session.data(), this);
 
     connect(m_watcher, &sp::PlaylistContainerWatcher::loaded,
             this, &PlaylistContainerModel::onLoaded);
@@ -114,7 +114,7 @@ QSharedPointer<Spotinetta::PlaylistWatcher> PlaylistContainerModel::createWatche
     const sp::Playlist playlist = playlistContainer().playlistAt(index);
 
     QSharedPointer<sp::PlaylistWatcher> watcher(
-                new sp::PlaylistWatcher(m_session, this),
+                new sp::PlaylistWatcher(m_session.data(), this),
                 &sp::PlaylistWatcher::deleteLater);
 
     connect(watcher.data(), SIGNAL(stateChanged()),

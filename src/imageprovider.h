@@ -12,13 +12,15 @@
 
 #include <Spotinetta/Spotinetta>
 
+#include "utilities/pointers.h"
+
 namespace Sonetta {
 
 class ImageProvider : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 public:
-    explicit ImageProvider(const Spotinetta::Session * session, QObject *parent = 0);
+    explicit ImageProvider(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent = 0);
     ~ImageProvider();
 
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
@@ -42,7 +44,7 @@ private:
     QVector<UrlImagePair>            m_pending;
     QMultiMap<QString, QByteArray>   m_results;
 
-    QPointer<const Spotinetta::Session>       m_session;
+    ObjectSharedPointer<const Spotinetta::Session>       m_session;
 
 
 };

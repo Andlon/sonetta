@@ -4,6 +4,8 @@
 #include <QStringList>
 #include <Spotinetta/Spotinetta>
 
+#include "../utilities/pointers.h"
+
 namespace Sonetta {
 
 class MosaicGenerator : public QObject {
@@ -12,7 +14,7 @@ Q_OBJECT
     Q_PROPERTY(Spotinetta::Playlist playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
     Q_PROPERTY(QStringList mosaic READ mosaic NOTIFY mosaicChanged)
 public:
-    explicit MosaicGenerator(const Spotinetta::Session * session, QObject * parent = 0);
+    explicit MosaicGenerator(ObjectSharedPointer<const Spotinetta::Session> session, QObject * parent = 0);
 
     QStringList mosaic() const;
 

@@ -7,15 +7,15 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-Player::Player(Spotinetta::Session *session, AudioOutput * output, QObject *parent)
+Player::Player(ObjectSharedPointer<Spotinetta::Session> session, ObjectSharedPointer<AudioOutput> output, QObject *parent)
     :   QObject(parent), m_session(session), m_output(output),
-      m_queue(new QueueModel(session, this)), m_endOfTrack(false),
+      m_queue(new QueueModel(session.constCast<const sp::Session>(), this)), m_endOfTrack(false),
       m_bufferEmpty(false), m_shuffle(false), m_repeat(false)
 {
     Q_ASSERT(session != nullptr);
     Q_ASSERT(output != nullptr);
 
-    m_watcher = new sp::TrackWatcher(session, this);
+    m_watcher = new sp::TrackWatcher(session.data(), this);
 
     // This ensures a track is eventually played whether it's loaded
     // or not
@@ -23,12 +23,12 @@ Player::Player(Spotinetta::Session *session, AudioOutput * output, QObject *pare
         play(m_watcher->watched());
     });;
 
-    connect(output, &AudioOutput::bufferEmpty, this, &Player::onBufferEmpty);
-    connect(output, &AudioOutput::bufferPopulated, this, &Player::onBufferPopulated);
-    connect(output, &AudioOutput::positionChanged, this, &Player::positionChanged);
-    connect(output, &AudioOutput::isPausedChanged, this, &Player::playingChanged);
+    connect(output.data(), &AudioOutput::bufferEmpty, this, &Player::onBufferEmpty);
+    connect(output.data(), &AudioOutput::bufferPopulated, this, &Player::onBufferPopulated);
+    connect(output.data(), &AudioOutput::positionChanged, this, &Player::positionChanged);
+    connect(output.data(), &AudioOutput::isPausedChanged, this, &Player::playingChanged);
     connect(this, &Player::trackChanged, this, &Player::playingChanged);
-    connect(session, &sp::Session::endOfTrack, this, &Player::onEndOfTrack);
+    connect(session.data(), &sp::Session::endOfTrack, this, &Player::onEndOfTrack);
 }
 
 void Player::onBufferEmpty()
@@ -198,7 +198,7 @@ void Player::next()
 {
     sp::Track track;
     // Try to get an available track from queue
-    while (!m_queue->isEmpty() && track.availability(m_session) != sp::Track::Availability::Available)
+    while (!m_queue->isEmpty() && track.availability(m_session.data()) != sp::Track::Availability::Available)
         track = m_queue->dequeue();
 
     if (track.isValid())

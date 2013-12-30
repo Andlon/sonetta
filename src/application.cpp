@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFontDatabase>
 #include <QFile>
+#include <QWeakPointer>
 
 #include "imageprovider.h"
 
@@ -22,37 +23,35 @@
 
 namespace sp = Spotinetta;
 
-namespace Sonetta {
-
 namespace {
-
-void deleteAudioOutputLater(AudioOutput * output) { output->deleteLater(); }
-void deleteSettingsLater(Settings * settings) { settings->deleteLater(); }
-
+QWeakPointer<Spotinetta::Session> g_session;
 }
 
-Application::Application(int &argc, char **argv)
-    :   QGuiApplication(argc, argv), m_view(new QQuickView),
-      m_output(new AudioOutput, deleteAudioOutputLater), m_settings(new Settings, deleteSettingsLater),
+namespace Sonetta {
+
+Application::Application(QObject * parent)
+    :   QObject(parent), m_view(new QQuickView),
+      m_ui(new UIStateCoordinator),
+      m_output(new AudioOutput), m_settings(new Settings),
       m_lirc(new LircClient(this)), m_exiting(false)
 {
-    QGuiApplication::addLibraryPath(applicationDirPath() + QStringLiteral("/plugins"));
+    QGuiApplication::addLibraryPath(QCoreApplication::applicationDirPath() + QStringLiteral("/plugins"));
 
     createSession();
 
-    m_player = new Player(m_session, m_output.data(), this);
-    m_ui = new UIStateCoordinator(this);
-    m_search = new SearchEngine(m_session, m_settings, this);
+    m_player.reset(new Player(m_session, m_output));
+    m_search.reset(new SearchEngine(m_session.constCast<const sp::Session>(), m_settings));
 
-    connect(m_session, &sp::Session::loggedOut, this, &Application::onLogout);
-    connect(m_session, &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
+    connect(m_session.data(), &sp::Session::loggedOut, this, &Application::onLogout);
+    connect(m_session.data(), &sp::Session::log, [] (const QString &msg) { qDebug() << msg; });
 
     connect(m_settings.data(), &Settings::mouseEnabledChanged, this, &Application::updateCursor);
 
     m_lirc->attach();
+    m_view->installEventFilter(this);
 }
 
-int Application::run()
+bool Application::initialize()
 {
     loadFonts();
     registerQmlTypes();
@@ -61,15 +60,13 @@ int Application::run()
     {
         setupQuickEnvironment();
         showUi();
-
-        // Start event loop
-        return exec();
+        return true;
     }
     else
     {
         const QByteArray msg = QByteArray("Session creation failed. Error: ") + sp::errorMessage(m_session->error()).toUtf8();
         qFatal(msg.constData());
-        return 1;
+        return false;
     }
 }
 
@@ -92,7 +89,7 @@ void Application::onLogout()
 {
     if (m_exiting)
     {
-        quit();
+        QCoreApplication::quit();
     }
 }
 
@@ -111,31 +108,30 @@ void Application::updateCursor()
     }
 }
 
-Application * Application::instance()
+ObjectSharedPointer<sp::Session> Application::session()
 {
-    QCoreApplication * inst = QCoreApplication::instance();
-    return inst == nullptr ? nullptr : static_cast<Application *>(inst);
+    return ObjectSharedPointer<sp::Session>(g_session.toStrongRef());
 }
 
-sp::Session * Application::session() const
+bool Application::eventFilter(QObject * obj, QEvent * e)
 {
-    return m_session;
-}
+    Q_ASSERT(obj == m_view.data());
 
-bool Application::notify(QObject *receiver, QEvent *event)
-{
-    switch (event->type())
+    switch (e->type())
     {
     case QEvent::MouseButtonDblClick:
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
+    case QEvent::MouseMove:
+    case QEvent::MouseTrackingChange:
         if (!m_settings->mouseEnabled())
-            break;
+            return true;
+    case QEvent::Close:
+        onExit();
+        return true;
     default:
-        return QGuiApplication::notify(receiver, event);
+        return false;
     }
-
-    return true;
 }
 
 void Application::registerQmlTypes()
@@ -158,26 +154,26 @@ void Application::registerQmlTypes()
     // Register the UI Singleton type. This is a temporary workaround. Consider creating
     // a loader that dynamically loads any singleton files from a certain directory for greater
     // separation between UI and logic. NOTE TO SELF: It's possible to avoid C++ altogether with modules
-    qmlRegisterSingletonType(QUrl::fromLocalFile(applicationDirPath() + "/interfaces/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
+    qmlRegisterSingletonType(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/interfaces/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
 }
 
 void Application::setupQuickEnvironment()
 {
     connect(m_view->engine(), &QQmlEngine::quit, this, &Application::onExit);
 
-    QString applicationDir = applicationDirPath();
+    const QString applicationDir = QCoreApplication::applicationDirPath();
 
-    ImageProvider * provider = new ImageProvider(m_session, m_view.data());
+    ImageProvider * provider = new ImageProvider(m_session.constCast<const sp::Session>(), m_view.data());
     m_view->engine()->addImageProvider(QLatin1String("sp"), provider);
 
     m_view->engine()->addImportPath(applicationDir + QStringLiteral("/quick"));
     m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/quick"));
     m_view->engine()->addPluginPath(applicationDir + QStringLiteral("/plugins"));
 
-    m_view->engine()->rootContext()->setContextProperty("player", m_player);
-    m_view->engine()->rootContext()->setContextProperty("ui", m_ui);
-    m_view->engine()->rootContext()->setContextProperty("session", m_session);
-    m_view->engine()->rootContext()->setContextProperty("search", m_search);
+    m_view->engine()->rootContext()->setContextProperty("player", m_player.data());
+    m_view->engine()->rootContext()->setContextProperty("ui", m_ui.data());
+    m_view->engine()->rootContext()->setContextProperty("session", m_session.data());
+    m_view->engine()->rootContext()->setContextProperty("search", m_search.data());
     m_view->engine()->addImportPath(applicationDir + QStringLiteral("/modules/"));
     m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/interfaces/default/main.qml")));
     m_view->setResizeMode(QQuickView::SizeRootObjectToView);
@@ -200,7 +196,7 @@ void Application::loadFonts()
 {
     qDebug() << "Loading supplied applications fonts...";
 
-    QDir fontDir (applicationDirPath() + "/fonts");
+    QDir fontDir (QCoreApplication::applicationDirPath() + "/fonts");
     if (fontDir.exists())
     {
         QStringList paths = fontDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
@@ -238,7 +234,8 @@ void Application::createSession()
     dir.mkpath(config.settingsLocation);
     dir.mkpath(config.cacheLocation);
 
-    m_session = new sp::Session(config, this);
+    m_session.reset(new sp::Session(config));
+    g_session = m_session;
 }
 
 }

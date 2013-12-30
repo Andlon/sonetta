@@ -14,13 +14,13 @@ namespace {
 const int MAXHISTORY = 40;
 }
 
-SearchEngine::SearchEngine(const Spotinetta::Session *session, QSharedPointer<Settings> settings, QObject *parent)
+SearchEngine::SearchEngine(ObjectSharedPointer<const Spotinetta::Session> session, ObjectSharedPointer<Settings> settings, QObject * parent)
     : QObject(parent), m_session(session), m_settings(settings)
 {
     Q_ASSERT(session != nullptr);
 
-    m_watcher = new sp::SearchWatcher(session, this);
-    m_predictionWatcher = new sp::SearchWatcher(session, this);
+    m_watcher = new sp::SearchWatcher(session.data(), this);
+    m_predictionWatcher = new sp::SearchWatcher(session.data(), this);
     m_trackModel = new TrackListModel(session, this);
     m_albumModel = new AlbumListModel(this);
     m_artistModel = new ArtistListModel(this);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "abstracttrackcollectionmodel.h"
-#include <QPointer>
+#include "../utilities/pointers.h"
 
 namespace Sonetta {
 
@@ -21,7 +21,7 @@ class AlbumModel : public AbstractTrackCollectionModel
     Q_PROPERTY(QString largeCoverUri READ largeCoverUri NOTIFY albumChanged)
 
 public:
-    explicit AlbumModel(const Spotinetta::Session * session, QObject * parent = 0);
+    explicit AlbumModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject * parent = 0);
 
     QString name() const;
     QString artistName() const;
@@ -51,7 +51,7 @@ private slots:
 
 private:
     Q_DISABLE_COPY(AlbumModel)
-    QPointer<const Spotinetta::Session> m_session;
+    ObjectSharedPointer<const Spotinetta::Session> m_session;
     Spotinetta::AlbumBrowseWatcher *    m_watcher;
     Spotinetta::TrackList               m_tracks;
 };

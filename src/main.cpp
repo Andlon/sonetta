@@ -1,4 +1,5 @@
 #include "application.h"
+#include <QGuiApplication>
 
 
 int main(int argc, char *argv[])
@@ -10,6 +11,15 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("sonetta.org");
     QCoreApplication::setOrganizationName("Sonetta");
 
-    Sonetta::Application sonetta(argc, argv);
-    return sonetta.run();
+    QScopedPointer<QGuiApplication> application(new QGuiApplication(argc, argv));
+
+    application->setQuitOnLastWindowClosed(false);
+
+    Sonetta::Application sonetta;
+    if (sonetta.initialize())
+    {
+        return application->exec();
+    }
+
+    return -1;
 }

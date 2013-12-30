@@ -71,9 +71,10 @@ void rowSort(QVector<QPersistentModelIndex> & indices)
 
 }
 
-AbstractTrackCollectionModel::AbstractTrackCollectionModel(const Spotinetta::Session * session, QObject *parent) :
+AbstractTrackCollectionModel::AbstractTrackCollectionModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent) :
     QAbstractListModel(parent), m_session(session)
 {
+    Q_ASSERT(!m_session.isNull());
     connect(this, &AbstractTrackCollectionModel::rowsInserted,
             this, &AbstractTrackCollectionModel::onRowsInserted);
     connect(this, &AbstractTrackCollectionModel::modelReset,
@@ -120,15 +121,15 @@ QVariant AbstractTrackCollectionModel::data(const QModelIndex &index, int role) 
     case AlbumIndexRole:
         return track.index();
     case IsStarred:
-        return track.isStarred(m_session);
+        return track.isStarred(m_session.data());
     case IsPlaceholder:
         return track.isPlaceholder();
     case IsLocal:
-        return track.isLocal(m_session);
+        return track.isLocal(m_session.data());
     case IsAutoLinked:
-        return track.isAutoLinked(m_session);
+        return track.isAutoLinked(m_session.data());
     case Availability:
-        return static_cast<unsigned int>(track.availability(m_session));
+        return static_cast<unsigned int>(track.availability(m_session.data()));
 
     default:
         break;

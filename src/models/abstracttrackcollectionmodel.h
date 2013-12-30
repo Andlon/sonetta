@@ -6,6 +6,8 @@
 #include <QPersistentModelIndex>
 #include <Spotinetta/Spotinetta>
 
+#include "../utilities/pointers.h"
+
 namespace Sonetta {
 
 /*!
@@ -42,7 +44,7 @@ public:
         LastTrackCollectionModelRole
     };
 
-    explicit AbstractTrackCollectionModel(const Spotinetta::Session * session, QObject *parent = 0);
+    explicit AbstractTrackCollectionModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent = 0);
 
     QVariant data(const QModelIndex &index, int role) const;
     int rowCount(const QModelIndex &parent) const;
@@ -72,7 +74,7 @@ private:
     QVector< QPersistentModelIndex > m_pendingArtists;
     QVector< QPersistentModelIndex > m_pendingAlbums;
 
-    QPointer<const Spotinetta::Session> m_session;
+    ObjectSharedPointer<const Spotinetta::Session> m_session;
 };
 
 }

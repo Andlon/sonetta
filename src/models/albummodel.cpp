@@ -6,10 +6,10 @@ namespace sp = Spotinetta;
 
 namespace Sonetta {
 
-AlbumModel::AlbumModel(const Spotinetta::Session *session, QObject *parent)
+AlbumModel::AlbumModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
     :   AbstractTrackCollectionModel(session, parent), m_session(session)
 {
-    m_watcher = new sp::AlbumBrowseWatcher(session, this);
+    m_watcher = new sp::AlbumBrowseWatcher(session.data(), this);
 
     connect(m_watcher, &sp::AlbumBrowseWatcher::loaded,
             this, &AlbumModel::onLoaded);

@@ -17,7 +17,7 @@ class PlaylistModel : public AbstractTrackCollectionModel
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
 
 public:
-    explicit PlaylistModel(const Spotinetta::Session * session, QObject *parent = 0);
+    explicit PlaylistModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent = 0);
 
     Spotinetta::Playlist playlist() const;
     void setPlaylist(const Spotinetta::Playlist &playlist);

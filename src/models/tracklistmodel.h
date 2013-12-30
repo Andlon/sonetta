@@ -11,7 +11,7 @@ class TrackListModel : public AbstractTrackCollectionModel
     Q_PROPERTY(Spotinetta::TrackList list READ list NOTIFY listChanged)
 
 public:
-    explicit TrackListModel(const Spotinetta::Session * session, QObject * parent);
+    explicit TrackListModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject * parent);
 
     bool canFetchMore(const QModelIndex &parent) const;
     void fetchMore(const QModelIndex &parent);
