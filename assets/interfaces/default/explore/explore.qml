@@ -16,8 +16,7 @@ Page {
             fill: parent
         }
 
-        model: ListModel {
-        }
+        model: ListModel {}
 
         delegate: Loader {
             focus: true
@@ -25,27 +24,34 @@ Page {
             Component.onCompleted: setSource(model.source, model.properties)
         }
 
+        property int usedCount: 0
+
         function push(source, properties)
         {
-            model.append({ source: source, properties: properties });
+            model.insert(usedCount + 1, { source: source, properties: properties });
+            usedCount += 1
             sync()
         }
 
-        function clear()
+        function pop()
         {
-            if (count > 1)
-            {
-                model.remove(1, count - 1)
-            }
+            if (usedCount > 0)
+                usedCount -= 1
             sync()
         }
 
         function sync()
         {
-            currentIndex = count - 1
+            currentIndex = usedCount
         }
 
-        Component.onCompleted: push("tophits.qml", {})
+        function immediateSync()
+        {
+            sync()
+            positionViewAtIndex(currentIndex)
+        }
+
+        Component.onCompleted: model.insert(0, { source: "tophits.qml", properties: {} })
     }
 
     Connections {
@@ -56,68 +62,22 @@ Page {
             {
                 if (type === "push")
                 {
-                    root.rebuildStack(prev.parameters.browseInstances)
-                }
-                else if (type === "pop")
-                {
-                    root.rebuildStack(current.parameters.browseInstances)
-                }
-                else if (type === "reset")
-                {
-                    root.rebuildStack(undefined)
-                }
-
-                if (current.parameters.type === "album")
-                {
-                    if (type === "push")
+                    if (current.parameters.type === "album")
                     {
                         pushAlbum(current.parameters.album)
                     }
-
-                    if (prev.page !== root.page)
-                    {
-                        stack.positionViewAtEnd()
-                    }
                 }
-            }
-        }
-    }
-
-    function rebuildStack(instances)
-    {
-        if (instances)
-        {
-            var i = 1;
-            var j = 0
-
-            while (i < stack.count && j < instances.length
-                   && stack.model.get(i).source === instances[j].source)
-            {
-                ++i
-                ++j
-            }
-
-            while (j < instances.length)
-            {
-                while (i < stack.count)
+                else if (prev.page === root.page && type === "pop")
                 {
-                    stack.model.remove(i)
+                    stack.pop()
                 }
-                var source = instances[j].source
-                var properties = instances[j].properties
 
-                stack.push(source, properties)
-                ++j
+                if (prev.page !== root.page)
+                {
+                    stack.immediateSync()
+                }
             }
-
-            stack.currentIndex = j
         }
-        else
-        {
-            stack.clear()
-        }
-
-        commitInstances(instances)
     }
 
     function pushAlbum(album)
@@ -125,27 +85,5 @@ Page {
         var properties = { album: album }
         var source = Qt.resolvedUrl("AlbumBrowse.qml")
         stack.push(source, properties)
-        updateInstances(UI.parameters.browseInstances, { source: source, properties: properties })
-    }
-
-    function updateInstances(instances, instance)
-    {
-        if (instances)
-        {
-            instances.push(instance)
-        }
-        else
-        {
-            instances = [ instance ]
-        }
-
-        commitInstances(instances)
-    }
-
-    function commitInstances(instances)
-    {
-        var param = UI.parameters
-        param.browseInstances = instances
-        UI.update(root.page, param)
     }
 }
