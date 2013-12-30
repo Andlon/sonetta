@@ -15,7 +15,7 @@ Item {
     Rectangle {
         id: highlight
         color: ui.colors.highlight
-        height: currentItem.highlightHeight ? currentItem.highlightHeight : currentItem.height
+        height: currentItem ? currentItem.highlightHeight ? currentItem.highlightHeight : currentItem.height : 0
         width: currentItem ? Math.min(currentItem.width, ui.misc.globalPadding / 2) : 0
 
         states: [
@@ -32,7 +32,7 @@ Item {
 
     Image {
         id: contextIndicator
-        visible: contextEnabled && currentItem.activeFocus
+        visible: contextEnabled && currentItem && currentItem.activeFocus
         anchors {
             verticalCenter: highlight.verticalCenter
             right: parent.right
@@ -72,7 +72,7 @@ Item {
         SequentialAnimation {
             id: contextIndicatorAnimation
             loops: Animation.Infinite
-            running: contextEnabled && currentItem.activeFocus
+            running: contextEnabled && currentItem && currentItem.activeFocus
             alwaysRunToEnd: true
             OpacityAnimator {
                 target: contextIndicator
