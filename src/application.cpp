@@ -35,7 +35,7 @@ Application::Application(QObject * parent)
     :   QObject(parent), m_view(new QQuickView),
       m_ui(new UIStateCoordinator),
       m_output(new AudioOutput), m_settings(new Settings),
-      m_lirc(new LircClient(this)), m_exiting(false)
+      m_exiting(false)
 {
     QGuiApplication::addLibraryPath(QCoreApplication::applicationDirPath() + QStringLiteral("/plugins"));
 
@@ -49,7 +49,6 @@ Application::Application(QObject * parent)
 
     connect(m_settings.data(), &Settings::mouseEnabledChanged, this, &Application::updateCursor);
 
-    m_lirc->attach();
     m_view->installEventFilter(this);
 }
 
@@ -67,6 +66,8 @@ bool Application::initialize()
 
     if (m_session->error() == sp::Error::Ok)
     {
+        m_navigation.initialize();
+
         setupQuickEnvironment();
         showUi();
         return true;

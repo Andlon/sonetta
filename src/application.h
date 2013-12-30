@@ -6,8 +6,7 @@
 
 #include <Spotinetta/Spotinetta>
 
-#include "navigation/lircclient.h"
-#include "navigation/navigation.h"
+#include "navigation/navigationcontroller.h"
 #include "player.h"
 #include "uistatecoordinator.h"
 #include "audiooutput.h"
@@ -48,11 +47,12 @@ private:
     ObjectScopedPointer<Player>                 m_player;
     ObjectScopedPointer<UIStateCoordinator>     m_ui;
     ObjectScopedPointer<SearchEngine>           m_search;
-    ObjectScopedPointer<LircClient>             m_lirc;
 
     ObjectSharedPointer<AudioOutput>            m_output;
     ObjectSharedPointer<Settings>               m_settings;
     ObjectSharedPointer<Spotinetta::Session>    m_session;
+
+    NavigationController m_navigation;
 
     bool m_exiting;
 };

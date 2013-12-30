@@ -58,7 +58,9 @@ HEADERS += \
     src/models/albummodel.h \
     src/quick/quickfactory.h \
     src/navigation/lircclient.h \
-    src/utilities/pointers.h
+    src/utilities/pointers.h \
+    src/navigation/windowsnavigationfilter.h \
+    src/navigation/navigationcontroller.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -85,7 +87,8 @@ SOURCES += \
     src/settings.cpp \
     src/utilities/mosaicgenerator.cpp \
     src/models/albummodel.cpp \
-    src/navigation/lircclient.cpp
+    src/navigation/lircclient.cpp \
+    src/navigation/navigationcontroller.cpp
 
 OTHER_FILES += \
     assets/interfaces/default/main.qml \
