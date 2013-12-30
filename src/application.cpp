@@ -53,6 +53,13 @@ Application::Application(QObject * parent)
     m_view->installEventFilter(this);
 }
 
+Application::~Application()
+{
+    // Manually reset view here to make sure it's deleted
+    // before any of the others (Player, SearchEngine etc.)
+    m_view.reset();
+}
+
 bool Application::initialize()
 {
     loadFonts();

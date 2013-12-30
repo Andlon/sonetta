@@ -25,6 +25,7 @@ class Application : public QObject
     Q_OBJECT
 public:
     explicit Application(QObject * parent = 0);
+    ~Application();
 
     static ObjectSharedPointer<Spotinetta::Session> session();
 
