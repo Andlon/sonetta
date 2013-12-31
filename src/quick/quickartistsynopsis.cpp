@@ -8,8 +8,8 @@ namespace Sonetta {
 QuickArtistSynopsis::QuickArtistSynopsis(QObject *parent)
     :   QObject(parent),
       m_session(Application::session().constCast<const sp::Session>()),
-      m_browseWatcher(new sp::ArtistBrowseWatcher(m_session.data())),
       m_artistWatcher(new sp::ArtistWatcher(m_session.data())),
+      m_browseWatcher(new sp::ArtistBrowseWatcher(m_session.data())),
       m_browseType(sp::ArtistBrowseType::NoAlbums),
       m_albums(new AlbumListModel),
       m_similarArtists(new ArtistListModel),

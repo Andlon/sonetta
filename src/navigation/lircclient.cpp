@@ -152,8 +152,8 @@ LircClient::LircClient(QObject *parent) :
     QObject(parent), m_socket(new QLocalSocket)
 {
 #ifdef Q_OS_LINUX
-    connect(m_socket, SIGNAL(readyRead()), this, SLOT(readData()));
-    connect(m_socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
+    connect(m_socket.data(), SIGNAL(readyRead()), this, SLOT(readData()));
+    connect(m_socket.data(), SIGNAL(error(QLocalSocket::LocalSocketError)),
             this, SLOT(handleError(QLocalSocket::LocalSocketError)));
 
     populateLircmap();

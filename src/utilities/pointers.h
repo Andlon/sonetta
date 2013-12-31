@@ -13,7 +13,7 @@ void deleteLaterIfOrphan(T * obj)
     if (obj == nullptr)
         return;
 
-    auto mutableObj = const_cast<std::remove_const<T>::type *>(obj);
+    auto mutableObj = const_cast<typename std::remove_const<T>::type *>(obj);
     if (mutableObj->parent() == nullptr)
     {
         mutableObj->deleteLater();
@@ -49,14 +49,14 @@ class ObjectSharedPointer : public QSharedPointer<T>
 {
 public:
     ObjectSharedPointer() { }
-    ObjectSharedPointer(const ObjectSharedPointer<T> &other) : QSharedPointer(other) { }
+    ObjectSharedPointer(const ObjectSharedPointer<T> &other) : QSharedPointer<T>(other) { }
     explicit ObjectSharedPointer(T * ptr) : QSharedPointer<T>(ptr, PointerDetails::deleteLaterIfOrphan<T>) { }
 
     // Note: This is explicit by design in order to be able to cast
-    explicit ObjectSharedPointer(const QSharedPointer<T> &other) : QSharedPointer(other) { }
+    explicit ObjectSharedPointer(const QSharedPointer<T> &other) : QSharedPointer<T>(other) { }
 
-    template <typename U>
-    ObjectSharedPointer<U> constCast() const { return ObjectSharedPointer<U>(QSharedPointer<T>::constCast<U>()); }
+    template <typename X>
+    ObjectSharedPointer<X> constCast() const { return ObjectSharedPointer<X>(QSharedPointer<T>::template constCast<X>()); }
 
     void reset(T * ptr) { QSharedPointer<T>::reset(ptr, PointerDetails::deleteLaterIfOrphan<T>); }
 };

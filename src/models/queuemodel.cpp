@@ -11,19 +11,19 @@ namespace Sonetta {
  */
 
 QueueContext::QueueContext(const Spotinetta::Playlist &playlist)
-    :   m_playlist(playlist), m_type(Type::Playlist)
+    :   m_type(Type::Playlist), m_playlist(playlist)
 {
 
 }
 
 QueueContext::QueueContext(const Spotinetta::TrackList &tracks)
-    :   m_tracks(tracks), m_type(Type::TrackList)
+    :   m_type(Type::TrackList), m_tracks(tracks)
 {
 
 }
 
 QueueContext::QueueContext(const Spotinetta::AlbumBrowse &browse)
-    :   m_browse(browse), m_type(Type::AlbumBrowse)
+    :    m_type(Type::AlbumBrowse), m_browse(browse)
 {
 
 }
@@ -96,8 +96,8 @@ QueueContext::Type QueueContext::type() const
  */
 
 QueueModel::QueueModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
-    :    AbstractTrackCollectionModel(session, parent), m_session(session),
-      m_index(0), m_loaded(false),
+    :    AbstractTrackCollectionModel(session, parent),
+      m_index(0), m_loaded(false), m_session(session),
       m_albumBrowseWatcher(new sp::AlbumBrowseWatcher(session.data())),
       m_playlistWatcher(new sp::PlaylistWatcher(session.data()))
 {

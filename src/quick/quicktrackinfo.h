@@ -60,10 +60,10 @@ private slots:
 private:
     void setupWatchers();
 
+    ObjectSharedPointer<Spotinetta::Session>                    m_session;
     ObjectScopedPointer<Spotinetta::TrackWatcher>               m_trackWatcher;
     ObjectScopedPointer<Spotinetta::AlbumWatcher>               m_albumWatcher;
     QVector<ObjectSharedPointer<Spotinetta::ArtistWatcher> >    m_artistWatchers;
-    ObjectSharedPointer<Spotinetta::Session>                    m_session;
 };
 
 }

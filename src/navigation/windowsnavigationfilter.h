@@ -12,6 +12,8 @@ class WindowsNavigationFilter : public QAbstractNativeEventFilter {
 public:
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *)
     {
+        Q_UNUSED(eventType);
+        Q_UNUSED(message);
 #ifdef Q_OS_WIN32
         if (eventType == "windows_generic_MSG")
         {

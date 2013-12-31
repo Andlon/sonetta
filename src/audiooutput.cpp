@@ -248,9 +248,10 @@ bool AudioOutputWorker::outputIsReady() const
 }
 
 AudioOutput::AudioOutput(QObject *parent)
-    :   QObject(parent), m_position(0),
+    :   QObject(parent),
       m_audioThread(new QThread),
-      m_worker(new AudioOutputWorker)
+      m_worker(new AudioOutputWorker),
+      m_position(0)
 {
     m_worker->moveToThread(m_audioThread.data());
 
