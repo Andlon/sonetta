@@ -149,7 +149,7 @@ void Lircmap::readRemoteElement()
 }
 
 LircClient::LircClient(QObject *parent) :
-    QObject(parent), m_socket(new QLocalSocket)
+    QObject(parent), m_delay(3), m_socket(new QLocalSocket)
 {
 #ifdef Q_OS_LINUX
     connect(m_socket.data(), SIGNAL(readyRead()), this, SLOT(readData()));
@@ -167,6 +167,19 @@ void LircClient::attach()
 #endif
 }
 
+int LircClient::delay() const
+{
+    return m_delay;
+}
+
+void LircClient::setDelay(int delay)
+{
+    if (delay >= 0)
+    {
+        m_delay = delay;
+    }
+}
+
 void LircClient::readData()
 {
     while (m_socket->bytesAvailable() > 0)
@@ -180,7 +193,7 @@ void LircClient::readData()
             bool ok; // Holds whether the conversion to integer was successful
             int repeatCount = parts[1].toInt(&ok, 16);
 
-            if (ok)
+            if (ok && (repeatCount == 0 || repeatCount > m_delay))
             {
                 QString lircButton = parts[2];
                 QString remote = parts[3];

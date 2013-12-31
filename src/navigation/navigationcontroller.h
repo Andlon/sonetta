@@ -10,7 +10,7 @@ public:
     NavigationController();
     ~NavigationController();
 
-    void initialize();
+    void initialize(int lircDelay = 3);
 
 private:
     ObjectScopedPointer<LircClient> m_lirc;

@@ -35,6 +35,9 @@ public:
     
     void attach();
 
+    int delay() const;
+    void setDelay(int delay);
+
 private slots:
     void readData();
     void handleError(QLocalSocket::LocalSocketError);
@@ -42,6 +45,7 @@ private slots:
 private:
     void populateLircmap();
 
+    int                                 m_delay;
     Lircmap                             m_map;
     ObjectScopedPointer<QLocalSocket>   m_socket;
 };

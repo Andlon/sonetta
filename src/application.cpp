@@ -67,7 +67,7 @@ bool Application::initialize()
 
     if (m_session->error() == sp::Error::Ok)
     {
-        m_navigation.initialize();
+        m_navigation.initialize(m_settings->lircDelay());
 
         setupQuickEnvironment();
         showUi();
