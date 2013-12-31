@@ -20,6 +20,7 @@ Page {
 
         delegate: Loader {
             focus: true
+            asynchronous: true
 
             Component.onCompleted: setSource(model.source, model.properties)
         }
@@ -66,6 +67,10 @@ Page {
                     {
                         pushAlbum(current.parameters.album)
                     }
+                    else if (current.parameters.type === "artist")
+                    {
+                        pushArtist(current.parameters.artist)
+                    }
                 }
                 else if (prev.page === root.page && type === "pop")
                 {
@@ -84,6 +89,13 @@ Page {
     {
         var properties = { album: album }
         var source = Qt.resolvedUrl("AlbumBrowse.qml")
+        stack.push(source, properties)
+    }
+
+    function pushArtist(artist)
+    {
+        var properties = { artist: artist }
+        var source = Qt.resolvedUrl("ArtistBrowse.qml")
         stack.push(source, properties)
     }
 }

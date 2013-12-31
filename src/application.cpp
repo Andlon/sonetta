@@ -18,6 +18,7 @@
 #include "quick/quicktrackinfo.h"
 #include "quick/quickmosaicgenerator.h"
 #include "quick/quickfactory.h"
+#include "quick/quickartistsynopsis.h"
 
 #include "../appkey.c"
 
@@ -156,6 +157,7 @@ void Application::registerQmlTypes()
     qmlRegisterType<QuickAlbumModel>("Sonetta", 0, 1, "AlbumModel");
     qmlRegisterType<QuickTrackInfo>("Sonetta", 0, 1, "TrackInfo");
     qmlRegisterType<QuickMosaicGenerator>("Sonetta", 0, 1, "MosaicGenerator");
+    qmlRegisterType<QuickArtistSynopsis>("Sonetta", 0, 1, "ArtistSynopsis");
 
     qmlRegisterUncreatableType<Spotinetta::Session>("Sonetta", 0, 1, "Session", "Cannot instantiate Session.");
     qmlRegisterSingletonType<QuickFactory>("Sonetta", 0, 1, "Factory", &quickFactorySingletonProvider);

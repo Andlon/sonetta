@@ -1,6 +1,8 @@
 import QtQuick 2.2
 import Sonetta 0.1
 
+import "../common/States.js" as States
+
 CollectionView {
     id: view
 
@@ -59,4 +61,6 @@ CollectionView {
         }
 
     }
+
+    onItemPressed: UI.push("explore", States.createArtistBrowseParameters(data.artist))
 }

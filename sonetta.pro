@@ -89,7 +89,8 @@ SOURCES += \
     src/utilities/mosaicgenerator.cpp \
     src/models/albummodel.cpp \
     src/navigation/lircclient.cpp \
-    src/navigation/navigationcontroller.cpp
+    src/navigation/navigationcontroller.cpp \
+    src/quick/quickartistsynopsis.cpp
 
 OTHER_FILES += \
     assets/interfaces/default/main.qml \
@@ -144,5 +145,6 @@ OTHER_FILES += \
     assets/interfaces/default/common/UI.qml \
     assets/interfaces/default/common/Page.qml \
     assets/interfaces/default/common/PageView.qml \
-    assets/interfaces/default/explore/tophits.qml
+    assets/interfaces/default/explore/tophits.qml \
+    assets/interfaces/default/explore/ArtistBrowse.qml
 

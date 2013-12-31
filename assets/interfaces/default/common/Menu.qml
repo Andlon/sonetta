@@ -79,6 +79,7 @@ FocusScope {
     function updateChildren()
     {
         var count = children.length
+        var h = 0
 
         for (var i = 0; i < count; ++i)
         {
@@ -88,7 +89,10 @@ FocusScope {
                 var index = col.children.length
                 child.index = index
                 child.parent = col
+                h = h + child.height
             }
         }
+
+        root.implicitHeight = h
     }
 }
