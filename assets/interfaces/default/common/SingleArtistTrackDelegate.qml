@@ -39,7 +39,7 @@ CollectionDelegate {
     }
 
     H4 {
-        text: model.name
+        text: model ? model.name : ""
         color: indexLabel.color
         anchors {
             left: indexLabel.right

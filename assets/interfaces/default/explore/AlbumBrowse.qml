@@ -108,7 +108,7 @@ FocusScope {
         onTrackPlayed: player.queue.updateContext(albumModel.album, modelIndex)
 
         delegate: SingleArtistTrackDelegate {
-            index: model.albumIndex
+            index: model ? model.albumIndex : 0
         }
     }
 

@@ -27,6 +27,11 @@ CollectionView {
             display: "Browse album"
             name: "browsealbum"
         }
+
+        ListElement {
+            display: "Browse artist"
+            name: "browseartist"
+        }
     }
 
     delegate: singleRowLayout ? singleRow : dualRow
@@ -60,13 +65,17 @@ CollectionView {
         case "play":
             player.play(data.track)
             trackPlayed(data.index)
-            break;
+            break
         case "queue":
             player.enqueue(data.track)
-            break;
+            break
         case "browsealbum":
             UI.push("explore", States.createAlbumBrowseParameters(data.album))
-            break;
+            break
+        case "browseartist":
+            console.log(data.artists)
+            UI.push("explore", States.createArtistBrowseParameters(data.artists[0]))
+            break
         default:
             break
         }

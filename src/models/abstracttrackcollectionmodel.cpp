@@ -92,7 +92,12 @@ QVariant AbstractTrackCollectionModel::data(const QModelIndex &index, int role) 
     case TrackRole:
         return QVariant::fromValue(track);
     case ArtistsRole:
-        return QVariant::fromValue(track.artists());
+    {
+        QVariantList artists;
+        for (int i = 0; i < track.artistCount(); ++i)
+            artists <<QVariant::fromValue(track.artistAt(i));
+        return artists;
+    }
     case AlbumRole:
         return QVariant::fromValue(track.album());
     case IsLoadedRole:
