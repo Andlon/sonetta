@@ -167,14 +167,23 @@ FocusScope {
                 model: synopsis.similarArtists
             }
 
-            Text {
-                id: biography
-                font: ui.fonts.h4
-                color: ui.colors.standard
-                linkColor: color
-                text: synopsis.biography.replace(/<(?:.|\n)*?>/gm, '')
-                wrapMode: Text.Wrap
-                textFormat: Text.PlainText
+            Item {
+                Text {
+                    id: biography
+
+                    anchors {
+                        fill: parent
+                        leftMargin: ui.misc.globalPadding
+                        rightMargin: ui.misc.globalPadding
+                    }
+
+                    font: ui.fonts.h4
+                    color: ui.colors.standard
+                    linkColor: color
+                    text: synopsis.biography.replace(/<(?:.|\n)*?>/gm, '')
+                    wrapMode: Text.Wrap
+                    textFormat: Text.PlainText
+                }
             }
         }
 

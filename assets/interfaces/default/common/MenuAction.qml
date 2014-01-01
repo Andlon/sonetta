@@ -56,13 +56,13 @@ Item {
         }
 
         font: ui.fonts.h4
-        color: (activeFocus && isCurrentItem) ? ui.colors.highlightText : ui.colors.standard
+        color: root.activeFocus ? ui.colors.highlightText : ui.colors.standard
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
         height: contentHeight
 
         Behavior on color {
-            ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuint }
+            ColorAnimation { duration: ui.misc.globalAnimationTime; easing.type: Easing.InOutQuad }
         }
     }
 

@@ -74,7 +74,7 @@ FocusScope {
     onChildrenChanged: updateChildren()
     Component.onCompleted: updateChildren()
     onCurrentItemChanged: if (currentItem && root.activeFocus) currentItem.focus = true
-    onActiveFocusChanged: if (activeFocus && currentItem) currentItem.focus = true
+    onActiveFocusChanged: if (currentItem && root.activeFocus) currentItem.focus = true
 
     function updateChildren()
     {

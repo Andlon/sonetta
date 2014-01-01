@@ -73,7 +73,6 @@ CollectionView {
             UI.push("explore", States.createAlbumBrowseParameters(data.album))
             break
         case "browseartist":
-            console.log(data.artists)
             UI.push("explore", States.createArtistBrowseParameters(data.artists[0]))
             break
         default:
