@@ -28,6 +28,10 @@ const QHash<int, QByteArray> g_roleNames = createRoles();
 AbstractArtistCollectionModel::AbstractArtistCollectionModel(QObject *parent) :
     QAbstractListModel(parent)
 {
+    connect(this, &AbstractArtistCollectionModel::rowsInserted,
+            this, &AbstractArtistCollectionModel::onRowsInserted);
+    connect(this, &AbstractArtistCollectionModel::modelReset,
+            this, &AbstractArtistCollectionModel::onModelReset);
 }
 
 QVariant AbstractArtistCollectionModel::data(const QModelIndex &index, int role) const
@@ -67,12 +71,50 @@ QHash<int, QByteArray> AbstractArtistCollectionModel::roleNames() const
     return g_roleNames;
 }
 
-void AbstractArtistCollectionModel::updateData(int first, int last)
+void AbstractArtistCollectionModel::updateMetadata()
 {
-    QModelIndex begin = index(first);
-    QModelIndex end = last == -1 ? index(first) : index(last);
+    decltype(m_pending) stillPending;
+    for (const auto & modelIndex : m_pending)
+    {
+        if (modelIndex.isValid())
+        {
+            sp::Artist album = getArtistAt(modelIndex.row());
+            if (album.isLoaded())
+            {
+                emit dataChanged(modelIndex, modelIndex);
+            }
+            else
+            {
+                stillPending.append(modelIndex);
+            }
+        }
+    }
+    m_pending.swap(stillPending);
+}
 
-    emit dataChanged(begin, end);
+void AbstractArtistCollectionModel::onRowsInserted(const QModelIndex &, int start, int end)
+{
+    checkLoadStatus(start, end);
+}
+
+void AbstractArtistCollectionModel::onModelReset()
+{
+    if (getArtistCount() > 0)
+    {
+        checkLoadStatus(0, getArtistCount() - 1);
+    }
+}
+
+void AbstractArtistCollectionModel::checkLoadStatus(int start, int end)
+{
+    for (int i = start; i <= end; ++i)
+    {
+        sp::Artist artist = getArtistAt(i);
+        if (!artist.isLoaded())
+        {
+            m_pending.append(index(i));
+        }
+    }
 }
 
 }

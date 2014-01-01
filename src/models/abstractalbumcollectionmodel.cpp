@@ -34,6 +34,10 @@ QHash<int, QByteArray> const g_roleNames = createRoles();
 AbstractAlbumCollectionModel::AbstractAlbumCollectionModel(QObject *parent) :
     QAbstractListModel(parent)
 {
+    connect(this, &AbstractAlbumCollectionModel::rowsInserted,
+            this, &AbstractAlbumCollectionModel::onRowsInserted);
+    connect(this, &AbstractAlbumCollectionModel::modelReset,
+            this, &AbstractAlbumCollectionModel::onModelReset);
 }
 
 QVariant AbstractAlbumCollectionModel::data(const QModelIndex &index, int role) const
