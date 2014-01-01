@@ -17,13 +17,18 @@ class QuickArtistSynopsis : public QObject {
     Q_PROPERTY(Spotinetta::Artist artist READ artist WRITE setArtist NOTIFY artistChanged)
     Q_PROPERTY(QString name READ name NOTIFY artistDataChanged)
     Q_PROPERTY(QString biography READ biography NOTIFY browseDataChanged)
-    Q_PROPERTY(QString largePortraitUri READ largePortraitUri NOTIFY artistChanged)
-    Q_PROPERTY(QString normalPortraitUri READ normalPortraitUri NOTIFY artistChanged)
-    Q_PROPERTY(QString smallPortraitUri READ smallPortraitUri NOTIFY artistChanged)
     Q_PROPERTY(QObject * similarArtists READ similarArtists CONSTANT)
     Q_PROPERTY(QObject * albums READ albums CONSTANT)
     Q_PROPERTY(QObject * hits READ hits CONSTANT)
     Q_PROPERTY(BrowseType browseType READ browseType WRITE setBrowseType NOTIFY browseTypeChanged)
+
+    // Note: it should have been sufficient to update uris on artistChanged, but since
+    // artist browsing does not load portraits of similar artists (possible bug in libspotify),
+    // it is possible to reach a state where the artist is loaded, but does not contain portrait information,
+    // which will instead eventually be loaded when the browse action is complete
+    Q_PROPERTY(QString largePortraitUri READ largePortraitUri NOTIFY browseDataChanged)
+    Q_PROPERTY(QString normalPortraitUri READ normalPortraitUri NOTIFY browseDataChanged)
+    Q_PROPERTY(QString smallPortraitUri READ smallPortraitUri NOTIFY browseDataChanged)
 
     Q_ENUMS(BrowseType)
 public:
