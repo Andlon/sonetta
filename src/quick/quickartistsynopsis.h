@@ -33,8 +33,8 @@ class QuickArtistSynopsis : public QObject {
     Q_ENUMS(BrowseType)
 public:
     enum BrowseType {
-        MinimalBrowse = Spotinetta::ArtistBrowseType::NoAlbums,
-        StandardBrowse = Spotinetta::ArtistBrowseType::NoTracks
+        MinimalBrowse = static_cast<unsigned int>(Spotinetta::ArtistBrowseType::NoAlbums),
+        StandardBrowse = static_cast<unsigned int>(Spotinetta::ArtistBrowseType::NoTracks)
     };
 
     explicit QuickArtistSynopsis(QObject * parent = 0);
