@@ -25,6 +25,10 @@ QuickArtistSynopsis::QuickArtistSynopsis(QObject *parent)
             this, &QuickArtistSynopsis::browseDataChanged);
     connect(m_browseWatcher.data(), &sp::ArtistBrowseWatcher::loaded,
             this, &QuickArtistSynopsis::onLoaded);
+
+    connectModel(m_albums.data());
+    connectModel(m_similarArtists.data());
+    connectModel(m_hits.data());
 }
 
 Spotinetta::Artist QuickArtistSynopsis::artist() const
@@ -109,6 +113,12 @@ void QuickArtistSynopsis::onLoaded()
     m_albums->append(browse.albums());
     m_similarArtists->append(browse.similarArtists());
     m_hits->append(browse.tophitTracks());
+}
+
+template <typename T>
+void QuickArtistSynopsis::connectModel(T * model)
+{
+    connect(m_session.data(), &sp::Session::metadataUpdated, model, &T::updateMetadata);
 }
 
 

@@ -46,6 +46,8 @@ SearchEngine::SearchEngine(ObjectSharedPointer<const Spotinetta::Session> sessio
             m_albumModel.data(), &AlbumListModel::updateMetadata);
     connect(m_session.data(), &sp::Session::metadataUpdated,
             m_trackModel.data(), &TrackListModel::updateMetadata);
+    connect(m_session.data(), &sp::Session::metadataUpdated,
+            m_artistModel.data(), &ArtistListModel::updateMetadata);
 
     loadHistory();
 }

@@ -61,6 +61,8 @@ private slots:
     void onLoaded();
 
 private:
+    template <typename T>
+    void connectModel(T * model);
     ObjectSharedPointer<const Spotinetta::Session>          m_session;
     ObjectScopedPointer<Spotinetta::ArtistWatcher>          m_artistWatcher;
     ObjectScopedPointer<Spotinetta::ArtistBrowseWatcher>    m_browseWatcher;

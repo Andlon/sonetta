@@ -129,6 +129,7 @@ ObjectSharedPointer<sp::Session> Application::session()
 
 bool Application::eventFilter(QObject * obj, QEvent * e)
 {
+    Q_UNUSED(obj);
     Q_ASSERT(obj == m_view.data());
 
     switch (e->type())
