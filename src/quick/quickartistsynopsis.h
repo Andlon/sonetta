@@ -23,11 +23,22 @@ class QuickArtistSynopsis : public QObject {
     Q_PROPERTY(QObject * similarArtists READ similarArtists CONSTANT)
     Q_PROPERTY(QObject * albums READ albums CONSTANT)
     Q_PROPERTY(QObject * hits READ hits CONSTANT)
+    Q_PROPERTY(BrowseType browseType READ browseType WRITE setBrowseType NOTIFY browseTypeChanged)
+
+    Q_ENUMS(BrowseType)
 public:
+    enum BrowseType {
+        MinimalBrowse = Spotinetta::ArtistBrowseType::NoAlbums,
+        StandardBrowse = Spotinetta::ArtistBrowseType::NoTracks
+    };
+
     explicit QuickArtistSynopsis(QObject * parent = 0);
 
     Spotinetta::Artist artist() const;
     void setArtist(const Spotinetta::Artist & artist);
+
+    BrowseType browseType() const;
+    void setBrowseType(BrowseType type);
 
     QObject * similarArtists() const;
     QObject * albums() const;
@@ -44,6 +55,7 @@ signals:
     void artistChanged();
     void artistDataChanged();
     void browseDataChanged();
+    void browseTypeChanged();
 
 private slots:
     void onLoaded();
@@ -52,7 +64,7 @@ private:
     ObjectSharedPointer<const Spotinetta::Session>          m_session;
     ObjectScopedPointer<Spotinetta::ArtistWatcher>          m_artistWatcher;
     ObjectScopedPointer<Spotinetta::ArtistBrowseWatcher>    m_browseWatcher;
-    Spotinetta::ArtistBrowseType                            m_browseType;
+    BrowseType                                              m_browseType;
 
     ObjectScopedPointer<AlbumListModel>     m_albums;
     ObjectScopedPointer<ArtistListModel>    m_similarArtists;

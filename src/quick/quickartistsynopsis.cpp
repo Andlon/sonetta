@@ -10,7 +10,7 @@ QuickArtistSynopsis::QuickArtistSynopsis(QObject *parent)
       m_session(Application::session().constCast<const sp::Session>()),
       m_artistWatcher(new sp::ArtistWatcher(m_session.data())),
       m_browseWatcher(new sp::ArtistBrowseWatcher(m_session.data())),
-      m_browseType(sp::ArtistBrowseType::NoAlbums),
+      m_browseType(MinimalBrowse),
       m_albums(new AlbumListModel),
       m_similarArtists(new ArtistListModel),
       m_hits(new TrackListModel(m_session, 0))
@@ -37,11 +37,29 @@ void QuickArtistSynopsis::setArtist(const Spotinetta::Artist &artist)
     if (this->artist() != artist)
     {
         m_artistWatcher->watch(artist);
-        m_browseWatcher->watch(m_session->browse(artist, m_browseType));
+        m_browseWatcher->watch(m_session->browse(artist, static_cast<sp::ArtistBrowseType>(m_browseType)));
         m_albums->clear();
         m_similarArtists->clear();
         m_hits->clear();
         emit artistChanged();
+    }
+}
+
+QuickArtistSynopsis::BrowseType QuickArtistSynopsis::browseType() const
+{
+    return m_browseType;
+}
+
+void QuickArtistSynopsis::setBrowseType(QuickArtistSynopsis::BrowseType type)
+{
+    if (type != m_browseType)
+    {
+        m_browseType = type;
+        m_browseWatcher->watch(m_session->browse(artist(), static_cast<sp::ArtistBrowseType>(m_browseType)));
+        m_albums->clear();
+        m_similarArtists->clear();
+        m_hits->clear();
+        emit browseTypeChanged();
     }
 }
 

@@ -33,7 +33,6 @@ public:
         NotStreamable = (unsigned int) A::NotStreamable,
         BannedByArtist = (unsigned int) A::BannedByArtist
     };
-
 };
 
 }
