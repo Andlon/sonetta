@@ -146,5 +146,6 @@ OTHER_FILES += \
     assets/interfaces/default/common/Page.qml \
     assets/interfaces/default/common/PageView.qml \
     assets/interfaces/default/explore/tophits.qml \
-    assets/interfaces/default/explore/ArtistBrowse.qml
+    assets/interfaces/default/explore/ArtistBrowse.qml \
+    assets/interfaces/default/common/SingleArtistTrackDelegate.qml
 

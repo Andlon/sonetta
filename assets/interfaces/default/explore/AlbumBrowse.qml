@@ -107,67 +107,8 @@ FocusScope {
 
         onTrackPlayed: player.queue.updateContext(albumModel.album, modelIndex)
 
-        delegate: CollectionDelegate {
-            id: del
-            states: [
-                State {
-                    when: activeFocus
-                    PropertyChanges { target: del; textColor: ui.colors.highlightText }
-                },
-                State {
-                    when: !activeFocus
-                    PropertyChanges { target: del; textColor: ui.colors.standard }
-                }
-            ]
-
-            transitions: Transition {
-                ColorAnimation {
-                    duration: ui.misc.globalAnimationTime
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            property alias textColor: albumIndex.color
-
-            height: childrenRect.height + ui.misc.globalPadding
-            y: ui.misc.globalPadding / 2
-
-            H4 {
-                id: albumIndex
-                anchors {
-                    left: parent.left
-                }
-
-                text: model.albumIndex + "."
-                width: 50
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignRight
-            }
-
-            H4 {
-                text: model.name
-                color: textColor
-                anchors {
-                    left: albumIndex.right
-                    right: duration.left
-                    margins: ui.misc.globalPadding
-                }
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            H4 {
-                id: duration
-                color: textColor
-                anchors {
-                    right: parent.right
-                    margins: ui.misc.globalPadding
-                }
-                text: Time.formatTime(model.duration)
-                width: contentWidth
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignRight
-                elide: Text.ElideNone
-            }
+        delegate: SingleArtistTrackDelegate {
+            index: model.albumIndex
         }
     }
 

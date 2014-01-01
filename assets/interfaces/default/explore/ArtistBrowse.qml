@@ -150,6 +150,11 @@ FocusScope {
             TrackView {
                 id: topHits
                 model: synopsis.hits
+                delegate: SingleArtistTrackDelegate {
+                    index: model.index + 1
+                }
+
+                onTrackPlayed: player.queue.updateContext(model.list, modelIndex)
             }
 
             AlbumView {
