@@ -25,7 +25,7 @@ CONFIG(release, debug|release) {
 
 INCLUDEPATH -= "$$PWD"
 
-QML_IMPORT_PATH += "$$PWD/qml/modules"
+QML_IMPORT_PATH += "$$PWD/assets/modules"
 
 include("dependencies/spotinetta/link.pri")
 

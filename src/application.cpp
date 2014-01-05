@@ -33,9 +33,11 @@ QWeakPointer<Spotinetta::Session> g_session;
 namespace Sonetta {
 
 Application::Application(QObject * parent)
-    :   QObject(parent), m_view(new QQuickView),
+    :   QObject(parent),
+      m_view(new QQuickView),
       m_ui(new UIStateCoordinator),
-      m_output(new AudioOutput), m_settings(new Settings),
+      m_output(new AudioOutput),
+      m_settings(new Settings),
       m_exiting(false)
 {
     QGuiApplication::addLibraryPath(QCoreApplication::applicationDirPath() + QStringLiteral("/plugins"));
