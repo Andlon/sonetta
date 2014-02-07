@@ -40,8 +40,6 @@ Application::Application(QObject * parent)
       m_settings(new Settings),
       m_exiting(false)
 {
-    QGuiApplication::addLibraryPath(QCoreApplication::applicationDirPath() + QStringLiteral("/plugins"));
-
     createSession();
 
     m_player.reset(new Player(m_session, m_output));

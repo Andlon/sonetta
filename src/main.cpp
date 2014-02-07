@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
 
     QScopedPointer<QGuiApplication> application(new QGuiApplication(argc, argv));
 
+    QGuiApplication::addLibraryPath(QCoreApplication::applicationDirPath() + QStringLiteral("/plugins"));
+
     application->setQuitOnLastWindowClosed(false);
 
     Sonetta::Application sonetta;
