@@ -6,7 +6,7 @@ Item {
     id: root
 
     height: list ? list.height : 200
-    width: 40
+    width: 1.8 * ui.misc.globalPadding
 
     visible: activeFocus || list.visibleArea.heightRatio < 1
 
@@ -19,7 +19,7 @@ Item {
         anchors.horizontalCenter: root.horizontalCenter
         anchors.top: root.top
         anchors.bottom: root.bottom
-        width: 2
+        width: 3
         color: ui.colors.dark
     }
 
