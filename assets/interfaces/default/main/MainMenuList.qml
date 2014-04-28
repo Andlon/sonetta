@@ -57,12 +57,21 @@ ListView {
     }
 
     highlightMoveDuration: ui.misc.globalAnimationTime
-    highlight: Rectangle {
-        width: root.activeFocus ? root.width : ui.misc.globalPadding / 2
-        color: ui.colors.highlight
+    highlight: Pattern {
+        width: root.width
+        pattern: "medium"
 
-        Behavior on width {
-            SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+        Rectangle {
+            width: root.activeFocus ? root.width : ui.misc.globalPadding / 2
+            color: ui.colors.highlight
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            Behavior on width {
+                SmoothedAnimation { duration: ui.misc.globalAnimationTime; velocity: -1 }
+            }
         }
     }
 
