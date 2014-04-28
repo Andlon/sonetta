@@ -16,11 +16,10 @@ sp::AlbumList analyzePlaylist(const Spotinetta::Playlist & playlist, unsigned in
 
     for (sp::Track & track : playlist.tracks())
     {
-        // For debugging purposes
-        Q_ASSERT(track.isLoaded());
-        Q_ASSERT(track.album().isLoaded());
-
         const sp::Album album = track.album();
+
+        if (!track.isLoaded() || !album.isLoaded())
+            break;
 
         if (!albums.contains(album))
         {
@@ -39,7 +38,8 @@ sp::AlbumList analyzePlaylist(const Spotinetta::Playlist & playlist, unsigned in
 MosaicGenerator::MosaicGenerator(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
     :   QObject(parent), m_watcher(new Spotinetta::PlaylistWatcher(session.data(), this))
 {
-    connect(m_watcher, &Spotinetta::PlaylistWatcher::stateChanged, this, &MosaicGenerator::onPlaylistStateChanged);
+    connect(m_watcher, &Spotinetta::PlaylistWatcher::stateChanged, this, &MosaicGenerator::updateMosaic);
+    connect(m_watcher, &Spotinetta::PlaylistWatcher::metadataUpdated, this, &MosaicGenerator::updateMosaic);
 }
 
 QStringList MosaicGenerator::mosaic() const
@@ -54,7 +54,7 @@ Spotinetta::Playlist MosaicGenerator::playlist() const
 
 void MosaicGenerator::setPlaylist(const Spotinetta::Playlist &playlist)
 {
-    resetMosaic();
+    m_mosaic.clear();
     m_watcher->watch(playlist);
     emit playlistChanged();
 
@@ -66,34 +66,20 @@ void MosaicGenerator::setPlaylist(const Spotinetta::Playlist &playlist)
     }
 }
 
-void MosaicGenerator::onPlaylistStateChanged()
-{
-    if (m_mosaic.empty() && m_watcher->watched().isLoaded())
-    {
-        updateMosaic();
-    }
-}
-
-void MosaicGenerator::resetMosaic()
-{
-    m_mosaic.clear();
-}
-
 void MosaicGenerator::updateMosaic()
 {
-    auto albums = analyzePlaylist(m_watcher->watched(), PREFERRED_TILECOUNT);
-
-    for (const sp::Album & album : albums)
+    sp::Playlist pl = playlist();
+    if (m_mosaic.count() < PREFERRED_TILECOUNT && pl.isLoaded())
     {
-        const QString uri = sp::Link::fromAlbumCover(album, sp::ImageSize::Normal).uri();
-        m_mosaic.append(uri);
+        auto albums = analyzePlaylist(pl, PREFERRED_TILECOUNT);
+
+        for (const sp::Album & album : albums)
+        {
+            const QString uri = sp::Link::fromAlbumCover(album, sp::ImageSize::Normal).uri();
+            m_mosaic.append(uri);
+        }
+        emit mosaicChanged();
     }
-    emit mosaicChanged();
 }
-
-
-
-
-
 
 }

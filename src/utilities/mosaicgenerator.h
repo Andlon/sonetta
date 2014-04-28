@@ -26,8 +26,6 @@ signals:
     void mosaicChanged();
 
 private:
-    void onPlaylistStateChanged();
-    void resetMosaic();
     void updateMosaic();
 
     QStringList m_mosaic;
