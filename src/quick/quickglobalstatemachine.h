@@ -15,7 +15,8 @@ Q_OBJECT
 public:
     explicit QuickGlobalStateTransition(QObject * parent = 0) : QObject(parent), m_finalized(true) { }
 
-    void initialize(const QString & state, const QVariant & parameters);
+    void initialize(const QString & from, const QVariant & fromParameters,
+                    const QString & to, const QVariant & toParameters);
     Q_INVOKABLE void finalize();
 
     bool isFinalized() const { return m_finalized; }
@@ -23,7 +24,8 @@ public:
 signals:
     void finalizedChanged();
 
-    void initialized(const QString & state, const QVariant & parameters);
+    void initialized(const QString & from, const QVariant & fromParameters,
+                     const QString & to, const QVariant & toParameters);
     void finalized(QuickGlobalStateTransition * transition);
 
 private:

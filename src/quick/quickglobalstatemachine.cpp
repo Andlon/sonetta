@@ -4,6 +4,27 @@
 
 namespace Sonetta {
 
+void QuickGlobalStateTransition::initialize(const QString & from, const QVariant & fromParameters,
+                                            const QString & to, const QVariant & toParameters)
+{
+    Q_ASSERT(m_finalized == true);
+    m_finalized = false;
+    emit finalizedChanged();
+    emit initialized(from, fromParameters, to, toParameters);
+}
+
+void QuickGlobalStateTransition::finalize() {
+    if (m_finalized)
+    {
+        qCritical() << "GlobalStateTransition: Attempting to finalized an already finalized transition.";
+        return;
+    }
+
+    m_finalized = true;
+    emit finalizedChanged();
+    emit finalized(this);
+}
+
 void QuickGlobalStateMachine::registerTransition(const QString &from, const QString &to, QuickGlobalStateTransition *transition)
 {
     Q_ASSERT(transition != nullptr);
@@ -105,7 +126,7 @@ void QuickGlobalStateMachine::transition(const Sonetta::QuickGlobalStateMachine:
     }
 
     for (auto & transition : validTransitions)
-        transition->initialize(next.name, next.parameters);
+        transition->initialize(previous.name, previous.parameters, next.name, next.parameters);
 
     // Finalize immediately if we have no valid transitions
     if (validTransitions.isEmpty())
@@ -120,25 +141,6 @@ void QuickGlobalStateMachine::finalizeState()
         const State & state = m_states.top();
         emit enter(state.name, state.parameters);
     }
-}
-
-void QuickGlobalStateTransition::initialize(const QString &state, const QVariant &parameters) {
-    Q_ASSERT(m_finalized == true);
-    m_finalized = false;
-    emit finalizedChanged();
-    emit initialized(state, parameters);
-}
-
-void QuickGlobalStateTransition::finalize() {
-    if (m_finalized)
-    {
-        qCritical() << "GlobalStateTransition: Attempting to finalized an already finalized transition.";
-        return;
-    }
-
-    m_finalized = true;
-    emit finalizedChanged();
-    emit finalized(this);
 }
 
 }
