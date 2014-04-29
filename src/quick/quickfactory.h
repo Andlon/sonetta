@@ -22,7 +22,7 @@ public:
 
 inline QObject * quickFactorySingletonProvider(QQmlEngine *, QJSEngine *)
 {
-    return new QuickFactory();
+    return new QuickFactory;
 }
 
 /* Implementation below */

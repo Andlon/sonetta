@@ -19,6 +19,7 @@
 #include "quick/quickmosaicgenerator.h"
 #include "quick/quickfactory.h"
 #include "quick/quickartistsynopsis.h"
+#include "quick/quickglobalstatemachine.h"
 
 #include "../appkey.c"
 
@@ -171,6 +172,9 @@ void Application::registerQmlTypes()
     // a loader that dynamically loads any singleton files from a certain directory for greater
     // separation between UI and logic. NOTE TO SELF: It's possible to avoid C++ altogether with modules
     qmlRegisterSingletonType(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/interfaces/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
+
+    qmlRegisterSingletonType<QuickGlobalStateMachine>("Sonetta.Utilities", 0, 1, "GlobalStateMachine",
+                             [] (QQmlEngine *, QJSEngine *) -> QObject * { return new QuickGlobalStateMachine; });
 }
 
 void Application::setupQuickEnvironment()

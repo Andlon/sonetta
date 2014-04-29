@@ -61,7 +61,8 @@ HEADERS += \
     src/utilities/pointers.h \
     src/navigation/windowsnavigationfilter.h \
     src/navigation/navigationcontroller.h \
-    src/quick/quickartistsynopsis.h
+    src/quick/quickartistsynopsis.h \
+    src/quick/quickglobalstatemachine.h
 
 SOURCES += \
     src/navigation/navigation.cpp \
@@ -90,7 +91,8 @@ SOURCES += \
     src/models/albummodel.cpp \
     src/navigation/lircclient.cpp \
     src/navigation/navigationcontroller.cpp \
-    src/quick/quickartistsynopsis.cpp
+    src/quick/quickartistsynopsis.cpp \
+    src/quick/quickglobalstatemachine.cpp
 
 OTHER_FILES += \
     assets/interfaces/default/main.qml \
