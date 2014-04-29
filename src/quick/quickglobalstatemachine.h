@@ -40,8 +40,8 @@ public:
     Q_INVOKABLE void registerTransition(const QString & from, const QString & to, QuickGlobalStateTransition * transition);
     //Q_INVOKABLE void deregisterTransition(QuickGlobalStateTransition * transition);
 
-    Q_INVOKABLE void initialize(const QString & state, const QVariant & parameters);
-    Q_INVOKABLE void push(const QString & state, const QVariant & parameters);
+    Q_INVOKABLE void initialize(const QString & state, const QVariant & parameters = QVariant());
+    Q_INVOKABLE void push(const QString & state, const QVariant & parameters = QVariant());
     Q_INVOKABLE void pop();
 
 signals:
