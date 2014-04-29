@@ -1,33 +1,76 @@
 #include "quickglobalstatemachine.h"
 
+#include <QtDebug>
 
 namespace Sonetta {
 
 void QuickGlobalStateMachine::registerTransition(const QString &from, const QString &to, QuickGlobalStateTransition *transition)
 {
     Q_ASSERT(transition != nullptr);
-    connect(transition, &QuickGlobalStateTransition::onFinalized, this, &QuickGlobalStateMachine::handleFinalization);
+    connect(transition, &QuickGlobalStateTransition::finalized, this, &QuickGlobalStateMachine::handleFinalization);
     m_transitions[from].insert(to, QPointer<QuickGlobalStateTransition>(transition));
+}
+
+void QuickGlobalStateMachine::initialize(const QString &state, const QVariant &parameters)
+{
+    if (m_states.isEmpty())
+    {
+        m_states.push(State(state, parameters));
+        emit enter(state, parameters);
+    }
+    else
+    {
+        qWarning() << "GlobalStateMachine: Can not initialize state when a state already exists.";
+    }
 }
 
 void QuickGlobalStateMachine::push(const QString &state, const QVariant &parameters)
 {
-    if (m_ongoingTransitions.isEmpty() && !m_states.isEmpty())
+    if (m_leaving)
     {
-        const State & currentState = m_states.top();
+        qCritical() << "GlobalStateMachine: Can not push state when leaving state.";
+        return;
+    }
+
+    if (!m_ongoingTransitions.isEmpty())
+    {
+        qCritical() << "GlobalStateMachine: Can not push state during transition.";
+        return;
+    }
+
+    if (!m_states.isEmpty())
+    {
+        const State currentState = m_states.top();
         const State newState (state, parameters);
-        emit onLeave(currentState.name, currentState.parameters);
         m_states.push(newState);
+        m_leaving = true;
+        emit leave(currentState.name, currentState.parameters);
+        m_leaving = false;
         transition(currentState, newState);
     }
 }
 
 void QuickGlobalStateMachine::pop()
 {
-    if (m_ongoingTransitions.isEmpty() && m_states.count() > 1)
+    if (m_leaving)
+    {
+        qCritical() << "GlobalStateMachine: Can not pop state when leaving state.";
+        return;
+    }
+
+    if (!m_ongoingTransitions.isEmpty())
+    {
+        qCritical() << "GlobalStateMachine: Can not pop state during transition.";
+        return;
+    }
+
+    // Silently forbid popping when there is no previous state
+    if (m_states.count() > 1)
     {
         const State currentState = m_states.pop();
-        onLeave(currentState.name, currentState.parameters);
+        m_leaving = true;
+        emit leave(currentState.name, currentState.parameters);
+        m_leaving = false;
         const State & newState = m_states.top();
         transition(currentState, newState);
     }
@@ -39,33 +82,63 @@ void QuickGlobalStateMachine::handleFinalization(Sonetta::QuickGlobalStateTransi
     Q_ASSERT_X(index > -1, "QuickGlobalStateMachine::handleFinalization", "Finalized transition must be an ongoing transition.");
 
     m_ongoingTransitions.remove(index);
-
-    if (m_ongoingTransitions.isEmpty())
-    {
-        Q_ASSERT(!m_states.isEmpty());
-        const State & state = m_states.top();
-        emit onEnter(state.name, state.parameters);
-    }
+    finalizeState();
 }
 
 void QuickGlobalStateMachine::transition(const Sonetta::QuickGlobalStateMachine::State &previous, const Sonetta::QuickGlobalStateMachine::State &next)
 {
-    const auto transitions =
-            m_transitions.value(previous.name, QMultiHash<QString, QPointer<QuickGlobalStateTransition>>())
-            .values(next.name);
+    const auto transitions = m_transitions.value(previous.name).values(next.name);
 
+    QVector<QuickGlobalStateTransition *> validTransitions;
+
+    // We need to make a list of all ongoing transitions before we initialize them,
+    // in case some transitions finalize within the same block of execution as the initialization
     for (auto & transition : transitions)
     {
         if (transition.isNull()){
-
+            // Clean up or do something clever here
         }
         else {
-            // Move this to register
-            // connect(transition, &QuickGlobalStateTransition::onFinalized, this, &QuickGlobalStateMachine::handleFinalization);
             m_ongoingTransitions.append(transition);
-            transition->initialize(next.name, next.parameters);
+            validTransitions.append(transition.data());
         }
     }
+
+    for (auto & transition : validTransitions)
+        transition->initialize(next.name, next.parameters);
+
+    // Finalize immediately if we have no valid transitions
+    if (validTransitions.isEmpty())
+        finalizeState();
+}
+
+void QuickGlobalStateMachine::finalizeState()
+{
+    if (m_ongoingTransitions.isEmpty())
+    {
+        Q_ASSERT(!m_states.isEmpty());
+        const State & state = m_states.top();
+        emit enter(state.name, state.parameters);
+    }
+}
+
+void QuickGlobalStateTransition::initialize(const QString &state, const QVariant &parameters) {
+    Q_ASSERT(m_finalized == true);
+    m_finalized = false;
+    emit finalizedChanged();
+    emit initialized(state, parameters);
+}
+
+void QuickGlobalStateTransition::finalize() {
+    if (m_finalized)
+    {
+        qCritical() << "GlobalStateTransition: Attempting to finalized an already finalized transition.";
+        return;
+    }
+
+    m_finalized = true;
+    emit finalizedChanged();
+    emit finalized(this);
 }
 
 }

@@ -173,6 +173,8 @@ void Application::registerQmlTypes()
     // separation between UI and logic. NOTE TO SELF: It's possible to avoid C++ altogether with modules
     qmlRegisterSingletonType(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/interfaces/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
 
+    // State machine
+    qmlRegisterType<QuickGlobalStateTransition>("Sonetta.Utilities", 0, 1, "GlobalStateTransition");
     qmlRegisterSingletonType<QuickGlobalStateMachine>("Sonetta.Utilities", 0, 1, "GlobalStateMachine",
                              [] (QQmlEngine *, QJSEngine *) -> QObject * { return new QuickGlobalStateMachine; });
 }
