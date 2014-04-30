@@ -1,6 +1,6 @@
 #include <QString>
 #include <QtTest>
-#include "../../src/quick/quickglobalstatemachine.h"
+#include "../../core/src/quick/quickglobalstatemachine.h"
 
 using Sonetta::QuickGlobalStateMachine;
 using Sonetta::QuickGlobalStateTransition;

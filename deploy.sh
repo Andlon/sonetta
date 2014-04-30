@@ -1,12 +1,22 @@
-#!/bin/sh
-echo 'Deploying Sonata.';
-echo 'Copying QML...';
+#!/bin/bash
+echo 'Deploying Sonetta...'
 
-if [ -d "debug" ]; then
-	cp -R -f -t debug assets/*
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DEBUGDIR="$SCRIPTDIR/debug"
+RELEASEDIR="$SCRIPTDIR/release"
+
+# Copy assets to debug/release folder and copy 
+# output to root folder
+
+if [ -d $DEBUGDIR ]; then
+	cp -R -f -t $DEBUGDIR $SCRIPTDIR/core/assets/*
 fi
 
-if [ -d "release" ]; then
-	cp -R -f -t release assets/*
+if [ -d $RELEASEDIR ]; then
+	cp -R -f -t $RELEASEDIR $SCRIPTDIR/core/assets/*
 fi
+
+echo 'Deployment finished.'
+
+
 

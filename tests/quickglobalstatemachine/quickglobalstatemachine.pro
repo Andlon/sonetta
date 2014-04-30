@@ -9,7 +9,7 @@ QT       += testlib
 QT       -= gui
 
 TARGET = quickglobalstatemachinetest
-CONFIG   += console c++11
+CONFIG   += console c++11 testcase
 CONFIG   -= app_bundle
 
 RCC_DIR = "build/rcc"
@@ -22,10 +22,10 @@ TEMPLATE = app
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
-    ../../src/quick/quickglobalstatemachine.h
+    ../../core/src/quick/quickglobalstatemachine.h
 
 SOURCES += quickglobalstatemachinetest.cpp \
-    ../../src/quick/quickglobalstatemachine.cpp
+    ../../core/src/quick/quickglobalstatemachine.cpp
 
 
 
