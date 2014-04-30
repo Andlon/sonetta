@@ -64,7 +64,7 @@ HEADERS += \
     src/quick/quickglobalstatemachine.h
 
 SOURCES += \
-    ../appkey.c \
+    $$PWD/../appkey.c \
     src/navigation/navigation.cpp \
     src/main.cpp \
     src/models/abstracttrackcollectionmodel.cpp \
