@@ -8,7 +8,7 @@ namespace Sonetta {
 
 namespace {
 
-const unsigned int PREFERRED_TILECOUNT = 4;
+const int PREFERRED_TILECOUNT = 4;
 
 sp::AlbumList analyzePlaylist(const Spotinetta::Playlist & playlist, unsigned int preferredTileCount)
 {

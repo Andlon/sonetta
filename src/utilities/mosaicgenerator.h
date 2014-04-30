@@ -9,7 +9,7 @@
 namespace Sonetta {
 
 class MosaicGenerator : public QObject {
-Q_OBJECT
+    Q_OBJECT
     Q_ENUMS(ImageSize)
 
     Q_PROPERTY(Spotinetta::Playlist playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
@@ -19,9 +19,9 @@ Q_OBJECT
 
 public:
     enum ImageSize {
-        Small = Spotinetta::ImageSize::Small,
-        Normal = Spotinetta::ImageSize::Normal,
-        Large = Spotinetta::ImageSize::Large
+        Small = static_cast<unsigned int>(Spotinetta::ImageSize::Small),
+        Normal = static_cast<unsigned int>(Spotinetta::ImageSize::Normal),
+        Large = static_cast<unsigned int>(Spotinetta::ImageSize::Large)
     };
 
     explicit MosaicGenerator(ObjectSharedPointer<const Spotinetta::Session> session, QObject * parent = 0);
@@ -46,10 +46,11 @@ signals:
 private:
     void updateMosaic();
 
-    QStringList m_mosaic;
-    Spotinetta::ImageSize m_singleSize;
-    Spotinetta::ImageSize m_collageSize;
-    Spotinetta::PlaylistWatcher * m_watcher;
+    QStringList                     m_mosaic;
+    Spotinetta::PlaylistWatcher *   m_watcher;
+    Spotinetta::ImageSize           m_singleSize;
+    Spotinetta::ImageSize           m_collageSize;
+
 };
 
 }

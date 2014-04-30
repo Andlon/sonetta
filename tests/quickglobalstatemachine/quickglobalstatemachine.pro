@@ -9,8 +9,13 @@ QT       += testlib
 QT       -= gui
 
 TARGET = quickglobalstatemachinetest
-CONFIG   += console
+CONFIG   += console c++11
 CONFIG   -= app_bundle
+
+RCC_DIR = "build/rcc"
+UI_DIR = "build/uic"
+MOC_DIR = "build/moc"
+OBJECTS_DIR = "build/obj"
 
 TEMPLATE = app
 

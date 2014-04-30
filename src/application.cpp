@@ -76,8 +76,8 @@ bool Application::initialize()
     }
     else
     {
-        const QByteArray msg = QByteArray("Session creation failed. Error: ") + sp::errorMessage(m_session->error()).toUtf8();
-        qFatal(msg.constData());
+        const QByteArray error = sp::errorMessage(m_session->error()).toUtf8();
+        qFatal("Session creation failed. Error: %s", error.constData());
         return false;
     }
 }
