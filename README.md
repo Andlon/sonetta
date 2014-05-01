@@ -43,12 +43,21 @@ For Linux, simply follow the instructions to install libspotify on your system. 
 Sonetta requires Qt 5.2.0 or later, assuming this README is up-to-date. Usually, the safest route is to get the most recent version available from the Qt online maintenance kit.
 
 ### Steps
+#### Update submodules
+After cloning this repository, you need to init and update the submodules, which at the moment only consists of spotinetta, a Qt-based wrapper for libspotify used by Sonetta. Run the following commands:
+    
+    git submodule init
+    git submodule update
+    
+This should clone the repository of spotinetta and make it reside in the 'dependencies/spotinetta' folder.
+
+#### Building
 On Linux, simply type the following commands into the terminal from the root folder of Sonetta:
 
     qmake
     make
 	
-as with any other application that uses make, you may use the -j option to specify the amount of cores. For Windows, replace 'make' with 'nmake' (for Visual Studio). If you're a developer and want to run Sonetta's (at the moment very limited) test suite, run 'make check'. 
+which will build Sonetta and its dependencies. As with any other application that uses make, you may use the -j option to specify the amount of cores. For Windows, replace 'make' with 'nmake' (for Visual Studio). If you're a developer and want to run Sonetta's (at the moment very limited) test suite, run 'make check'. 
 
 If you want to develop with Qt Creator, open sonetta.pro in the root directory, and add "bash deploy.sh" (Linux) or "deploy.bat" (Windows) as a custom deploy step. If you're not using Qt Creator, note that you may have to manually call these shell scripts whenever you change any of the deployed assets (QML, fonts etc.).
 
