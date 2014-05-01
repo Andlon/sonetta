@@ -63,4 +63,4 @@ If you want to develop with Qt Creator, open sonetta.pro in the root directory, 
 
 License
 -------
-Sonetta is open-source software, released under a permissive 3-clause BSD license. There should be a LICENSE file supplied along with this document which contains the legal wording. Qt and libspotify are released under their own respective licenses.
+Sonetta is open-source software, released under a permissive 3-clause BSD license. The copyright belongs to Andreas Borgen Longva. There should be a LICENSE file supplied along with this document which contains the legal wording. Qt and libspotify are released under their own respective licenses.
