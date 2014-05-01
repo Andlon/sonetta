@@ -1,5 +1,8 @@
 REM Copies files necessary for deployment. Used by Qt Creator
 REM Usage: deploy.bat
 
-xcopy /Y /I /E assets .\debug\.
-xcopy /Y /I /E assets .\release\.
+set SCRIPTDIR=%~dp0
+set COREDIR=%SCRIPTDIR%core\
+
+xcopy /Y /I /E %COREDIR%assets %SCRIPTDIR%debug\.
+xcopy /Y /I /E %COREDIR%assets %SCRIPTDIR%release\.

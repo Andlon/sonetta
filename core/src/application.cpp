@@ -21,7 +21,7 @@
 #include "quick/quickartistsynopsis.h"
 #include "quick/quickglobalstatemachine.h"
 
-#include "../appkey.c"
+#include "../../appkey.c"
 
 namespace sp = Spotinetta;
 
