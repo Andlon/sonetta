@@ -61,6 +61,10 @@ which will build Sonetta and its dependencies. You will find the compiled binary
 
 If you want to develop with Qt Creator, open sonetta.pro in the root directory, and add "bash deploy.sh" (Linux) or "deploy.bat" (Windows) as a custom deploy step. If you're not using Qt Creator, note that you may have to manually call these shell scripts whenever you change any of the deployed assets (QML, fonts etc.).
 
+Contributing
+------------
+I appreciate contributions, but I ask you to please contact me before you fork and begin any serious work. I have some very specific and clear plans for this project, and it's only time constraints on my part that stalls the progress of development.
+
 License
 -------
 Sonetta is open-source software, released under a permissive 3-clause BSD license. The copyright belongs to Andreas Borgen Longva. There should be a LICENSE file supplied along with this document which contains the legal wording. Qt and libspotify are released under their own respective licenses.
