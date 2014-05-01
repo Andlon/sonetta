@@ -57,7 +57,7 @@ On Linux, simply type the following commands into the terminal from the root fol
     qmake
     make
 	
-which will build Sonetta and its dependencies. As with any other application that uses make, you may use the -j option to specify the amount of cores. For Windows, replace 'make' with 'nmake' (for Visual Studio). If you're a developer and want to run Sonetta's (at the moment very limited) test suite, run 'make check'. 
+which will build Sonetta and its dependencies. You will find the compiled binary along with deployed assets (note: this does NOT include required libraries for a proper deployment!) in 'debug/' or 'release/', depending on your type of build. As with any other application that uses make, you may use the -j option to specify the amount of cores. For Windows, replace 'make' with 'nmake' (for Visual Studio). If you're a developer and want to run Sonetta's (at the moment very limited) test suite, run 'make check'. 
 
 If you want to develop with Qt Creator, open sonetta.pro in the root directory, and add "bash deploy.sh" (Linux) or "deploy.bat" (Windows) as a custom deploy step. If you're not using Qt Creator, note that you may have to manually call these shell scripts whenever you change any of the deployed assets (QML, fonts etc.).
 
