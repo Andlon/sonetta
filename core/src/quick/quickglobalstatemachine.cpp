@@ -2,8 +2,6 @@
 
 #include <QtDebug>
 
-namespace Sonetta {
-
 void QuickGlobalStateTransition::initialize(const QString & from, const QVariant & fromParameters,
                                             const QString & to, const QVariant & toParameters)
 {
@@ -97,7 +95,7 @@ void QuickGlobalStateMachine::pop()
     }
 }
 
-void QuickGlobalStateMachine::handleFinalization(Sonetta::QuickGlobalStateTransition *transition)
+void QuickGlobalStateMachine::handleFinalization(QuickGlobalStateTransition *transition)
 {
     int index = m_ongoingTransitions.indexOf(transition);
     Q_ASSERT_X(index > -1, "QuickGlobalStateMachine::handleFinalization", "Finalized transition must be an ongoing transition.");
@@ -106,9 +104,14 @@ void QuickGlobalStateMachine::handleFinalization(Sonetta::QuickGlobalStateTransi
     finalizeState();
 }
 
-void QuickGlobalStateMachine::transition(const Sonetta::QuickGlobalStateMachine::State &previous, const Sonetta::QuickGlobalStateMachine::State &next)
+void QuickGlobalStateMachine::transition(const QuickGlobalStateMachine::State &previous, const QuickGlobalStateMachine::State &next)
 {
-    const auto transitions = m_transitions.value(previous.name).values(next.name);
+    auto transitions = m_transitions.value(previous.name).values(next.name);
+
+    // Add wildcard transitions
+    transitions.append(m_transitions.value("*").values(next.name));
+    transitions.append(m_transitions.value(previous.name).values("*"));
+    transitions.append(m_transitions.value("*").values("*"));
 
     QVector<QuickGlobalStateTransition *> validTransitions;
 
@@ -142,6 +145,4 @@ void QuickGlobalStateMachine::finalizeState()
         const State & state = m_states.top();
         emit enter(state.name, state.parameters);
     }
-}
-
 }

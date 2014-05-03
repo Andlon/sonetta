@@ -6,8 +6,6 @@
 #include <QStack>
 #include <QPointer>
 
-namespace Sonetta {
-
 class QuickGlobalStateTransition : public QObject {
 Q_OBJECT
 
@@ -69,5 +67,3 @@ private:
 
     QVector< QPointer<QuickGlobalStateTransition> > m_ongoingTransitions;
 };
-
-}

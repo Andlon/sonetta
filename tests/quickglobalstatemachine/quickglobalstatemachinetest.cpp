@@ -2,9 +2,6 @@
 #include <QtTest>
 #include "../../core/src/quick/quickglobalstatemachine.h"
 
-using Sonetta::QuickGlobalStateMachine;
-using Sonetta::QuickGlobalStateTransition;
-
 class QuickGlobalStateMachineTest : public QObject
 {
     Q_OBJECT
@@ -18,6 +15,7 @@ private Q_SLOTS:
         machine->initialize("initial");
         transition = new QuickGlobalStateTransition;
         transition2 = new QuickGlobalStateTransition;
+        transition3 = new QuickGlobalStateTransition;
         enterSpy = new QSignalSpy(machine, SIGNAL(enter(QString,QVariant)));
         leaveSpy = new QSignalSpy(machine, SIGNAL(leave(QString,QVariant)));
     }
@@ -25,6 +23,7 @@ private Q_SLOTS:
     void cleanup() {
         delete leaveSpy;
         delete enterSpy;
+        delete transition3;
         delete transition2;
         delete transition;
         delete machine;
@@ -146,10 +145,36 @@ private Q_SLOTS:
         QCOMPARE(final2.count(), 3);
     }
 
+    void testWildcardTransition() {
+        QSignalSpy final1(transition, SIGNAL(finalized(QuickGlobalStateTransition*)));
+        QSignalSpy final2(transition2, SIGNAL(finalized(QuickGlobalStateTransition*)));
+        QSignalSpy final3(transition3, SIGNAL(finalized(QuickGlobalStateTransition*)));
+
+        machine->registerTransition("*", "next", transition);
+        machine->registerTransition("initial", "*", transition2);
+        machine->registerTransition("*", "*", transition3);
+        machine->push("next");
+        transition->finalize();
+        transition2->finalize();
+        transition3->finalize();
+        QCOMPARE(final1.count(), 1);
+        QCOMPARE(final2.count(), 1);
+        QCOMPARE(final3.count(), 1);
+
+        // Additionally check that only the double wildcard triggers
+        // on the next transition
+        machine->push("arbitrary");
+        transition3->finalize();
+        QCOMPARE(final1.count(), 1);
+        QCOMPARE(final2.count(), 1);
+        QCOMPARE(final3.count(), 2);
+    }
+
 private:
     QuickGlobalStateMachine * machine;
     QuickGlobalStateTransition * transition;
     QuickGlobalStateTransition * transition2;
+    QuickGlobalStateTransition * transition3;
     QSignalSpy * enterSpy;
     QSignalSpy * leaveSpy;
 };
