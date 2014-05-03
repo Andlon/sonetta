@@ -17,6 +17,7 @@ private Q_SLOTS:
         machine = new QuickGlobalStateMachine;
         machine->initialize("initial");
         transition = new QuickGlobalStateTransition;
+        transition2 = new QuickGlobalStateTransition;
         enterSpy = new QSignalSpy(machine, SIGNAL(enter(QString,QVariant)));
         leaveSpy = new QSignalSpy(machine, SIGNAL(leave(QString,QVariant)));
     }
@@ -24,6 +25,7 @@ private Q_SLOTS:
     void cleanup() {
         delete leaveSpy;
         delete enterSpy;
+        delete transition2;
         delete transition;
         delete machine;
     }
@@ -53,26 +55,67 @@ private Q_SLOTS:
     }
 
     void testSingleTransition() {
-        QSignalSpy initializationSpy(transition, SIGNAL(initialized(QString,QVariant,QString,QVariant)));
-        QSignalSpy finalizationSpy(transition, SIGNAL(finalized(QuickGlobalStateTransition*)));
+        QSignalSpy init(transition, SIGNAL(initialized(QString,QVariant,QString,QVariant)));
+        QSignalSpy final(transition, SIGNAL(finalized(QuickGlobalStateTransition*)));
 
         machine->registerTransition("initial", "next", transition);
         machine->push("next");
 
-        QCOMPARE(initializationSpy.count(), 1);
-        QList<QVariant> arg = initializationSpy.takeFirst();
+        QCOMPARE(init.count(), 1);
+        QList<QVariant> arg = init.takeFirst();
         QCOMPARE(arg[0].toString(), QStringLiteral("initial"));
         QCOMPARE(arg[2].toString(), QStringLiteral("next"));
 
         transition->finalize();
-        QCOMPARE(finalizationSpy.count(), 1);
+        QCOMPARE(final.count(), 1);
         QCOMPARE(enterSpy->count(), 1);
         QCOMPARE(leaveSpy->count(), 1);
+    }
+
+    void testRepeatedSingleTransition() {
+        QSignalSpy init(transition, SIGNAL(initialized(QString,QVariant,QString,QVariant)));
+        QSignalSpy final(transition, SIGNAL(finalized(QuickGlobalStateTransition*)));
+
+        machine->registerTransition("initial", "next", transition);
+        machine->registerTransition("next", "initial", transition);
+        machine->push("next");
+        transition->finalize();
+        machine->push("initial");
+        transition->finalize();
+        machine->push("next");
+        transition->finalize();
+
+        QCOMPARE(init.count(), 3);
+        QCOMPARE(final.count(), 3);
+
+        // Extra test that the transition does not trigger on an unregistered state change
+        machine->push("next");
+
+        QCOMPARE(init.count(), 3);
+        QCOMPARE(final.count(), 3);
+    }
+
+    void testMultipleTransitions() {
+        QSignalSpy init1(transition, SIGNAL(initialized(QString,QVariant,QString,QVariant)));
+        QSignalSpy init2(transition2, SIGNAL(initialized(QString,QVariant,QString,QVariant)));
+        QSignalSpy final1(transition, SIGNAL(finalized(QuickGlobalStateTransition*)));
+        QSignalSpy final2(transition2, SIGNAL(finalized(QuickGlobalStateTransition*)));
+
+        machine->registerTransition("initial", "next", transition);
+        machine->registerTransition("initial", "next", transition2);
+        machine->push("next");
+        QCOMPARE(init1.count(), 1);
+        QCOMPARE(init2.count(), 1);
+        transition->finalize();
+        transition2->finalize();
+        QCOMPARE(final1.count(), 1);
+        QCOMPARE(final2.count(), 1);
     }
 
 private:
     QuickGlobalStateMachine * machine;
     QuickGlobalStateTransition * transition;
+    QuickGlobalStateTransition * transition2;
     QSignalSpy * enterSpy;
     QSignalSpy * leaveSpy;
 };

@@ -28,7 +28,7 @@ void QuickGlobalStateTransition::finalize() {
 void QuickGlobalStateMachine::registerTransition(const QString &from, const QString &to, QuickGlobalStateTransition *transition)
 {
     Q_ASSERT(transition != nullptr);
-    connect(transition, &QuickGlobalStateTransition::finalized, this, &QuickGlobalStateMachine::handleFinalization);
+    connect(transition, &QuickGlobalStateTransition::finalized, this, &QuickGlobalStateMachine::handleFinalization, Qt::UniqueConnection);
     m_transitions[from].insert(to, QPointer<QuickGlobalStateTransition>(transition));
 }
 
@@ -117,7 +117,8 @@ void QuickGlobalStateMachine::transition(const Sonetta::QuickGlobalStateMachine:
     for (auto & transition : transitions)
     {
         if (transition.isNull()){
-            // Clean up or do something clever here
+            // Clean up or do something clever here. For now, just warn.
+            qWarning() << "GlobalStateMachine: Null transition. Please fix.";
         }
         else {
             m_ongoingTransitions.append(transition);
