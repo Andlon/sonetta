@@ -112,6 +112,40 @@ private Q_SLOTS:
         QCOMPARE(final2.count(), 1);
     }
 
+    void testRepeatedMultipleTransitions() {
+        QSignalSpy init1(transition, SIGNAL(initialized(QString,QVariant,QString,QVariant)));
+        QSignalSpy init2(transition2, SIGNAL(initialized(QString,QVariant,QString,QVariant)));
+        QSignalSpy final1(transition, SIGNAL(finalized(QuickGlobalStateTransition*)));
+        QSignalSpy final2(transition2, SIGNAL(finalized(QuickGlobalStateTransition*)));
+
+        machine->registerTransition("initial", "next", transition);
+        machine->registerTransition("initial", "next", transition2);
+        machine->registerTransition("next", "initial", transition);
+        machine->registerTransition("next", "initial", transition2);
+
+        machine->push("next");
+        transition->finalize();
+        transition2->finalize();
+        machine->push("initial");
+        transition->finalize();
+        transition2->finalize();
+        machine->push("next");
+        transition->finalize();
+        transition2->finalize();
+
+        QCOMPARE(init1.count(), 3);
+        QCOMPARE(init2.count(), 3);
+        QCOMPARE(final1.count(), 3);
+        QCOMPARE(final2.count(), 3);
+
+        // Test that no transition is used for unregistered state change (next -> next)
+        machine->push("next");
+        QCOMPARE(init1.count(), 3);
+        QCOMPARE(init2.count(), 3);
+        QCOMPARE(final1.count(), 3);
+        QCOMPARE(final2.count(), 3);
+    }
+
 private:
     QuickGlobalStateMachine * machine;
     QuickGlobalStateTransition * transition;
