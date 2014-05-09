@@ -168,11 +168,6 @@ void Application::registerQmlTypes()
     qmlRegisterUncreatableType<AlbumEnums>("Sonetta", 0, 1, "Album", "Cannot instantiate Album.");
     qmlRegisterUncreatableType<TrackEnums>("Sonetta", 0, 1, "Track", "Cannot instantiate Track.");
 
-    // Register the UI Singleton type. This is a temporary workaround. Consider creating
-    // a loader that dynamically loads any singleton files from a certain directory for greater
-    // separation between UI and logic. NOTE TO SELF: It's possible to avoid C++ altogether with modules
-    qmlRegisterSingletonType(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/interfaces/default/common/UI.qml"), "Sonetta", 0, 1, "UI");
-
     // State machine
     qmlRegisterType<QuickGlobalStateTransition>("Sonetta.Utilities", 0, 1, "GlobalStateTransition");
     qmlRegisterSingletonType<QuickGlobalStateMachine>("Sonetta.Utilities", 0, 1, "GlobalStateMachine",
@@ -197,7 +192,7 @@ void Application::setupQuickEnvironment()
     m_view->engine()->rootContext()->setContextProperty("session", m_session.data());
     m_view->engine()->rootContext()->setContextProperty("search", m_search.data());
     m_view->engine()->addImportPath(applicationDir + QStringLiteral("/modules/"));
-    m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/interfaces/default/main.qml")));
+    m_view->setSource(QUrl::fromLocalFile(applicationDir + QStringLiteral("/interfaces/default2/main.qml")));
     m_view->setResizeMode(QQuickView::SizeRootObjectToView);
 }
 

@@ -148,4 +148,32 @@ OTHER_FILES += \
     assets/interfaces/default/common/PageView.qml \
     assets/interfaces/default/explore/tophits.qml \
     assets/interfaces/default/explore/ArtistBrowse.qml \
-    assets/interfaces/default/common/SingleArtistTrackDelegate.qml
+    assets/interfaces/default/common/SingleArtistTrackDelegate.qml \
+    assets/interfaces/default2/main.qml \
+    assets/interfaces/default2/common/visual/Pattern.qml \
+    assets/interfaces/default2/images/artist_placeholder.png \
+    assets/interfaces/default2/images/dark.png \
+    assets/interfaces/default2/images/light.png \
+    assets/interfaces/default2/images/medium.png \
+    assets/interfaces/default2/images/sonetta.png \
+    assets/interfaces/default2/images/sonetta_large.png \
+    assets/interfaces/default2/images/spotify.png \
+    assets/interfaces/default2/images/contextArrow.svg \
+    assets/interfaces/default2/images/keys/backspace.png \
+    assets/interfaces/default2/images/keys/next.png \
+    assets/interfaces/default2/images/keys/prev.png \
+    assets/interfaces/default2/images/keys/return.png \
+    assets/interfaces/default2/images/keys/shiftdown.png \
+    assets/interfaces/default2/images/keys/shiftup.png \
+    assets/interfaces/default2/images/keys/space.png \
+    assets/interfaces/default2/images/keys/symbols.png \
+    assets/interfaces/default2/images/playback/next.svg \
+    assets/interfaces/default2/images/playback/pause.svg \
+    assets/interfaces/default2/images/playback/play.svg \
+    assets/interfaces/default2/login/login.qml \
+    assets/interfaces/default2/common/UI.qml \
+    assets/interfaces/default2/login/LoginDetails.qml \
+    assets/interfaces/default2/common/Box.qml \
+    assets/interfaces/default2/common/Pattern.qml \
+    assets/interfaces/default2/common/qmldir \
+    assets/interfaces/default2/common/MenuItem.qml
