@@ -5,7 +5,6 @@ Item {
     readonly property int globalSpacing: 30
     readonly property string globalBackgroundPattern: "medium"
 
-    // Colors
     property QtObject colors: QtObject {
         readonly property color light: "#292929"
         readonly property color medium: "#202020"
@@ -13,23 +12,25 @@ Item {
 
         readonly property color text: "#ffffff"
         readonly property color label: "#999999"
+        readonly property color highlight: "#ffc000"
     }
 
-    // Fonts
     property QtObject fonts: QtObject {
         readonly property font standard: Qt.font({ family: "Roboto", pointSize: 23, weight: 40 })
         readonly property font disclaimer: Qt.font({ family: "Roboto", pointSize: 17, weight: 40 })
         readonly property font header: Qt.font({ family: "Roboto", pointSize: 32, weight: 50 })
     }
 
-    // Box
-    readonly property string boxBackgroundPattern: "dark"
-    readonly property color boxBorderColor: colors.light
-    readonly property int boxBorderWidth: 1
+    property QtObject box: QtObject {
+        readonly property string backgroundPattern: "dark"
+        readonly property color borderColor: colors.light
+        readonly property int borderWidth: 1
+    }
 
-    // Menu items
-    readonly property int menuDefaultWidth: 400
-    readonly property int menuDefaultHeight: 60
-    readonly property int menuHorizontalMargins: globalSpacing
-    readonly property int menuVerticalMargins: globalSpacing / 2
+    property QtObject menu: QtObject {
+        readonly property int defaultWidth: 400
+        readonly property int defaultHeight: 60
+        readonly property int horizontalMargins: globalSpacing
+        readonly property int verticalMargins: globalSpacing / 2
+    }
 }

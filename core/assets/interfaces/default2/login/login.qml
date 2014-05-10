@@ -83,7 +83,7 @@ FocusScope {
     Rectangle {
         id: separator
         width: 2
-        color: UI.boxBorderColor
+        color: UI.box.borderColor
         anchors.centerIn: root
     }
 

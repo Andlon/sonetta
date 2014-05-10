@@ -3,13 +3,13 @@ import QtQuick 2.2
 import "."
 
 Rectangle {
-    border.color: UI.boxBorderColor
-    border.width: UI.boxBorderWidth
+    border.color: UI.box.borderColor
+    border.width: UI.box.borderWidth
     color: "transparent"
 
     Pattern {
         anchors.fill: parent
         anchors.margins: parent.border.width
-        pattern: UI.boxBackgroundPattern
+        pattern: UI.box.backgroundPattern
     }
 }

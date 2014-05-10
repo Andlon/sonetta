@@ -4,17 +4,17 @@ import "."
 
 Box {
     property alias text: textElement.text
-    width: UI.menuDefaultWidth
-    height: textElement.height + 2 * UI.menuVerticalMargins
+    width: UI.menu.defaultWidth
+    height: textElement.height + 2 * UI.menu.verticalMargins
 
     Text {
         id: textElement
-        y: UI.menuVerticalMargins
+        y: UI.menu.verticalMargins
         anchors {
             left: parent.left
             right: parent.right
-            leftMargin: UI.menuHorizontalMargins
-            rightMargin: UI.menuHorizontalMargins
+            leftMargin: UI.menu.horizontalMargins
+            rightMargin: UI.menu.horizontalMargins
         }
 
         font: UI.fonts.standard
