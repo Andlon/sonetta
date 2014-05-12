@@ -2,22 +2,19 @@ import QtQuick 2.2
 
 import "."
 
-Box {
-    property alias text: textElement.text
+Item {
+    id: root
+
     width: UI.menu.defaultWidth
-    height: textElement.height + 2 * UI.menu.verticalMargins
 
-    Text {
-        id: textElement
-        y: UI.menu.verticalMargins
-        anchors {
-            left: parent.left
-            right: parent.right
-            leftMargin: UI.menu.horizontalMargins
-            rightMargin: UI.menu.horizontalMargins
-        }
+    Box {
+        anchors.fill: root
 
-        font: UI.fonts.standard
-        color: UI.colors.text
+        // By providing a negative z-index and parenting
+        // the box to the provided menu, we allow highlights
+        // to overlay the background while simultaneously being positioned
+        // behind the content
+        z: -1
+        parent: root.parent
     }
 }

@@ -172,8 +172,9 @@ OTHER_FILES += \
     assets/interfaces/default2/images/playback/play.svg \
     assets/interfaces/default2/login/login.qml \
     assets/interfaces/default2/common/UI.qml \
-    assets/interfaces/default2/login/LoginDetails.qml \
     assets/interfaces/default2/common/Box.qml \
     assets/interfaces/default2/common/Pattern.qml \
     assets/interfaces/default2/common/qmldir \
-    assets/interfaces/default2/common/MenuItem.qml
+    assets/interfaces/default2/common/MenuItem.qml \
+    assets/interfaces/default2/common/MenuTextItem.qml \
+    assets/interfaces/default2/login/Credentials.qml

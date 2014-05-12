@@ -8,29 +8,30 @@ FocusScope {
     id: root
 
     property bool _reloginSuccessful: false
+    focus: true
 
     state: "initial"
     states: [
         State {
             name: "initial"
             PropertyChanges { target: disclaimer; opacity: 0 }
-            PropertyChanges { target: details; opacity: 0 }
+            PropertyChanges { target: credentials; opacity: 0 }
             PropertyChanges { target: header; opacity: 0 }
         },
         State {
             name: "splash"
             PropertyChanges { target: logo; state: "splash" }
             PropertyChanges { target: header; opacity: 0 }
-            PropertyChanges { target: details; opacity: 0; }
+            PropertyChanges { target: credentials; opacity: 0; }
             PropertyChanges { target: separator; height: 0 }
             PropertyChanges { target: disclaimer; opacity: 1 }
         },
         State {
             name: "login"
             PropertyChanges { target: logo; state: "login" }
-            PropertyChanges { target: details; opacity: 1 }
+            PropertyChanges { target: credentials; opacity: 1 }
             PropertyChanges { target: header; opacity: 1 }
-            PropertyChanges { target: separator; height: details.height * 1.2 }
+            PropertyChanges { target: separator; height: credentials.height * 1.2 }
         }
     ]
 
@@ -174,19 +175,20 @@ FocusScope {
         text: "Spotify™ Login"
 
         anchors {
-            bottom: details.top
-            left: details.left
+            bottom: credentials.top
+            left: credentials.left
             leftMargin: UI.globalSpacing
             bottomMargin: UI.globalSpacing / 2
         }
     }
 
-    LoginDetails {
-        id: details
+    Credentials {
+        id: credentials
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: root.horizontalCenter
         anchors.margins: 2 * UI.globalSpacing
         clip: true
+        focus: true
     }
 
     GlobalStateTransition {

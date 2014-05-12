@@ -4,8 +4,9 @@ import Sonetta.Utilities 0.1
 
 import "common" 0.1
 
-Item {
+FocusScope {
     id: main
+    focus: true
 
     states: [
         State {
@@ -46,5 +47,6 @@ Item {
 
     Component.onCompleted: {
         GlobalStateMachine.initialize("splash");
+        mainInterfaceLoader.focus = true
     }
 }

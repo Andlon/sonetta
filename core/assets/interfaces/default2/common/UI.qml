@@ -5,6 +5,10 @@ Item {
     readonly property int globalSpacing: 30
     readonly property string globalBackgroundPattern: "medium"
 
+    property QtObject timing: QtObject {
+        readonly property int highlightMove: 100
+    }
+
     property QtObject colors: QtObject {
         readonly property color light: "#292929"
         readonly property color medium: "#202020"
@@ -12,7 +16,8 @@ Item {
 
         readonly property color text: "#ffffff"
         readonly property color label: "#999999"
-        readonly property color highlight: "#ffc000"
+        readonly property color focus: "#ffc000"
+        readonly property color focusText: light
     }
 
     property QtObject fonts: QtObject {
