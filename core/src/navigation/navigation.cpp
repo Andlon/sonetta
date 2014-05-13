@@ -107,6 +107,9 @@ Qt::Key Navigation::translateButton(Navigation::Button button)
 void QuickNavigation::keyPressEvent(QKeyEvent * e)
 {
     Navigation::Button button = Navigation::translateKey(static_cast<Qt::Key>(e->key()));
+    if (button == Navigation::Button::Undefined)
+        return;
+
     QuickNavEvent event(button, e->isAutoRepeat());
 
     switch (event.button())
@@ -158,6 +161,7 @@ void QuickNavigation::keyPressEvent(QKeyEvent * e)
         break;
     case Navigation::Mute:
         acceptAndEmit(&QuickNavigation::mute, &event);
+        break;
     default:
         break;
     }

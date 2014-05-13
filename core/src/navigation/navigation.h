@@ -88,7 +88,9 @@ private:
  *  installing event filters and use attached items (if installEventFilter() would be
  *  usable on QQuickItem-derivatives, the implementation would be a whole lot simpler...)
  *
- *  See https://bugreports.qt-project.org/browse/QTBUG-3200
+ *  See https://bugreports.qt-project.org/browse/QTBUG-32004
+ *
+ *  Note: this should be fixed now in Qt 5.3 RC. Implement ASAP.
  */
 class QuickNavigation : public QQuickItem {
 Q_OBJECT
