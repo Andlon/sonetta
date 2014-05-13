@@ -19,15 +19,20 @@ FocusScope {
         }
     ]
 
-    Pattern {
-        // Background
+    MainContent {
         anchors.fill: parent
-        pattern: UI.globalBackgroundPattern
-    }
 
-    Loader {
-        id: mainInterfaceLoader
-        anchors.fill: parent
+        Pattern {
+            // Background
+            anchors.fill: parent
+            pattern: UI.globalBackgroundPattern
+        }
+
+        Loader {
+            id: mainInterfaceLoader
+            anchors.fill: parent
+            focus: true
+        }
     }
 
     Connections {
@@ -47,6 +52,5 @@ FocusScope {
 
     Component.onCompleted: {
         GlobalStateMachine.initialize("splash");
-        mainInterfaceLoader.focus = true
     }
 }

@@ -7,6 +7,12 @@ Item {
 
     property QtObject timing: QtObject {
         readonly property int highlightMove: 100
+        readonly property int dialogPopup: 500
+    }
+
+    property QtObject dialog: QtObject {
+        readonly property real brightnessDelta: -0.80
+        readonly property int blurRadius: 32
     }
 
     property QtObject colors: QtObject {

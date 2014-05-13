@@ -177,4 +177,6 @@ OTHER_FILES += \
     assets/interfaces/default2/common/qmldir \
     assets/interfaces/default2/common/MenuItem.qml \
     assets/interfaces/default2/common/MenuTextItem.qml \
-    assets/interfaces/default2/login/Credentials.qml
+    assets/interfaces/default2/login/Credentials.qml \
+    assets/interfaces/default2/common/MainContent.qml \
+    assets/interfaces/default2/common/BasicVirtualDialog.qml
