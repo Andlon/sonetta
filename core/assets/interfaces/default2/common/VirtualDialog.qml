@@ -7,7 +7,7 @@ import "."
 FocusScope {
     id: root
 
-    property Component dialog: null
+    default property Component dialog: null
 
     signal activated
     signal deactivated
@@ -17,12 +17,12 @@ FocusScope {
         State {
             name: "activating"
             PropertyChanges { target: loader; active: true }
-            PropertyChanges { target: root; focus: true; visible: true }
+            PropertyChanges { target: root; visible: true }
         },
         State {
             name: "active"
             PropertyChanges { target: loader; active: true }
-            PropertyChanges { target: root; focus: true; visible: true }
+            PropertyChanges { target: root; visible: true }
             StateChangeScript { script: root.activated() }
             PropertyChanges { target: m.findMainContent(root.parent); visible: false }
         },
@@ -59,28 +59,29 @@ FocusScope {
                     when: root.state === "activating"
                     PropertyChanges { target: blur; radius: UI.dialog.blurRadius }
                     PropertyChanges { target: brightness; brightness: UI.dialog.brightnessDelta }
-                    PropertyChanges { target: dialogLoader; scale: 1 }
+                    PropertyChanges { target: dialogLoader; scale: 1; opacity: 1 }
                 },
                 State {
                     name: "active"
                     when: root.state === "active"
                     PropertyChanges { target: blur; radius: UI.dialog.blurRadius }
                     PropertyChanges { target: brightness; brightness: UI.dialog.brightnessDelta }
-                    PropertyChanges { target: dialogLoader; scale: 1 }
+                    PropertyChanges { target: dialogLoader; scale: 1; opacity: 1 }
+                    StateChangeScript { script: dialogLoader.forceActiveFocus() }
                 },
                 State {
                     name : "deactivating"
                     when: root.state === "deactivating"
                     PropertyChanges { target: blur; radius: 0 }
                     PropertyChanges { target: brightness; brightness: 0 }
-                    PropertyChanges { target: dialogLoader; scale: 0 }
+                    PropertyChanges { target: dialogLoader; scale: 0; opacity: 0 }
                 },
                 State {
                     name: "inactive"
                     when: root.state === "inactive"
                     PropertyChanges { target: blur; radius: 0 }
                     PropertyChanges { target: brightness; brightness: 0 }
-                    PropertyChanges { target: dialogLoader; scale: 0 }
+                    PropertyChanges { target: dialogLoader; scale: 0; opacity: 0 }
                 }
             ]
             state: "inactive"
@@ -91,7 +92,7 @@ FocusScope {
                     to: "activating"
                     SmoothedAnimation { targets: [blur, brightness]; properties: "radius,brightness"; duration: UI.timing.dialogPopup; velocity: -1 }
                     SequentialAnimation {
-                        SmoothedAnimation { target: dialogLoader; property: "scale"; duration: UI.timing.dialogPopup; velocity: -1 }
+                        SmoothedAnimation { target: dialogLoader; properties: "scale,opacity"; duration: UI.timing.dialogPopup; velocity: -1 }
                         ScriptAction { script: m.advanceState() }
                     }
                 },
@@ -100,7 +101,7 @@ FocusScope {
                     to: "deactivating"
                     SmoothedAnimation { targets: [blur, brightness]; properties: "radius,brightness"; duration: UI.timing.dialogPopup; velocity: -1 }
                     SequentialAnimation {
-                        SmoothedAnimation { target: dialogLoader; property: "scale"; duration: UI.timing.dialogPopup; velocity: -1 }
+                        SmoothedAnimation { target: dialogLoader; properties: "scale,opacity"; duration: UI.timing.dialogPopup; velocity: -1 }
                         ScriptAction { script: m.advanceState() }
                     }
                 }
