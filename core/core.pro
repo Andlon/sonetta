@@ -179,4 +179,7 @@ OTHER_FILES += \
     assets/interfaces/default2/common/MenuTextItem.qml \
     assets/interfaces/default2/login/Credentials.qml \
     assets/interfaces/default2/common/MainContent.qml \
-    assets/interfaces/default2/common/BasicVirtualDialog.qml
+    assets/interfaces/default2/common/VirtualKeyboardDialog.qml \
+    assets/interfaces/default2/common/VirtualDialog.qml \
+    assets/interfaces/default2/common/VirtualKeyboard.qml \
+    assets/interfaces/default2/common/VirtualKeyboard.js
