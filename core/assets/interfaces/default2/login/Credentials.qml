@@ -20,6 +20,17 @@ ListView {
     model: ObjectModel {
         MenuTextItem {
             text: "Username"
+
+            VirtualKeyboardDialog {
+                id: keyboard
+
+                header: "Enter your Spotify™ username"
+                onDeactivated: root.forceActiveFocus()
+            }
+
+            Keys.forwardTo: Nav {
+                onOk: keyboard.activate()
+            }
         }
 
         MenuTextItem {
@@ -36,6 +47,10 @@ ListView {
 
         MenuTextItem {
             text: "Exit"
+
+            Keys.forwardTo: Nav {
+                onOk: Qt.quit()
+            }
         }
     }
 

@@ -30,6 +30,7 @@ Item {
         readonly property font standard: Qt.font({ family: "Roboto", pointSize: 23, weight: 40 })
         readonly property font disclaimer: Qt.font({ family: "Roboto", pointSize: 17, weight: 40 })
         readonly property font header: Qt.font({ family: "Roboto", pointSize: 32, weight: 50 })
+        readonly property font input: Qt.font({ family: "Roboto", pointSize: 32, weight: 40 })
     }
 
     property QtObject box: QtObject {
