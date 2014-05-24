@@ -227,35 +227,33 @@ FocusScope {
                     }
                 }
 
-                Keys.forwardTo: Nav {
-                    onOk: {
-                        if (model.action)
+                Navigation.onOk: {
+                    if (model.action)
+                    {
+                        switch (model.action)
                         {
-                            switch (model.action)
-                            {
-                            case "space":
-                                root.space()
-                                break
-                            case "done":
-                                root.done()
-                                break
-                            case "back":
-                                root.back()
-                                break
-                            case "shift":
-                                m.toggleShift()
-                                break
-                            case "symbols":
-                                m.toggleSymbols()
-                                return
-                            }
+                        case "space":
+                            root.space()
+                            break
+                        case "done":
+                            root.done()
+                            break
+                        case "back":
+                            root.back()
+                            break
+                        case "shift":
+                            m.toggleShift()
+                            break
+                        case "symbols":
+                            m.toggleSymbols()
+                            return
                         }
-                        else
-                        {
-                            root.character(m.extractLabelFromModel(model))
-                            if (m.state === "shift")
-                                m.state = "lower"
-                        }
+                    }
+                    else
+                    {
+                        root.character(m.extractLabelFromModel(model))
+                        if (m.state === "shift")
+                            m.state = "lower"
                     }
                 }
             }
@@ -268,12 +266,18 @@ FocusScope {
         }
     }
 
-    Keys.forwardTo: Nav {
-        onRight: VK.moveColumn(+1)
-        onLeft: VK.moveColumn(-1)
-        onDown: VK.moveRow(+1)
-        onUp: VK.moveRow(-1)
-        onBack: root.back()
+    Navigation.onRight: event.accepted = VK.moveColumn(+1)
+    Navigation.onLeft: event.accepted = VK.moveColumn(-1)
+    Navigation.onDown: event.accepted = VK.moveRow(+1)
+    Navigation.onUp: event.accepted = VK.moveRow(-1)
+    Navigation.onBack: root.back()
+
+    Keys.onPressed: {
+        if (event.text !== "" && event.text.length === 1)
+        {
+            event.accepted = true
+            root.character(event.text);
+        }
     }
 
     Component.onCompleted: {

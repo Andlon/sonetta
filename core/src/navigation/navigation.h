@@ -11,6 +11,7 @@ static const QEvent::Type NavEventType = (QEvent::Type) (QEvent::User + 4032);
 class QKeyEvent;
 class NavEvent;
 class QuickNavEvent;
+class NavigationAttachedType;
 
 class Navigation : public QObject
 {
@@ -46,6 +47,8 @@ public:
 
     static Navigation::Button translateKey(Qt::Key key);
     static Qt::Key translateButton(Navigation::Button button);
+
+    static NavigationAttachedType * qmlAttachedProperties(QObject *object);
 };
 
 class NavEvent : public QEvent {
@@ -92,12 +95,13 @@ private:
  *
  *  Note: this should be fixed now in Qt 5.3 RC. Implement ASAP.
  */
-class QuickNavigation : public QQuickItem {
+class NavigationAttachedType : public QObject {
 Q_OBJECT
 public:
-    explicit QuickNavigation(QQuickItem * parent = 0) : QQuickItem(parent) { }
+    explicit NavigationAttachedType(QObject * parent = 0) : QObject(parent) { }
 
-    void keyPressEvent(QKeyEvent *);
+    bool keyPressEvent(const QKeyEvent *);
+    bool eventFilter(QObject *, QEvent *);
 
 signals:
     void left(QuickNavEvent * event);
@@ -123,3 +127,5 @@ private:
     template <typename MemberFunctionPointer>
     void acceptAndEmit(MemberFunctionPointer, QuickNavEvent * event);
 };
+
+QML_DECLARE_TYPEINFO(Navigation, QML_HAS_ATTACHED_PROPERTIES)

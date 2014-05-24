@@ -112,8 +112,9 @@ function moveColumn(delta)
             item = getItem(currentRow, newColumn)
         }
 
-        move(currentRow, newColumn)
+        return move(currentRow, newColumn)
     }
+    return false
 }
 
 function moveRow(delta)
@@ -131,8 +132,9 @@ function moveRow(delta)
             item = getItem(newRow, currentColumn)
         }
 
-        move(newRow, currentColumn)
+        return move(newRow, currentColumn)
     }
+    return false
 }
 
 function move(newRow, newCol)
@@ -142,5 +144,7 @@ function move(newRow, newCol)
         currentColumn = newCol
         currentRow = newRow
         updateFocus()
+        return true
     }
+    return false
 }

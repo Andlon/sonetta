@@ -28,9 +28,7 @@ ListView {
                 onDeactivated: root.forceActiveFocus()
             }
 
-            Keys.forwardTo: Nav {
-                onOk: keyboard.activate()
-            }
+            Navigation.onOk: keyboard.activate()
         }
 
         MenuTextItem {
@@ -48,14 +46,10 @@ ListView {
         MenuTextItem {
             text: "Exit"
 
-            Keys.forwardTo: Nav {
-                onOk: Qt.quit()
-            }
+            Navigation.onOk: Qt.quit()
         }
     }
 
-    Keys.forwardTo: Nav {
-        onDown: root.incrementCurrentIndex()
-        onUp: root.decrementCurrentIndex()
-    }
+    Navigation.onDown: root.incrementCurrentIndex()
+    Navigation.onUp: root.decrementCurrentIndex()
 }

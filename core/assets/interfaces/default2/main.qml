@@ -1,7 +1,7 @@
 import QtQuick 2.2
 import Sonetta 0.1
 import Sonetta.Utilities 0.1
-
+import Navigation 0.1
 import "common" 0.1
 
 FocusScope {

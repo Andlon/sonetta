@@ -176,15 +176,10 @@ FocusScope {
         anchors.fill = root.parent
     }
 
-    Keys.forwardTo: Nav {
-        onBack: deactivate()
-        onButtonPressed: { event.accepted = true }
-    }
+    Navigation.onBack: deactivate()
 
     Keys.onPressed: {
-        // NOTE: Fix this in C++. With Qt 5.3 it should finally be possible to
-        // intercept key events from an attached item, giving rise to a Nav.onButtonPressed() syntax,
-        // identical to that of "Keys".
+        // Block all keys unless it's Esc
         if (event.key === Qt.Key_Escape)
             deactivate()
         else
