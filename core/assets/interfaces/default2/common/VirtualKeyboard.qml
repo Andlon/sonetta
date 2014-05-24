@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQuick 2.3
 import QtQuick.Layouts 1.1
 import Navigation 0.1
 
@@ -17,6 +17,7 @@ FocusScope {
     property font font: UI.fonts.standard
     property size keySize: Qt.size(64, 64)
     property int spacing: UI.globalSpacing / 6
+    property int padding: UI.globalSpacing / 2
 
     property color labelColor: UI.colors.label
     property color focusColor: UI.colors.focus
@@ -26,31 +27,32 @@ FocusScope {
     property int currentColumn: -1
     readonly property Item currentItem: VK.getItem(currentRow, currentColumn)
 
+    property Component textDelegate: defaultTextDelegate
+    property Component spaceDelegate: defaultTextDelegate
+    property Component backDelegate: defaultBackDelegate
+    property Component doneDelegate: defaultTextDelegate
+    property Component capsDelegate: defaultShiftDelegate
+    property Component symbolsDelegate: defaultSymbolsDelegate
+    property Component backgroundDelegate: Box {
+        anchors.fill: parent
+    }
+
     signal character(var character)
     signal space
     signal back
     signal done
 
-    states: [
-        State {
-            name: "upper"
-        },
-        State {
-            name: "lower"
-        },
-        State {
-            name: "shift"
-        },
-        State {
-            name: "symbolsAndLower"
-        },
-        State {
-            name: "symbolsAndUpper"
-        }
+    /*
+      Possible values for keyboardState:
 
-    ]
+      "upper": Keys are uppercase
+      "lower": Keys are lowercase
+      "shift": Keys are uppercase for exactly one
+      "symbolsAndLower": Keys are symbols, but upon return to letters will be lowercase
+      "symbolsAndUpper": Keys are symbols, but upon return to letters will be uppercase
 
-    state: "shift"
+      */
+    readonly property alias keyboardState: m.state
 
     QtObject {
         id: m
@@ -58,11 +60,13 @@ FocusScope {
         property int rowCount
         property int columnCount
 
-        function extractCharacterFromModel(model)
+        property string state: "shift"
+
+        function extractLabelFromModel(model)
         {
             if (model)
             {
-                switch (root.state)
+                switch (m.state)
                 {
                 case "upper":
                 case "shift":
@@ -73,45 +77,45 @@ FocusScope {
                 case "symbolsAndUpper":
                     return model.symbol
                 default:
-                    console.error("VirtualKeyboard: Request to extract character in unknown state.")
+                    console.error("VirtualKeyboard: Request to extract label in unknown state.")
                     return ""
                 }
             }
         }
 
-        function extractActionLabelFromModel(model)
-        {
-            if (model && model.action)
-            {
-                if (model.action === "shift")
-                {
-                }
-
-                var label = model.upper
-            }
-        }
-
         function toggleShift()
         {
-            root.state = root.state == "shift" ? "lower" : "shift"
+            m.state = function() {
+                switch (m.state)
+                {
+                case "lower":
+                case "symbolsAndLower":
+                    return "shift"
+                case "shift":
+                    return "upper"
+                case "upper":
+                case "symbolsandUpper":
+                    return "lower";
+                }
+            } ();
         }
 
         function toggleSymbols()
         {
-            switch (root.state)
+            switch (m.state)
             {
             case "symbolsAndLower":
-                root.state = "lower"
+                m.state = "lower"
                 break
             case "symbolsAndUpper":
-                root.state = "upper"
+                m.state = "upper"
                 break
             case "lower":
             case "shift":
-                root.state = "symbolsAndLower"
+                m.state = "symbolsAndLower"
                 break
             case "upper":
-                root.state = "symbolsAndUpper"
+                m.state = "symbolsAndUpper"
             }
         }
     }
@@ -120,70 +124,69 @@ FocusScope {
         id: keys
 
         // Modifiers
-        ListElement { row: 0; col: 0; upper: "OK"; lower: "OK"; symbol: "OK"; colspan: 3; action: "done"}
-        ListElement { row: 1; col: 0; upper: "Back"; lower: "Back"; symbol: "Back"; colspan: 3; action: "back" }
-        ListElement { row: 2; col: 0; upper: "Shift"; lower: "Shift"; symbol: "Shift"; colspan: 3; action:"shift" }
-        ListElement { row: 3; col: 0; upper: "Symbols"; lower: "Symbols"; symbol: "Symbols"; colspan: 3; action: "symbols" }
+        ListElement { row: 0; col: 0; upper: "OK"; lower: "OK"; symbol: "OK"; colspan: 2; action: "done"}
+        ListElement { row: 1; col: 0; upper: "Back"; lower: "Back"; symbol: "Back"; colspan: 2; action: "back" }
+        ListElement { row: 2; col: 0; upper: "Shift"; lower: "Shift"; symbol: "Shift"; colspan: 2; action:"shift" }
+        ListElement { row: 3; col: 0; upper: "Symbols"; lower: "Symbols"; symbol: "Symbols"; colspan: 2; action: "symbols" }
 
-        ListElement { row: 0; col: 3; upper: "1"; lower: "1"; symbol: "'" }
-        ListElement { row: 0; col: 4; upper: "2"; lower: "2"; symbol: "." }
-        ListElement { row: 0; col: 5; upper: "3"; lower: "3"; symbol: "-" }
-        ListElement { row: 0; col: 6; upper: "4"; lower: "4"; symbol: "+" }
-        ListElement { row: 0; col: 7; upper: "5"; lower: "5"; symbol: "§" }
-        ListElement { row: 0; col: 8; upper: "6"; lower: "6"; symbol: "´" }
-        ListElement { row: 0; col: 9; upper: "7"; lower: "7"; symbol: "`" }
-        ListElement { row: 0; col: 10; upper: "8"; lower: "8"; symbol: "¤" }
-        ListElement { row: 0; col: 11; upper: "9"; lower: "9"; symbol: "¨" }
-        ListElement { row: 0; col: 12; upper: "0"; lower: "0"; symbol: "~" }
+        ListElement { row: 0; col: 2; upper: "1"; lower: "1"; symbol: "'" }
+        ListElement { row: 0; col: 3; upper: "2"; lower: "2"; symbol: "." }
+        ListElement { row: 0; col: 4; upper: "3"; lower: "3"; symbol: "-" }
+        ListElement { row: 0; col: 5; upper: "4"; lower: "4"; symbol: "+" }
+        ListElement { row: 0; col: 6; upper: "5"; lower: "5"; symbol: "§" }
+        ListElement { row: 0; col: 7; upper: "6"; lower: "6"; symbol: "´" }
+        ListElement { row: 0; col: 8; upper: "7"; lower: "7"; symbol: "`" }
+        ListElement { row: 0; col: 9; upper: "8"; lower: "8"; symbol: "¤" }
+        ListElement { row: 0; col: 10; upper: "9"; lower: "9"; symbol: "¨" }
+        ListElement { row: 0; col: 11; upper: "0"; lower: "0"; symbol: "~" }
 
-        ListElement { row: 1; col: 3; upper: "A"; lower: "a"; symbol: "@"; }
-        ListElement { row: 1; col: 4; upper: "B"; lower: "b"; symbol: "£"; }
-        ListElement { row: 1; col: 5; upper: "C"; lower: "c"; symbol: "$"; }
-        ListElement { row: 1; col: 6; upper: "D"; lower: "d"; symbol: "^"; }
-        ListElement { row: 1; col: 7; upper: "E"; lower: "e"; symbol: "'"; }
-        ListElement { row: 1; col: 8; upper: "F"; lower: "f"; symbol: "{"; }
-        ListElement { row: 1; col: 9; upper: "G"; lower: "g"; symbol: "}"; }
-        ListElement { row: 1; col: 10; upper: "H"; lower: "h"; symbol: "["; }
-        ListElement { row: 1; col: 11; upper: "I"; lower: "i"; symbol: "]"; }
-        ListElement { row: 1; col: 12; upper: "J"; lower: "j"; symbol: "*"; }
+        ListElement { row: 1; col: 2; upper: "A"; lower: "a"; symbol: "@"; }
+        ListElement { row: 1; col: 3; upper: "B"; lower: "b"; symbol: "£"; }
+        ListElement { row: 1; col: 4; upper: "C"; lower: "c"; symbol: "$"; }
+        ListElement { row: 1; col: 5; upper: "D"; lower: "d"; symbol: "^"; }
+        ListElement { row: 1; col: 6; upper: "E"; lower: "e"; symbol: "'"; }
+        ListElement { row: 1; col: 7; upper: "F"; lower: "f"; symbol: "{"; }
+        ListElement { row: 1; col: 8; upper: "G"; lower: "g"; symbol: "}"; }
+        ListElement { row: 1; col: 9; upper: "H"; lower: "h"; symbol: "["; }
+        ListElement { row: 1; col: 10; upper: "I"; lower: "i"; symbol: "]"; }
+        ListElement { row: 1; col: 11; upper: "J"; lower: "j"; symbol: "*"; }
 
-        ListElement { row: 2; col: 3; upper: "K"; lower: "k"; symbol: "="; }
-        ListElement { row: 2; col: 4; upper: "L"; lower: "l"; symbol: "?"; }
-        ListElement { row: 2; col: 5; upper: "M"; lower: "m"; symbol: "!"; }
-        ListElement { row: 2; col: 6; upper: "N"; lower: "n"; symbol: "\""; }
-        ListElement { row: 2; col: 7; upper: "O"; lower: "o"; symbol: "#"; }
-        ListElement { row: 2; col: 8; upper: "P"; lower: "p"; symbol: "$"; }
-        ListElement { row: 2; col: 9; upper: "Q"; lower: "q"; symbol: "%"; }
-        ListElement { row: 2; col: 10; upper: "R"; lower: "r"; symbol: "&"; }
-        ListElement { row: 2; col: 11; upper: "S"; lower: "s"; symbol: "/"; }
-        ListElement { row: 2; col: 12; upper: "T"; lower: "t"; symbol: "("; }
+        ListElement { row: 2; col: 2; upper: "K"; lower: "k"; symbol: "="; }
+        ListElement { row: 2; col: 3; upper: "L"; lower: "l"; symbol: "?"; }
+        ListElement { row: 2; col: 4; upper: "M"; lower: "m"; symbol: "!"; }
+        ListElement { row: 2; col: 5; upper: "N"; lower: "n"; symbol: "\""; }
+        ListElement { row: 2; col: 6; upper: "O"; lower: "o"; symbol: "#"; }
+        ListElement { row: 2; col: 7; upper: "P"; lower: "p"; symbol: "$"; }
+        ListElement { row: 2; col: 8; upper: "Q"; lower: "q"; symbol: "%"; }
+        ListElement { row: 2; col: 9; upper: "R"; lower: "r"; symbol: "&"; }
+        ListElement { row: 2; col: 10; upper: "S"; lower: "s"; symbol: "/"; }
+        ListElement { row: 2; col: 11; upper: "T"; lower: "t"; symbol: "("; }
 
-        ListElement { row: 3; col: 3; upper: "Space"; lower: "Space"; symbol: "Space"; colspan: 2; action: "space"}
-        ListElement { row: 3; col: 5; upper: "U"; lower: "u"; symbol: ")"; }
-        ListElement { row: 3; col: 6; upper: "V"; lower: "v"; symbol: "+"; }
-        ListElement { row: 3; col: 7; upper: "W"; lower: "w"; symbol: "-"; }
-        ListElement { row: 3; col: 8; upper: "X"; lower: "x"; symbol: "\\"; }
-        ListElement { row: 3; col: 9; upper: "Y"; lower: "y"; symbol: "<"; }
-        ListElement { row: 3; col: 10; upper: "Z"; lower: "z"; symbol: ">"; }
-        ListElement { row: 3; col: 11; upper: ","; lower: ","; symbol: ";"; }
-        ListElement { row: 3; col: 12; upper: "."; lower: "."; symbol: ":"; }
-
-
+        ListElement { row: 3; col: 2; upper: "Space"; lower: "Space"; symbol: "Space"; colspan: 4; action: "space"}
+        ListElement { row: 3; col: 6; upper: "U"; lower: "u"; symbol: ")"; }
+        ListElement { row: 3; col: 7; upper: "V"; lower: "v"; symbol: "+"; }
+        ListElement { row: 3; col: 8; upper: "W"; lower: "w"; symbol: "-"; }
+        ListElement { row: 3; col: 9; upper: "X"; lower: "x"; symbol: "\\"; }
+        ListElement { row: 3; col: 10; upper: "Y"; lower: "y"; symbol: "<"; }
+        ListElement { row: 3; col: 11; upper: "Z"; lower: "z"; symbol: ">"; }
     }
 
     GridLayout {
         id: grid
         width: root.keySize.width * columns + (columns - 1) * columnSpacing
         height: root.keySize.height * m.rowCount + (m.rowCount - 1) * rowSpacing
-        columns: 13
+        columns: m.columnCount
         columnSpacing: root.spacing
         rowSpacing: root.spacing
 
         Repeater {
             id: gridRepeater
             model: keys
-            delegate: Box {
-                property string text: m.extractCharacterFromModel(model)
+            delegate: FocusScope {
+                id: delegateRoot
+                property string label: m.extractLabelFromModel(model)
+                property string action: model.action ? model.action : ""
+                property bool hasFocus: delegateRoot.activeFocus
 
                 width: root.keySize.width * Layout.columnSpan + (Layout.columnSpan - 1) * grid.columnSpacing
                 height: root.keySize.height * Layout.rowSpan + (Layout.rowSpan - 1) * grid.rowSpacing
@@ -193,12 +196,35 @@ FocusScope {
                 Layout.rowSpan: model.rowspan ? model.rowspan : 1
                 Layout.columnSpan: model.colspan ? model.colspan : 1
 
-                Text {
-                    id: keyText
-                    font: root.font
-                    color: parent.activeFocus ? root.focusColor : root.textColor
-                    text: parent.text
-                    anchors.centerIn: parent
+                Loader {
+                    anchors.fill: parent
+                    sourceComponent: root.backgroundDelegate
+                }
+
+                Loader {
+                    focus: true
+                    property alias label: delegateRoot.label
+                    property alias action: delegateRoot.action
+                    property alias hasFocus: delegateRoot.hasFocus
+                    anchors.fill: parent
+                    anchors.margins: root.padding
+                    sourceComponent: {
+                        switch (action)
+                        {
+                        case "shift":
+                            return root.capsDelegate
+                        case "space":
+                            return root.spaceDelegate
+                        case "done":
+                            return root.doneDelegate
+                        case "back":
+                            return root.backDelegate
+                        case "symbols":
+                            return root.symbolsDelegate
+                        default:
+                            return root.textDelegate
+                        }
+                    }
                 }
 
                 Keys.forwardTo: Nav {
@@ -226,9 +252,9 @@ FocusScope {
                         }
                         else
                         {
-                            root.character(m.extractCharacterFromModel(model))
-                            if (root.state === "shift")
-                                m.toggleShift()
+                            root.character(m.extractLabelFromModel(model))
+                            if (m.state === "shift")
+                                m.state = "lower"
                         }
                     }
                 }
@@ -252,5 +278,74 @@ FocusScope {
 
     Component.onCompleted: {
         VK.initialize()
+    }
+
+    Component {
+        id: defaultTextDelegate
+        Text {
+            id: keyText
+            font: root.font
+            text: label
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            color: hasFocus ? root.focusColor : root.textColor
+        }
+    }
+
+    Component {
+        id: defaultBackDelegate
+        Image {
+            anchors.fill: parent
+            sourceSize: Qt.size(width, height)
+            fillMode: Image.PreserveAspectFit
+            mipmap: true
+            source: hasFocus ? "../images/keys/backspace_focus.png" : "../images/keys/backspace.png"
+        }
+    }
+
+    Component {
+        id: defaultShiftDelegate
+        Image {
+            id: shiftIcon
+            anchors.fill: parent
+            sourceSize: Qt.size(width, height)
+            fillMode: Image.PreserveAspectFit
+            mipmap: true
+            source: hasFocus ? "../images/keys/caps_focus.png" : "../images/keys/caps.png"
+
+            states: [
+                State {
+                    when: root.keyboardState === "shift"
+                    PropertyChanges { target: shiftIcon; rotation: 90 }
+                },
+                State {
+                    when: root.keyboardState === "lower" || root.keyboardState === "symbolsAndLower"
+                    PropertyChanges { target: shiftIcon; rotation: 180 }
+                },
+                State {
+                    when: root.keyboardState === "upper" || root.keyboardState === "symbolsAndUpper"
+                    PropertyChanges { target: shiftIcon; rotation: 0 }
+                }
+            ]
+
+            transitions: Transition {
+                RotationAnimation { duration: UI.timing.highlightMove }
+            }
+        }
+    }
+
+    Component {
+        id: defaultSymbolsDelegate
+        Text {
+            id: keyText
+            anchors.fill: parent
+            font: root.font
+            color: parent.activeFocus ? root.focusColor : root.textColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: (root.keyboardState == "symbolsAndLower" || root.keyboardState == "symbolsAndUpper") ? "ABC" : "#$!"
+        }
     }
 }
