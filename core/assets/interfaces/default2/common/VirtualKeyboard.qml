@@ -316,7 +316,7 @@ FocusScope {
             anchors.fill: parent
             sourceSize: Qt.size(width, height)
             fillMode: Image.PreserveAspectFit
-            mipmap: true
+            mipmap: !capsTransition.running
             source: hasFocus ? "../images/keys/caps_focus.png" : "../images/keys/caps.png"
 
             states: [
@@ -335,6 +335,7 @@ FocusScope {
             ]
 
             transitions: Transition {
+                id: capsTransition
                 RotationAnimation { duration: UI.timing.highlightMove }
             }
         }

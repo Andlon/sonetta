@@ -25,7 +25,7 @@ ListView {
                 id: keyboard
 
                 header: "Enter your Spotify™ username"
-                onDeactivated: root.forceActiveFocus()
+                onDeactivating: root.forceActiveFocus()
             }
 
             Navigation.onOk: keyboard.activate()

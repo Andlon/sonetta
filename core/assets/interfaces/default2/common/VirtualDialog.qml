@@ -10,7 +10,9 @@ FocusScope {
     default property Component dialog: null
 
     signal activated
+    signal activating
     signal deactivated
+    signal deactivating
 
     z: 10
     states: [
@@ -18,18 +20,20 @@ FocusScope {
             name: "activating"
             PropertyChanges { target: loader; active: true }
             PropertyChanges { target: root; visible: true }
+            StateChangeScript { script: root.activating() }
         },
         State {
             name: "active"
             PropertyChanges { target: loader; active: true }
             PropertyChanges { target: root; visible: true }
-            StateChangeScript { script: root.activated() }
             PropertyChanges { target: m.findMainContent(root.parent); visible: false }
+            StateChangeScript { script: root.activated() }
         },
         State {
             name: "deactivating"
             PropertyChanges { target: loader; active: true }
             PropertyChanges { target: m.findMainContent(root.parent); visible: true }
+            StateChangeScript { script: root.deactivating() }
         },
         State {
             name: "inactive"
