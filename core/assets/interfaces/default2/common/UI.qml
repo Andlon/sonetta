@@ -24,6 +24,7 @@ Item {
         readonly property color label: "#999999"
         readonly property color focus: "#ffc000"
         readonly property color focusText: light
+        readonly property color focusLabel: Qt.tint(label, Qt.rgba(focusText.r, focusText.g, focusText.b, 0.75))
     }
 
     property QtObject fonts: QtObject {
@@ -40,9 +41,9 @@ Item {
     }
 
     property QtObject menu: QtObject {
-        readonly property int defaultWidth: 400
+        readonly property int defaultWidth: 450
         readonly property int defaultHeight: 60
-        readonly property int defaultLabelWidth: 120
+        readonly property int defaultLabelWidth: 160
         readonly property int horizontalMargins: globalSpacing
         readonly property int verticalMargins: globalSpacing / 2
         readonly property int inputSpacing: 2 * horizontalMargins

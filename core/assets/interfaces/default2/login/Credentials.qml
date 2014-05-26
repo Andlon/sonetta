@@ -15,6 +15,7 @@ Menu {
     MenuInputItem {
         label: "Password"
         inputHeader: "Enter your Spotify™ password"
+        password: true
     }
 
     MenuTextItem {

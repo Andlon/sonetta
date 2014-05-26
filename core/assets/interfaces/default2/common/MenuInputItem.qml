@@ -8,8 +8,9 @@ MenuItem {
 
     property alias labelWidth: labelItem.width
     property alias label: labelItem.text
-    property alias input: inputItem.text
+    property string input
     property alias inputHeader: keyboard.header
+    property alias password: keyboard.password
 
     height: inputItem.height + UI.menu.verticalMargins * 2
 
@@ -25,7 +26,12 @@ MenuItem {
 
         width: UI.menu.defaultLabelWidth
         font: UI.fonts.standard
-        color: UI.colors.label
+        color: root.activeFocus ? UI.colors.focusText : UI.colors.text
+        elide: Text.ElideRight
+
+        Behavior on color {
+            ColorAnimation { duration: UI.timing.highlightMove }
+        }
     }
 
     Text {
@@ -34,14 +40,21 @@ MenuItem {
         anchors {
             left: labelItem.right
             right: root.right
-            margins: UI.menu.inputSpacing
+            margins: UI.menu.horizontalMargins
         }
 
+        text: root.password ? createPasswordCharacters(root.input.length) : root.input
         font: UI.fonts.standard
-        color: root.activeFocus ? UI.colors.focusText : UI.colors.text
+        color: root.activeFocus ? UI.colors.focusLabel : UI.colors.label
+        elide: Text.ElideRight
 
         Behavior on color {
             ColorAnimation { duration: UI.timing.highlightMove }
+        }
+
+        function createPasswordCharacters(length)
+        {
+            return new Array(1 + length).join(keyboard.passwordCharacter)
         }
     }
 
@@ -55,7 +68,6 @@ MenuItem {
 
     Navigation.onOk: {
         keyboard.text = root.input
-        console.log("Setting text to " + root.input)
         keyboard.activate()
     }
 }

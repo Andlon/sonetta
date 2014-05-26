@@ -7,6 +7,8 @@ VirtualDialog {
 
     property string header
     property string text
+    property bool password: false
+    property string passwordCharacter: "*"
 
     Item {
         Text {
@@ -52,6 +54,8 @@ VirtualDialog {
                 color: UI.colors.text
                 cursorVisible: true
                 horizontalAlignment: TextInput.AlignHCenter
+                echoMode: root.password ? TextInput.Password : TextInput.Normal
+                passwordCharacter: root.passwordCharacter
 
                 onTextChanged: root.text = text
 
