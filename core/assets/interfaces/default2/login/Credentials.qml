@@ -18,7 +18,7 @@ Menu {
         password: true
     }
 
-    MenuTextItem {
+    MenuCheckableItem {
         text: "Remember me"
     }
 

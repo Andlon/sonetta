@@ -184,4 +184,5 @@ OTHER_FILES += \
     assets/interfaces/default2/common/VirtualKeyboard.js \
     assets/interfaces/default2/common/Menu.qml \
     assets/interfaces/default2/common/MenuInputItem.qml \
-    assets/interfaces/default2/common/Dialog.js
+    assets/interfaces/default2/common/Dialog.js \
+    assets/interfaces/default2/common/MenuCheckableItem.qml

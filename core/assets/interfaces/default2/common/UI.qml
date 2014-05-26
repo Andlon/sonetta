@@ -46,6 +46,7 @@ Item {
         readonly property int defaultLabelWidth: 160
         readonly property int horizontalMargins: globalSpacing
         readonly property int verticalMargins: globalSpacing / 2
-        readonly property int inputSpacing: 2 * horizontalMargins
+        readonly property int checkboxMargin: 8
+        readonly property int frameSpacing: 3
     }
 }
