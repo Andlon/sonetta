@@ -54,6 +54,11 @@ VirtualDialog {
                 horizontalAlignment: TextInput.AlignHCenter
 
                 onTextChanged: root.text = text
+
+                Connections {
+                    target: root
+                    onActivating: input.text = root.text
+                }
             }
         }
 

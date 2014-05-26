@@ -42,7 +42,9 @@ Item {
     property QtObject menu: QtObject {
         readonly property int defaultWidth: 400
         readonly property int defaultHeight: 60
+        readonly property int defaultLabelWidth: 120
         readonly property int horizontalMargins: globalSpacing
         readonly property int verticalMargins: globalSpacing / 2
+        readonly property int inputSpacing: 2 * horizontalMargins
     }
 }

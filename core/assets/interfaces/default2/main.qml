@@ -4,6 +4,8 @@ import Sonetta.Utilities 0.1
 import Navigation 0.1
 import "common" 0.1
 
+import "common/Dialog.js" as Dialog
+
 FocusScope {
     id: main
     focus: true
@@ -19,7 +21,8 @@ FocusScope {
         }
     ]
 
-    MainContent {
+    Item {
+        id: mainContent
         anchors.fill: parent
 
         Pattern {
@@ -51,6 +54,9 @@ FocusScope {
     }
 
     Component.onCompleted: {
+        Dialog.setRootItem(main)
+        Dialog.setContentItem(mainContent)
+
         GlobalStateMachine.initialize("splash");
     }
 }

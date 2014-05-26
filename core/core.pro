@@ -178,8 +178,10 @@ OTHER_FILES += \
     assets/interfaces/default2/common/MenuItem.qml \
     assets/interfaces/default2/common/MenuTextItem.qml \
     assets/interfaces/default2/login/Credentials.qml \
-    assets/interfaces/default2/common/MainContent.qml \
     assets/interfaces/default2/common/VirtualKeyboardDialog.qml \
     assets/interfaces/default2/common/VirtualDialog.qml \
     assets/interfaces/default2/common/VirtualKeyboard.qml \
-    assets/interfaces/default2/common/VirtualKeyboard.js
+    assets/interfaces/default2/common/VirtualKeyboard.js \
+    assets/interfaces/default2/common/Menu.qml \
+    assets/interfaces/default2/common/MenuInputItem.qml \
+    assets/interfaces/default2/common/Dialog.js

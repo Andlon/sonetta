@@ -187,7 +187,6 @@ FocusScope {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: root.horizontalCenter
         anchors.margins: 2 * UI.globalSpacing
-        clip: true
         focus: true
     }
 

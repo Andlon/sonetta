@@ -4,52 +4,30 @@ import Navigation 0.1
 
 import "../common"
 
-ListView {
+Menu {
     id: root
-    height: contentItem.childrenRect.height
-    width: contentItem.childrenRect.width
 
-    highlightMoveDuration: UI.timing.highlightMove
-
-    currentIndex: 0
-
-    highlight: Rectangle {
-        color: UI.colors.focus
+    MenuInputItem {
+        label: "Username"
+        inputHeader: "Enter your Spotify™ username"
     }
 
-    model: ObjectModel {
-        MenuTextItem {
-            text: "Username"
-
-            VirtualKeyboardDialog {
-                id: keyboard
-
-                header: "Enter your Spotify™ username"
-                onDeactivating: root.forceActiveFocus()
-            }
-
-            Navigation.onOk: keyboard.activate()
-        }
-
-        MenuTextItem {
-            text: "Password"
-        }
-
-        MenuTextItem {
-            text: "Remember me"
-        }
-
-        MenuTextItem {
-            text: "Log in"
-        }
-
-        MenuTextItem {
-            text: "Exit"
-
-            Navigation.onOk: Qt.quit()
-        }
+    MenuInputItem {
+        label: "Password"
+        inputHeader: "Enter your Spotify™ password"
     }
 
-    Navigation.onDown: root.incrementCurrentIndex()
-    Navigation.onUp: root.decrementCurrentIndex()
+    MenuTextItem {
+        text: "Remember me"
+    }
+
+    MenuTextItem {
+        text: "Log in"
+    }
+
+    MenuTextItem {
+        text: "Exit"
+
+        Navigation.onOk: Qt.quit()
+    }
 }

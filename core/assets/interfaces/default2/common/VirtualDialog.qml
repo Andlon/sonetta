@@ -3,6 +3,7 @@ import QtGraphicalEffects 1.0
 import Navigation 0.1
 
 import "."
+import "Dialog.js" as Dialog
 
 FocusScope {
     id: root
@@ -26,13 +27,13 @@ FocusScope {
             name: "active"
             PropertyChanges { target: loader; active: true }
             PropertyChanges { target: root; visible: true }
-            PropertyChanges { target: m.findMainContent(root.parent); visible: false }
+            PropertyChanges { target: Dialog.contentItem(); visible: false }
             StateChangeScript { script: root.activated() }
         },
         State {
             name: "deactivating"
             PropertyChanges { target: loader; active: true }
-            PropertyChanges { target: m.findMainContent(root.parent); visible: true }
+            PropertyChanges { target: Dialog.contentItem(); visible: true }
             StateChangeScript { script: root.deactivating() }
         },
         State {
@@ -119,7 +120,7 @@ FocusScope {
 
             BrightnessContrast {
                 id: brightness
-                source: m.findMainContent(root.parent)
+                source: Dialog.contentItem()
                 anchors.fill: parent
                 visible: false
             }
@@ -136,24 +137,6 @@ FocusScope {
 
     QtObject {
         id: m
-
-        function findRoot(parent) {
-            while (parent.parent)
-                parent = parent.parent
-
-            return parent
-        }
-
-        function findMainContent(root) {
-            for (var i = 0; i < root.children.length; ++i)
-            {
-                var child = root.children[i]
-                if (child._tagContent)
-                    return child
-            }
-
-            return null
-        }
 
         function advanceState() {
             // Advance state when animations are finished
@@ -176,7 +159,7 @@ FocusScope {
 
     Component.onCompleted: {
         // Parent item to root
-        root.parent = m.findRoot(root.parent)
+        root.parent = Dialog.rootItem()
         anchors.fill = root.parent
     }
 
