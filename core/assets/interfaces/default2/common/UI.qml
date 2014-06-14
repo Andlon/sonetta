@@ -8,6 +8,7 @@ Item {
     property QtObject timing: QtObject {
         readonly property int highlightMove: 100
         readonly property int dialogPopup: 250
+        readonly property int fade: 500
     }
 
     property QtObject dialog: QtObject {

@@ -6,20 +6,30 @@ import "common" 0.1
 
 import "common/Dialog.js" as Dialog
 
+import "login"
+import "session"
+
 FocusScope {
-    id: main
+    id: root
     focus: true
 
     states: [
         State {
             name: "login"
-            PropertyChanges { target: mainInterfaceLoader; source: "login/login.qml"; }
+            PropertyChanges { target: sessionInterface; opacity: 0 }
+            PropertyChanges { target: loginInterface; opacity: 1; focus: true }
         },
         State {
-            name: "home"
-            PropertyChanges { target: mainInterfaceLoader; source: "home/home.qml"; }
+            name: "session"
+            PropertyChanges { target: sessionInterface; opacity: 1; focus: true }
+            PropertyChanges { target: loginInterface; opacity: 0 }
         }
     ]
+    state: "login"
+
+    transitions: Transition {
+        SmoothedAnimation { property: "opacity"; duration: UI.timing.fade; velocity: -1 }
+    }
 
     Item {
         id: mainContent
@@ -31,32 +41,34 @@ FocusScope {
             pattern: UI.globalBackgroundPattern
         }
 
-        Loader {
-            id: mainInterfaceLoader
+        // TODO: Move Login and Session into Loaders, such that only one is loaded at a time
+        Login {
+            id: loginInterface
             anchors.fill: parent
-            focus: true
+            onLoginSuccessful: root.state = "session"
+        }
+
+        Session {
+            id: sessionInterface
+            anchors.fill: parent
         }
     }
 
     Connections {
-        target: GlobalStateMachine
-        onEnter: {
-            switch (state)
-            {
-            case "splash":
-                main.state = "login";
-                break;
-            case "home":
-                main.state = "home";
-                break;
+        target: session
+        onLoggedOut: root.state = "login"
+        onConnectionStateChanged: {
+            switch (session.connectionState) {
+            case session.LoggedOut:
+            case session.Undefined:
+                root.state = "login"
+                break
             }
         }
     }
 
     Component.onCompleted: {
-        Dialog.setRootItem(main)
+        Dialog.setRootItem(root)
         Dialog.setContentItem(mainContent)
-
-        GlobalStateMachine.initialize("splash");
     }
 }

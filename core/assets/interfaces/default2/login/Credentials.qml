@@ -7,12 +7,16 @@ import "../common"
 Menu {
     id: root
 
+    signal loginRequested(var username, var password)
+
     MenuInputItem {
+        id: username
         label: "Username"
         inputHeader: "Enter your Spotify™ username"
     }
 
     MenuInputItem {
+        id: password
         label: "Password"
         inputHeader: "Enter your Spotify™ password"
         password: true
@@ -24,6 +28,8 @@ Menu {
 
     MenuTextItem {
         text: "Log in"
+
+        Navigation.onOk: root.loginRequested(username.input, password.input)
     }
 
     MenuTextItem {

@@ -1,5 +1,4 @@
 import QtQuick 2.2
-import Sonetta.Utilities 0.1
 import Sonetta 0.1
 
 import "../common"
@@ -7,16 +6,18 @@ import "../common"
 FocusScope {
     id: root
 
-    property bool _reloginSuccessful: false
-    focus: true
+    signal loginSuccessful
 
+    focus: true
     state: "initial"
     states: [
         State {
             name: "initial"
+            PropertyChanges { target: logo; state: "displaced" }
             PropertyChanges { target: disclaimer; opacity: 0 }
             PropertyChanges { target: credentials; opacity: 0 }
             PropertyChanges { target: header; opacity: 0 }
+            PropertyChanges { target: separator; opacity: 0 }
         },
         State {
             name: "splash"
@@ -28,10 +29,21 @@ FocusScope {
         },
         State {
             name: "login"
-            PropertyChanges { target: logo; state: "login" }
+            PropertyChanges { target: logo; state: "login"; opacity: 1 }
             PropertyChanges { target: credentials; opacity: 1 }
             PropertyChanges { target: header; opacity: 1 }
             PropertyChanges { target: separator; height: credentials.height * 1.2 }
+            PropertyChanges { target: disclaimer; opacity: 1 }
+            PropertyChanges { target: logo; opacity: 1 }
+        },
+        State {
+            name: "waiting"
+            PropertyChanges { target: logo; state: "hidden" }
+            PropertyChanges { target: credentials; opacity: 0}
+            PropertyChanges { target: header; opacity: 0 }
+            PropertyChanges { target: separator; height: credentials.height * 1.2; opacity: 0 }
+            PropertyChanges { target: disclaimer; opacity: 0 }
+            StateChangeScript { script: m.checkLoginStatus() }
         }
     ]
 
@@ -52,8 +64,36 @@ FocusScope {
                 PauseAnimation { duration: 200 }
                 SmoothedAnimation { duration: 300; property: "opacity"; velocity: -1 }
             }
+        },
+        Transition {
+            // Matches any transition to or from "waiting"
+            SmoothedAnimation { duration: UI.timing.fade; property: "opacity"; velocity: -1 }
         }
+
     ]
+
+    QtObject {
+        id: m
+        property bool reloginSuccessful: false
+        property var loginError
+
+        function finalizeSplash() {
+            root.state = m.reloginSuccessful ? "waiting" : "login"
+        }
+
+        function login(username, password) {
+            session.login(username, password)
+            root.state = "waiting"
+        }
+
+        function checkLoginStatus() {
+            if (root.state === "waiting") {
+                if (session.connectionState === Session.LoggedIn || session.connectionState === Session.Offline) {
+                    root.loginSuccessful()
+                }
+            }
+        }
+    }
 
     Column {
         id: disclaimer
@@ -100,28 +140,25 @@ FocusScope {
         states: [
             State {
                 name: "displaced"
-                PropertyChanges {
-                    target: displacement;
-                    y: 100
-                }
-                PropertyChanges {
-                    target: logo;
-                    opacity: 0
-                }
+                PropertyChanges { target: displacement; y: 100 }
+                PropertyChanges { target: logo; opacity: 0 }
             },
             State {
                 name: "splash"
-                PropertyChanges {
-                    target: displacement;
-                    y: 0
-                }
-                PropertyChanges {
-                    target: logo;
-                    opacity: 1
-                }
+                PropertyChanges { target: displacement; y: 0 }
+                PropertyChanges { target: logo; opacity: 1 }
             },
             State {
                 name: "login"
+                AnchorChanges {
+                    target: logo;
+                    anchors.horizontalCenter: undefined
+                    anchors.right: root.horizontalCenter
+                }
+            },
+            State {
+                name: "hidden"
+                PropertyChanges { target: logo; opacity: 0 }
                 AnchorChanges {
                     target: logo;
                     anchors.horizontalCenter: undefined
@@ -132,7 +169,6 @@ FocusScope {
         ]
 
         transitions: [
-
             Transition {
                 from: "displaced"
                 to: "splash"
@@ -152,7 +188,7 @@ FocusScope {
                             }
 
                             PauseAnimation { duration: 300 }
-                            ScriptAction { script: root.finalizeSplash() }
+                            ScriptAction { script: m.finalizeSplash() }
                         }
                     }
                 }
@@ -161,7 +197,12 @@ FocusScope {
                 from: "splash"
                 to: "login"
                 AnchorAnimation { duration: 500; easing.type: Easing.InOutQuad }
+            },
+            Transition {
+                to: "hidden"
+                SmoothedAnimation { property: "opacity"; duration: UI.timing.fade; velocity: -1 }
             }
+
         ]
 
         transform: Translate { id: displacement }
@@ -188,41 +229,23 @@ FocusScope {
         anchors.left: root.horizontalCenter
         anchors.margins: 2 * UI.globalSpacing
         focus: true
+
+        onLoginRequested: m.login(username, password)
     }
 
-    GlobalStateTransition {
-        id: successfulReloginTransition
-
-        onInitialized: {
-            finalize()
-        }
-    }
-
-    GlobalStateTransition {
-        id: loginTransition
-
-        onInitialized: {
+    Connections {
+        target: session
+        onLoggedIn: m.checkLoginStatus();
+        onLoginFailed: {
+            // Implement this properly later
+            m.loginError = error;
             root.state = "login"
-            finalize()
-        }
-    }
-
-    function finalizeSplash() {
-        if (_reloginSuccessful)
-        {
-            GlobalStateMachine.push("home");
-        }
-        else
-        {
-            GlobalStateMachine.push("login")
+            console.log("Login failed!")
         }
     }
 
     Component.onCompleted: {
-        GlobalStateMachine.registerTransition("splash", "home", successfulReloginTransition);
-        GlobalStateMachine.registerTransition("splash", "login", loginTransition);
-
-        _reloginSuccessful = session.relogin()
-        root.state = "splash"
+        root.state = "splash";
+        m.reloginSuccessful = session.relogin()
     }
 }

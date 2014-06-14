@@ -170,7 +170,6 @@ OTHER_FILES += \
     assets/interfaces/default2/images/playback/next.svg \
     assets/interfaces/default2/images/playback/pause.svg \
     assets/interfaces/default2/images/playback/play.svg \
-    assets/interfaces/default2/login/login.qml \
     assets/interfaces/default2/common/UI.qml \
     assets/interfaces/default2/common/Box.qml \
     assets/interfaces/default2/common/Pattern.qml \
@@ -185,4 +184,6 @@ OTHER_FILES += \
     assets/interfaces/default2/common/Menu.qml \
     assets/interfaces/default2/common/MenuInputItem.qml \
     assets/interfaces/default2/common/Dialog.js \
-    assets/interfaces/default2/common/MenuCheckableItem.qml
+    assets/interfaces/default2/common/MenuCheckableItem.qml \
+    assets/interfaces/default2/login/Login.qml \
+    assets/interfaces/default2/session/Session.qml
