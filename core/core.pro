@@ -198,4 +198,8 @@ OTHER_FILES += \
     assets/interfaces/default2/session/ExplorePage.qml \
     assets/interfaces/default2/session/SettingsPage.qml \
     assets/interfaces/default2/session/SessionStateController.qml \
-    assets/interfaces/default2/session/SessionStateController.js
+    assets/interfaces/default2/session/SessionStateController.js \
+    assets/interfaces/default2/common/CollectionView.qml \
+    assets/interfaces/default2/common/VerticalScrollbar.qml \
+    assets/interfaces/default2/session/playlists/PlaylistContainer.qml \
+    assets/interfaces/default2/common/CollectionDelegate.qml

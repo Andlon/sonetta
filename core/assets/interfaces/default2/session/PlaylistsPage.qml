@@ -1,18 +1,19 @@
 import QtQuick 2.3
+import Sonetta 0.1
 
 import "../common"
+import "./playlists"
 
 FocusScope {
 
-    Rectangle {
-        anchors.fill: parent
-        anchors.margins: UI.globalSpacing
-        width: 100
-        height: 100
-
-        color: "Red"
-        border.color: UI.colors.light
-        border.width: 1
-
+    PlaylistContainer {
+        model: PlaylistContainerModel {
+            playlistContainer: session.playlistContainer
+        }
+        anchors {
+            fill: parent
+            margins: UI.globalSpacing
+        }
     }
+
 }
