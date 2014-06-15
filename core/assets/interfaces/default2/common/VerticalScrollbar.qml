@@ -28,7 +28,7 @@ Item {
     Rectangle {
         id: scroller
 
-        color: root.activeFocus ? UI.colors.focus : UI.colors.label
+        color: root.activeFocus ? UI.colors.focus : UI.colors.currentUnfocused
         width: root.width / 2
         x: root.width / 4
 

@@ -26,10 +26,11 @@ Item {
         readonly property color focus: "#ffc000"
         readonly property color focusText: light
         readonly property color focusLabel: Qt.tint(label, Qt.rgba(focusText.r, focusText.g, focusText.b, 0.75))
+        readonly property color currentUnfocused: "#666666";
     }
 
     property QtObject fonts: QtObject {
-        readonly property font standard: Qt.font({ family: "Roboto", pointSize: 23, weight: 40 })
+        readonly property font standard: Qt.font({ family: "Roboto", pointSize: 23, weight: 35 })
         readonly property font disclaimer: Qt.font({ family: "Roboto", pointSize: 17, weight: 40 })
         readonly property font header: Qt.font({ family: "Roboto", pointSize: 32, weight: 50 })
         readonly property font input: Qt.font({ family: "Roboto", pointSize: 32, weight: 40 })
@@ -50,5 +51,9 @@ Item {
         readonly property int verticalMargins: globalSpacing / 2
         readonly property int checkboxMargin: 8
         readonly property int frameSpacing: 3
+    }
+
+    property QtObject playlistContainer: QtObject {
+        readonly property int mosaicSize: 96
     }
 }

@@ -9,25 +9,11 @@ MenuItem {
 
     property alias label: labelItem.text
 
-    Text {
+    FocusText {
         id: labelItem
         anchors.centerIn: root
         font: UI.fonts.mainMenu
-
-        states: [
-            State {
-                when: root.activeFocus
-                PropertyChanges { target: labelItem; color: UI.colors.focusText }
-            },
-            State {
-                when: !root.activeFocus
-                PropertyChanges { target: labelItem; color: UI.colors.label }
-            }
-        ]
-
-        transitions: Transition {
-            ColorAnimation { duration: UI.timing.highlightMove }
-        }
+        hasFocus: root.activeFocus
     }
 
     Rectangle {

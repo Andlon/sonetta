@@ -16,7 +16,7 @@ ListView {
     width: UI.menu.defaultWidth
     highlightMoveDuration: UI.timing.highlightMove
     currentIndex: 0
-    highlight: Rectangle { color: UI.colors.focus }
+    highlight: CollectionHighlight { listView: root }
 
     model: ObjectModel { id: objects }
 

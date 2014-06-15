@@ -57,7 +57,7 @@ FocusScope {
         }
 
         delegate: delegateComponent
-        highlight: Rectangle { color: UI.colors.focus }
+        highlight: CollectionHighlight { listView: list }
         highlightFollowsCurrentItem: true
         highlightMoveDuration: UI.timing.highlightMove
         highlightResizeDuration: UI.timing.highlightMove
@@ -124,13 +124,16 @@ FocusScope {
 
         FocusScope {
             id: delegateRoot
-            height: childrenRect.height
+            height: delegateLoader.height
+            width: list.width
 
+            property int internalIndex: index
             property var internalModel: model
 
             Pattern {
+                anchors.fill: delegateRoot
                 pattern: "dark"
-                visible: index % 2 == 0
+                visible: internalIndex % 2 == 0
                 z: -1
                 parent: delegateRoot.parent
             }
@@ -139,6 +142,7 @@ FocusScope {
                 id: delegateLoader
                 width: list.width
                 sourceComponent: root.delegate
+                focus: true
 
                 property alias model: delegateRoot.internalModel
             }

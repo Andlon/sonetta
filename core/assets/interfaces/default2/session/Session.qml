@@ -89,6 +89,8 @@ FocusScope {
             onExploreRequested: controller.explore()
             onSettingsRequested: controller.settings()
         }
+
+        KeyNavigation.right: pager
     }
 
     Rectangle {
@@ -137,23 +139,29 @@ FocusScope {
             PlaybackPage {
                 width: pager.width
                 height: pager.height
+                focus: true
             }
 
             PlaylistsPage {
                 width: pager.width
                 height: pager.height
+                focus: true
             }
 
             ExplorePage {
                 width: pager.width
                 height: pager.height
+                focus: true
             }
 
             SettingsPage {
                 width: pager.width
                 height: pager.height
+                focus: true
             }
         }
+
+        KeyNavigation.left: mainMenu
     }
 
     SessionStateController {

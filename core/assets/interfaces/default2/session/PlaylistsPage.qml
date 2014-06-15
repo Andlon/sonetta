@@ -7,6 +7,7 @@ import "./playlists"
 FocusScope {
 
     PlaylistContainer {
+        focus: true
         model: PlaylistContainerModel {
             playlistContainer: session.playlistContainer
         }
