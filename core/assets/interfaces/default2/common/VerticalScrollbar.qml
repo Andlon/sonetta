@@ -47,7 +47,8 @@ Item {
         var amount = preferred - list.contentY
 
         // Adjust amount so that it's a multiple of the height of the list's items
-        amount -= (amount % delegateHeight)
+        if (delegateHeight > 0)
+            amount -= amount % delegateHeight
 
         if (preferred > list.contentY)
         {

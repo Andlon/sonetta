@@ -4,6 +4,7 @@ import Sonetta 0.1
 import "../../common"
 
 CollectionView {
+    id: root
     signal playlistRequested(var index)
 
     onItemPressed: playlistRequested(index)
@@ -14,6 +15,7 @@ CollectionView {
 
         property var playlist: model ? model.playlist : undefined
         onPlaylistChanged: if (playlist) mosaic.playlist = playlist
+        onHeightChanged: root.delegateHeight = height
 
         Mosaic {
             id: mosaic

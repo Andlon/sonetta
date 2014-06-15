@@ -4,10 +4,14 @@ import Sonetta 0.1
 import "../../common"
 
 CollectionView {
+    id: root
+
     delegate: Item {
         id: delegateRoot
         height: trackName.height + UI.globalSpacing
         focus: true
+
+        onHeightChanged: root.delegateHeight = height
 
         FocusText {
             id: trackName
