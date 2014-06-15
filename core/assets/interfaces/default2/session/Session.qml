@@ -12,22 +12,27 @@ FocusScope {
 
     states: [
         State {
-            when: mainMenu.page === "playback"
+            name: "playback"
             PropertyChanges { target: pager; currentIndex: 0 }
+            PropertyChanges { target: mainMenu; currentIndex: 0 }
         },
         State {
-            when: mainMenu.page === "playlists"
+            name: "playlists"
             PropertyChanges { target: pager; currentIndex: 1 }
+            PropertyChanges { target: mainMenu; currentIndex: 1 }
         },
         State {
-            when: mainMenu.page === "explore"
+            name: "explore"
             PropertyChanges { target: pager; currentIndex: 2 }
+            PropertyChanges { target: mainMenu; currentIndex: 2 }
         },
         State {
-            when: mainMenu.page === "settings"
+            name: "settings"
             PropertyChanges { target: pager; currentIndex: 3 }
+            PropertyChanges { target: mainMenu; currentIndex: 3 }
         }
     ]
+    state: controller.initialStateName
 
     Pattern {
         id: logoContainer
@@ -78,6 +83,11 @@ FocusScope {
             anchors {
                 fill: leftColumn
             }
+
+            onPlaybackRequested: controller.playback()
+            onPlaylistsRequested: controller.playlistsOverview()
+            onExploreRequested: controller.explore()
+            onSettingsRequested: controller.settings()
         }
     }
 
@@ -145,4 +155,15 @@ FocusScope {
             }
         }
     }
+
+    SessionStateController {
+        id: controller
+
+        onPlaybackRequested: root.state = "playback"
+        onPlaylistsOverviewRequested: root.state = "playlists"
+        onExploreRequested: root.state = "explore"
+        onSettingsRequested: root.state = "settings"
+    }
+
+    Navigation.onBack: if (!event.autoRepeat) controller.back()
 }

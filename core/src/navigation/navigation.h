@@ -67,7 +67,7 @@ private:
 class QuickNavEvent : public QObject {
     Q_OBJECT
 
-    Q_PROPERTY(bool isAutoRepeat READ isAutoRepeat CONSTANT)
+    Q_PROPERTY(bool autoRepeat READ isAutoRepeat CONSTANT)
     Q_PROPERTY(Navigation::Button button READ button CONSTANT)
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 public:

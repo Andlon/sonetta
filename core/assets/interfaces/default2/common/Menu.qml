@@ -10,6 +10,7 @@ ListView {
     // This works, but as it's not documented it MAY break in the future
     // ... but let's hope not
     default property alias menuItems: objects.children
+    property bool navigationEnabled: true
 
     height: contentItem.childrenRect.height
     width: UI.menu.defaultWidth
@@ -20,13 +21,13 @@ ListView {
     model: ObjectModel { id: objects }
 
     Navigation.onDown: {
-        if (root.currentIndex < root.count - 1)
+        if (navigationEnabled && root.currentIndex < root.count - 1)
             root.incrementCurrentIndex()
         else
             event.accepted = false
     }
     Navigation.onUp: {
-        if (root.currentIndex > 0)
+        if (navigationEnabled && root.currentIndex > 0)
             root.decrementCurrentIndex()
         else
             event.accepted = false

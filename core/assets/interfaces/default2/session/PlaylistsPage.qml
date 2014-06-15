@@ -10,7 +10,7 @@ FocusScope {
         width: 100
         height: 100
 
-        color: "transparent"
+        color: "Red"
         border.color: UI.colors.light
         border.width: 1
 

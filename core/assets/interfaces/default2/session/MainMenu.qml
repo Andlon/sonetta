@@ -1,38 +1,37 @@
 import QtQuick 2.3
+import Navigation 0.1
 
 import "../common"
 
 Menu {
-    readonly property string page: {
-        switch (currentIndex) {
-        case 0:
-            return "playback"
-        case 1:
-            return "playlists"
-        case 2:
-            return "explore"
-        case 3:
-            return "settings"
-        }
-    }
+    signal playbackRequested()
+    signal playlistsRequested()
+    signal exploreRequested()
+    signal settingsRequested()
 
     MainMenuItem {
         id: playback
         label: "Playback"
+        Navigation.onDown: playlistsRequested()
     }
 
     MainMenuItem {
         id: playlists
         label: "Playlists"
+        Navigation.onUp: playbackRequested()
+        Navigation.onDown: exploreRequested()
     }
 
     MainMenuItem {
         id: explore
         label: "Explore"
+        Navigation.onUp: playlistsRequested()
+        Navigation.onDown: settingsRequested()
     }
 
     MainMenuItem {
         id: settings
         label: "Settings"
+        Navigation.onUp: exploreRequested()
     }
 }

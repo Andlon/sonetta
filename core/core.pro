@@ -196,4 +196,6 @@ OTHER_FILES += \
     assets/interfaces/default2/common/Time.js \
     assets/interfaces/default2/common/SpotifyImage.qml \
     assets/interfaces/default2/session/ExplorePage.qml \
-    assets/interfaces/default2/session/SettingsPage.qml
+    assets/interfaces/default2/session/SettingsPage.qml \
+    assets/interfaces/default2/session/SessionStateController.qml \
+    assets/interfaces/default2/session/SessionStateController.js
