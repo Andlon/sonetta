@@ -13,15 +13,50 @@ FocusScope {
         State {
             name: "container"
             PropertyChanges { target: container; visible: true; focus: true }
-            PropertyChanges { target: playlistView; visible: false; focus: false}
+            PropertyChanges { target: playlistView; visible: false; focus: false }
+            PropertyChanges { target: header; color: UI.colors.label }
+            PropertyChanges { target: playlistHeader; opacity: 0 }
         },
         State {
             name: "playlist"
             PropertyChanges { target: container; visible: false; focus: false }
             PropertyChanges { target: playlistView; visible: true; focus: true; }
             PropertyChanges { target: playlistModel; playlist: container.model.playlistAt(root.index) }
+            PropertyChanges { target: header; color: UI.colors.darkLabel }
+            PropertyChanges { target: playlistHeader; opacity: 1 }
         }
     ]
+
+    transitions: [
+        Transition {
+            ColorAnimation { duration: UI.timing.highlightMove }
+            OpacityAnimator { target: header; duration: UI.timing.highlightMove }
+        }
+    ]
+
+    Text {
+        id: header
+        font: UI.fonts.mainMenu
+        text: "Your Playlists"
+        anchors {
+            top: root.top
+            left: root.left
+            margins: UI.globalSpacing
+        }
+    }
+
+    Text {
+        id: playlistHeader
+        font: UI.fonts.mainMenu
+        color: UI.colors.label
+        text: playlistModel.name
+        anchors {
+            top: root.top
+            left: header.right
+            right: root.right
+            margins: UI.globalSpacing
+        }
+    }
 
     PlaylistContainer {
         id: container
@@ -31,7 +66,10 @@ FocusScope {
             onLoadedChanged: playlistModel.playlist = playlistAt(root.index)
         }
         anchors {
-            fill: parent
+            top: header.bottom
+            left: root.left
+            right: root.right
+            bottom: root.bottom
             margins: UI.globalSpacing
         }
 
@@ -46,7 +84,10 @@ FocusScope {
         }
         focus: true
         anchors {
-            fill: parent
+            top: header.bottom
+            left: root.left
+            right: root.right
+            bottom: root.bottom
             margins: UI.globalSpacing
         }
 

@@ -23,6 +23,7 @@ Item {
 
         readonly property color text: "#ffffff"
         readonly property color label: "#999999"
+        readonly property color darkLabel: "#555555"
         readonly property color focus: "#ffc000"
         readonly property color focusText: light
         readonly property color focusLabel: Qt.tint(label, Qt.rgba(focusText.r, focusText.g, focusText.b, 0.75))
