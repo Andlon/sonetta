@@ -63,6 +63,10 @@ private:
     ObjectScopedPointer<QSignalMapper> m_renamedMapper;
     ObjectScopedPointer<QSignalMapper> m_imageChangedMapper;
     ObjectScopedPointer<QSignalMapper> m_descriptionChangedMapper;
+
+    void ignoreIndex(int index);
+    int correctedIndex(int originalIndex) const;
+    QVector<int> m_ignoredIndices;
 };
 
 }

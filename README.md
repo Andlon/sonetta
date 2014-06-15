@@ -65,6 +65,8 @@ Contributing
 ------------
 I appreciate contributions, but I ask you to please contact me before you fork and begin any serious work. I have some very specific and clear plans for this project, and it's only time constraints on my part that stalls the progress of development.
 
-License
+Legal
 -------
+This product uses SPOTIFY CORE but is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.
+
 Sonetta is open-source software, released under a permissive 3-clause BSD license. The copyright belongs to Andreas Borgen Longva. There should be a LICENSE file supplied along with this document which contains the legal wording. Qt and libspotify are released under their own respective licenses.

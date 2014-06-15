@@ -1,6 +1,7 @@
 #include "playlistcontainermodel.h"
 
 #include <QDebug>
+#include <algorithm>
 
 namespace sp = Spotinetta;
 
@@ -14,8 +15,6 @@ PlaylistContainerModel::PlaylistContainerModel(ObjectSharedPointer<const Spotine
       m_imageChangedMapper(new QSignalMapper),
       m_descriptionChangedMapper(new QSignalMapper)
 {
-
-
     connect(m_watcher.data(), &sp::PlaylistContainerWatcher::loaded,
             this, &PlaylistContainerModel::onLoaded);
     connect(m_watcher.data(), &sp::PlaylistContainerWatcher::playlistAdded,
@@ -87,6 +86,7 @@ void PlaylistContainerModel::setPlaylistContainer(const Spotinetta::PlaylistCont
     {
         beginResetModel();
         m_playlists.clear();
+        m_ignoredIndices.clear();
         endResetModel();
         m_watcher->watch(container);
 
@@ -130,6 +130,37 @@ ObjectSharedPointer<Spotinetta::PlaylistWatcher> PlaylistContainerModel::createW
     return watcher;
 }
 
+void PlaylistContainerModel::ignoreIndex(int index)
+{
+    // This calls for a sorted set, but for now it's simpler to do it this way.
+    // It's only a temporary fix until proper support for folders is in place.
+    if (!m_ignoredIndices.contains(index)) {
+        m_ignoredIndices.append(index);
+        std::sort(m_ignoredIndices.begin(), m_ignoredIndices.end());
+    }
+}
+
+int PlaylistContainerModel::correctedIndex(int originalIndex) const
+{
+    // Temporary fix for folders.
+
+    if (m_ignoredIndices.isEmpty() || originalIndex < m_ignoredIndices.first())
+        return originalIndex;
+    else {
+        int correction = 0;
+        for (int ignored : m_ignoredIndices) {
+            if (originalIndex == ignored)
+                return -1;
+            else if (originalIndex > ignored) {
+                ++correction;
+            }
+            else
+                return originalIndex - correction;
+        }
+        return originalIndex - correction;
+    }
+}
+
 void PlaylistContainerModel::updateMappings(Spotinetta::PlaylistWatcher *watcher, int index)
 {
     m_stateChangedMapper->setMapping(watcher, index);
@@ -150,7 +181,10 @@ void PlaylistContainerModel::onLoaded()
 
         for (int i = 0; i < container.playlistCount(); ++i)
         {
-            m_playlists.append(createWatcher(i));
+            if (container.isPlaylist(i))
+                m_playlists.append(createWatcher(i));
+            else
+                ignoreIndex(i);
         }
         endResetModel();
     }
@@ -158,6 +192,9 @@ void PlaylistContainerModel::onLoaded()
 
 void PlaylistContainerModel::onPlaylistAdded(int position)
 {
+    if (correctedIndex(position) == -1)
+        return;
+
     beginInsertRows(QModelIndex(), position, position);
 
     m_playlists.insert(position, createWatcher(position));
@@ -168,6 +205,9 @@ void PlaylistContainerModel::onPlaylistAdded(int position)
 
 void PlaylistContainerModel::onPlaylistRemoved(int position)
 {
+    if (correctedIndex(position) == -1)
+        return;
+
     beginRemoveRows(QModelIndex(), position, position);
 
     m_playlists.remove(position);
@@ -178,6 +218,18 @@ void PlaylistContainerModel::onPlaylistRemoved(int position)
 
 void PlaylistContainerModel::onPlaylistMoved(int oldPosition, int newPosition)
 {
+    int corrected = correctedIndex(oldPosition);
+    if (corrected == -1)
+    {
+        m_ignoredIndices.remove(oldPosition);
+        m_ignoredIndices.append(newPosition);
+        std::sort(m_ignoredIndices.begin(), m_ignoredIndices.end());
+        return;
+    }
+
+    oldPosition = corrected;
+    newPosition = correctedIndex(newPosition);
+
     beginMoveRows(QModelIndex(), oldPosition, oldPosition, QModelIndex(), newPosition);
     ObjectSharedPointer<sp::PlaylistWatcher> watcher = m_playlists.at(oldPosition);
     m_playlists.remove(oldPosition);
@@ -190,6 +242,10 @@ void PlaylistContainerModel::onPlaylistMoved(int oldPosition, int newPosition)
 
 void PlaylistContainerModel::onPlaylistStateChanged(int position)
 {
+    position = correctedIndex(position);
+    if (position == -1)
+        return;
+
     // Update all roles for simplicity
     QModelIndex mi = index(position);
     emit dataChanged(mi, mi);
@@ -197,18 +253,30 @@ void PlaylistContainerModel::onPlaylistStateChanged(int position)
 
 void PlaylistContainerModel::onPlaylistRenamed(int position)
 {
+    position = correctedIndex(position);
+    if (position == -1)
+        return;
+
     QModelIndex mi = index(position);
     emit dataChanged(mi, mi, QVector<int>(1, NameRole));
 }
 
 void PlaylistContainerModel::onPlaylistDescriptionChanged(int position)
 {
+    position = correctedIndex(position);
+    if (position == -1)
+        return;
+
     QModelIndex mi = index(position);
     emit dataChanged(mi, mi, QVector<int>(1, DescriptionRole));
 }
 
 void PlaylistContainerModel::onPlaylistImageChanged(int position)
 {
+    position = correctedIndex(position);
+    if (position == -1)
+        return;
+
     QModelIndex mi = index(position);
     emit dataChanged(mi, mi, QVector<int>(1, ImageUriRole));
 }
