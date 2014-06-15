@@ -1,8 +1,148 @@
 import QtQuick 2.3
+import QtQml.Models 2.1
+import Sonetta 0.1
+import Navigation 0.1
 
-Rectangle {
+import "../common"
+
+FocusScope {
+    id: root
     width: 100
     height: 100
 
-    color: "transparent"
+    states: [
+        State {
+            when: mainMenu.page === "playback"
+            PropertyChanges { target: pager; currentIndex: 0 }
+        },
+        State {
+            when: mainMenu.page === "playlists"
+            PropertyChanges { target: pager; currentIndex: 1 }
+        },
+        State {
+            when: mainMenu.page === "explore"
+            PropertyChanges { target: pager; currentIndex: 2 }
+        },
+        State {
+            when: mainMenu.page === "settings"
+            PropertyChanges { target: pager; currentIndex: 3 }
+        }
+    ]
+
+    Pattern {
+        id: logoContainer
+        pattern: "dark"
+        anchors {
+            top: root.top
+            left: root.left
+            right: leftColumn.right
+            bottom: topRow.bottom
+        }
+
+        Image {
+            id: logo
+            source: "../images/sonetta_small.png"
+            fillMode: Image.PreserveAspectFit
+            anchors {
+                fill: logoContainer
+                margins: UI.globalSpacing
+            }
+        }
+    }
+
+    Rectangle {
+        id: leftSeparator
+        color: UI.colors.light
+        height: 1
+        anchors {
+            left: logoContainer.left
+            right: logoContainer.right
+            top: logoContainer.bottom
+        }
+    }
+
+    Pattern {
+        id: leftColumn
+
+        width: 250
+        pattern: "dark"
+        anchors {
+            left: root.left
+            top: leftSeparator.bottom
+            bottom: root.bottom
+        }
+
+        MainMenu {
+            id: mainMenu
+            focus: true
+            anchors {
+                fill: leftColumn
+            }
+        }
+    }
+
+    Rectangle {
+        id: rightSeparator
+        height: 1
+        color: UI.colors.dark
+        anchors {
+            left: topRow.left
+            right: topRow.right
+            top: topRow.bottom
+        }
+    }
+
+    Pattern {
+        id: topRow
+        height: childrenRect.height + UI.globalSpacing
+        pattern: "light"
+        anchors {
+            left: leftColumn.right
+            right: root.right
+            top: root.top
+        }
+
+        NowPlaying {
+            anchors {
+                left: topRow.left
+                top: topRow.top
+                right: topRow.right
+                margins: UI.globalSpacing
+            }
+        }
+    }
+
+    PageView {
+        id: pager
+        anchors {
+            left: leftColumn.right
+            right: root.right
+            top: rightSeparator.bottom
+            bottom: root.bottom
+        }
+        clip: true
+        scrollAnimationTime: UI.timing.highlightMove
+
+        model: ObjectModel {
+            PlaybackPage {
+                width: pager.width
+                height: pager.height
+            }
+
+            PlaylistsPage {
+                width: pager.width
+                height: pager.height
+            }
+
+            ExplorePage {
+                width: pager.width
+                height: pager.height
+            }
+
+            SettingsPage {
+                width: pager.width
+                height: pager.height
+            }
+        }
+    }
 }

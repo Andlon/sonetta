@@ -33,9 +33,7 @@ MenuItem {
         ]
 
         transitions: Transition {
-            ColorAnimation {
-                duration: UI.timing.highlightMove
-            }
+            ColorAnimation { duration: UI.timing.highlightMove }
         }
     }
 }

@@ -186,4 +186,14 @@ OTHER_FILES += \
     assets/interfaces/default2/common/Dialog.js \
     assets/interfaces/default2/common/MenuCheckableItem.qml \
     assets/interfaces/default2/login/Login.qml \
-    assets/interfaces/default2/session/Session.qml
+    assets/interfaces/default2/session/Session.qml \
+    assets/interfaces/default2/session/MainMenuItem.qml \
+    assets/interfaces/default2/session/MainMenu.qml \
+    assets/interfaces/default2/common/PageView.qml \
+    assets/interfaces/default2/session/PlaybackPage.qml \
+    assets/interfaces/default2/session/PlaylistsPage.qml \
+    assets/interfaces/default2/session/NowPlaying.qml \
+    assets/interfaces/default2/common/Time.js \
+    assets/interfaces/default2/common/SpotifyImage.qml \
+    assets/interfaces/default2/session/ExplorePage.qml \
+    assets/interfaces/default2/session/SettingsPage.qml

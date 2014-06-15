@@ -12,13 +12,23 @@ ListView {
     default property alias menuItems: objects.children
 
     height: contentItem.childrenRect.height
-    width: contentItem.childrenRect.width
+    width: UI.menu.defaultWidth
     highlightMoveDuration: UI.timing.highlightMove
     currentIndex: 0
     highlight: Rectangle { color: UI.colors.focus }
 
     model: ObjectModel { id: objects }
 
-    Navigation.onDown: root.incrementCurrentIndex()
-    Navigation.onUp: root.decrementCurrentIndex()
+    Navigation.onDown: {
+        if (root.currentIndex < root.count - 1)
+            root.incrementCurrentIndex()
+        else
+            event.accepted = false
+    }
+    Navigation.onUp: {
+        if (root.currentIndex > 0)
+            root.decrementCurrentIndex()
+        else
+            event.accepted = false
+    }
 }

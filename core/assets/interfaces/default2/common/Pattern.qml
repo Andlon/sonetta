@@ -2,6 +2,7 @@ import QtQuick 2.2
 
 Image {
     property string pattern: "dark"
+    visible: pattern != ""
 
     source: {
         switch (pattern) {
@@ -11,6 +12,8 @@ Image {
             return "../images/medium.png"
         case "light":
             return "../images/light.png"
+        case "":
+            return ""
 
         default:
             console.log("Unknown pattern requested.")

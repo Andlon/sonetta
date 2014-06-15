@@ -3,11 +3,10 @@ import QtQuick 2.2
 import "."
 
 Rectangle {
+    property alias pattern: patternItem.pattern
     border.color: UI.box.borderColor
     border.width: UI.box.borderWidth
     color: "transparent"
-
-    property alias pattern: patternItem.pattern
 
     Pattern {
         id: patternItem

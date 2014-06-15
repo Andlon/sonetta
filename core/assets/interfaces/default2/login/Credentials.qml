@@ -8,6 +8,7 @@ Menu {
     id: root
 
     signal loginRequested(var username, var password)
+    property alias rememberLogin: rememberMe.checked
 
     MenuInputItem {
         id: username
@@ -23,6 +24,7 @@ Menu {
     }
 
     MenuCheckableItem {
+        id: rememberMe
         text: "Remember me"
     }
 

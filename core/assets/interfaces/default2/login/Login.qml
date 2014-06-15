@@ -8,7 +8,6 @@ FocusScope {
 
     signal loginSuccessful
 
-    focus: true
     state: "initial"
     states: [
         State {
@@ -82,7 +81,7 @@ FocusScope {
         }
 
         function login(username, password) {
-            session.login(username, password)
+            session.login(username, password, credentials.rememberLogin)
             root.state = "waiting"
         }
 

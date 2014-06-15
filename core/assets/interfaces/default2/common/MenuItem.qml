@@ -5,9 +5,17 @@ import "."
 Item {
     id: root
 
-    width: UI.menu.defaultWidth
+    property alias border: m.border
+    property alias pattern: m.pattern
+    property alias visibleBox: m.visible
+
+    width: m.menu ? m.menu.width : 0
 
     Box {
+        id: m
+        // Private properties here
+        property Item menu: root.parent ? root.parent.parent ? root.parent.parent : null : null
+
         anchors.fill: root
 
         // By providing a negative z-index and parenting

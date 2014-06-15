@@ -6,7 +6,7 @@ Item {
     readonly property string globalBackgroundPattern: "medium"
 
     property QtObject timing: QtObject {
-        readonly property int highlightMove: 100
+        readonly property int highlightMove: 150
         readonly property int dialogPopup: 250
         readonly property int fade: 500
     }
@@ -33,6 +33,7 @@ Item {
         readonly property font disclaimer: Qt.font({ family: "Roboto", pointSize: 17, weight: 40 })
         readonly property font header: Qt.font({ family: "Roboto", pointSize: 32, weight: 50 })
         readonly property font input: Qt.font({ family: "Roboto", pointSize: 32, weight: 40 })
+        readonly property font mainMenu: Qt.font({ family: "Roboto", pointSize: 26, weight: 10, capitalization: Font.AllUppercase })
     }
 
     property QtObject box: QtObject {
