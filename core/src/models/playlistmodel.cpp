@@ -98,6 +98,8 @@ void PlaylistModel::onTracksAdded(const sp::TrackList &tracks, int position)
     for (int i = position + tracks.count(); i < newCount; ++i)
         newTracks.append(m_tracks.at(i - position));
 
+    m_tracks.swap(newTracks);
+
     endInsertRows();
 }
 
