@@ -17,12 +17,17 @@ PlaylistContainerModel::PlaylistContainerModel(ObjectSharedPointer<const Spotine
 {
     connect(m_watcher.data(), &sp::PlaylistContainerWatcher::loaded,
             this, &PlaylistContainerModel::onLoaded);
+    connect(m_watcher.data(), &sp::PlaylistContainerWatcher::loaded,
+            this, &PlaylistContainerModel::isLoadedChanged);
     connect(m_watcher.data(), &sp::PlaylistContainerWatcher::playlistAdded,
             this, &PlaylistContainerModel::onPlaylistAdded);
     connect(m_watcher.data(), &sp::PlaylistContainerWatcher::playlistMoved,
             this, &PlaylistContainerModel::onPlaylistMoved);
     connect(m_watcher.data(), &sp::PlaylistContainerWatcher::playlistRemoved,
             this, &PlaylistContainerModel::onPlaylistRemoved);
+
+    connect(this, &PlaylistContainerModel::playlistContainerChanged,
+            this, &PlaylistContainerModel::isLoadedChanged);
 
     connect(m_stateChangedMapper.data(), SIGNAL(mapped(int)),
             this, SLOT(onPlaylistStateChanged(int)));
@@ -37,6 +42,18 @@ PlaylistContainerModel::PlaylistContainerModel(ObjectSharedPointer<const Spotine
 int PlaylistContainerModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : m_playlists.count();
+}
+
+bool PlaylistContainerModel::isLoaded() const
+{
+    return m_watcher->watched().isLoaded();
+}
+
+Spotinetta::Playlist PlaylistContainerModel::playlistAt(int index) const
+{
+    if (index < 0 || index >= m_playlists.count())
+        return sp::Playlist();
+    return m_playlists.at(index)->watched();
 }
 
 QVariant PlaylistContainerModel::data(const QModelIndex &index, int role) const

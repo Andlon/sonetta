@@ -24,6 +24,8 @@ QtObject {
     signal exploreRequested()
     signal settingsRequested()
 
+    signal playlistRequested(var index)
+
     /* Specialized state transition functions */
     function playlistsOverview() {
         var state = State.create("playlists", {})
@@ -78,6 +80,9 @@ QtObject {
             break
         case "playlists":
             playlistsOverviewRequested()
+            break
+        case "playlist":
+            playlistRequested(parameters.index)
             break
         case "explore":
             exploreRequested()

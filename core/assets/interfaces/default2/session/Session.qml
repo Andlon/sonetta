@@ -20,6 +20,13 @@ FocusScope {
             name: "playlists"
             PropertyChanges { target: pager; currentIndex: 1 }
             PropertyChanges { target: mainMenu; currentIndex: 1 }
+            PropertyChanges { target: playlistsPage; state: "container" }
+        },
+        State {
+            name: "playlist"
+            PropertyChanges { target: pager; currentIndex: 1 }
+            PropertyChanges { target: mainMenu; currentIndex: 1 }
+            PropertyChanges { target: playlistsPage; state: "playlist" }
         },
         State {
             name: "explore"
@@ -106,7 +113,7 @@ FocusScope {
 
     Pattern {
         id: topRow
-        height: childrenRect.height + UI.globalSpacing
+        height: childrenRect.height + 2 * UI.globalSpacing
         pattern: "light"
         anchors {
             left: leftColumn.right
@@ -137,15 +144,19 @@ FocusScope {
 
         model: ObjectModel {
             PlaybackPage {
+                id: playbackPage
                 width: pager.width
                 height: pager.height
                 focus: true
             }
 
             PlaylistsPage {
+                id: playlistsPage
                 width: pager.width
                 height: pager.height
                 focus: true
+
+                onPlaylistRequested: controller.playlist(index)
             }
 
             ExplorePage {
@@ -171,6 +182,11 @@ FocusScope {
         onPlaylistsOverviewRequested: root.state = "playlists"
         onExploreRequested: root.state = "explore"
         onSettingsRequested: root.state = "settings"
+
+        onPlaylistRequested: {
+            playlistsPage.index = index
+            root.state = "playlist"
+        }
     }
 
     Navigation.onBack: if (!event.autoRepeat) controller.back()

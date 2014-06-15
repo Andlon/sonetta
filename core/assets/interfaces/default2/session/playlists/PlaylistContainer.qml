@@ -4,6 +4,9 @@ import Sonetta 0.1
 import "../../common"
 
 CollectionView {
+    signal playlistRequested(var index)
+
+    onItemPressed: playlistRequested(index)
     delegate: Item {
         id: delegateRoot
         height: mosaic.height + UI.globalSpacing

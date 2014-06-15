@@ -41,7 +41,7 @@ FocusScope {
 
     property QtObject contextModel: null
 
-    signal itemPressed(var data)
+    signal itemPressed(var index, var model)
     signal contextPressed(string name, var data)
     clip: true
 
@@ -98,7 +98,7 @@ FocusScope {
                 event.accepted = false
         }
 
-        //Navigation.onOk: root.itemPressed(list.currentItem.internalModel)
+        Navigation.onOk: root.itemPressed(list.currentIndex, list.currentItem.internalModel)
 
         displaced: move
         move: Transition { SmoothedAnimation { property: "y"; duration: UI.timing.highlightMove; velocity: -1 } }

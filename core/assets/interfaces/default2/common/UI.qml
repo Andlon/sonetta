@@ -26,7 +26,7 @@ Item {
         readonly property color focus: "#ffc000"
         readonly property color focusText: light
         readonly property color focusLabel: Qt.tint(label, Qt.rgba(focusText.r, focusText.g, focusText.b, 0.75))
-        readonly property color currentUnfocused: "#666666";
+        readonly property color currentUnfocused: "#666666"
     }
 
     property QtObject fonts: QtObject {

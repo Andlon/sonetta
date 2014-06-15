@@ -204,4 +204,5 @@ OTHER_FILES += \
     assets/interfaces/default2/session/playlists/PlaylistContainer.qml \
     assets/interfaces/default2/session/playlists/Mosaic.qml \
     assets/interfaces/default2/common/FocusText.qml \
-    assets/interfaces/default2/common/CollectionHighlight.qml
+    assets/interfaces/default2/common/CollectionHighlight.qml \
+    assets/interfaces/default2/session/playlists/PlaylistView.qml
