@@ -1,11 +1,14 @@
 import QtQuick 2.3
 import Sonetta 0.1
 
+import QtGraphicalEffects 1.0
+
 import "../../common"
 
 CollectionView {
     id: root
     signal playlistRequested(var index)
+    property var currentPlaylist: currentItem && currentItem.internalModel ? currentItem.internalModel.playlist : undefined
 
     onItemPressed: playlistRequested(index)
     delegate: Item {
@@ -27,6 +30,12 @@ CollectionView {
                 top: parent.top
                 margins: UI.globalSpacing / 2
             }
+        }
+
+        Desaturate {
+            anchors.fill: mosaic
+            source: mosaic
+            desaturation: delegateRoot.activeFocus ? 0.0 : 1.0
         }
 
         FocusText {

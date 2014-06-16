@@ -40,8 +40,8 @@ FocusScope {
         text: "Your Playlists"
         anchors {
             top: root.top
-            left: root.left
-            margins: UI.globalSpacing
+            left: container.left
+            topMargin: UI.globalSpacing
         }
     }
 
@@ -50,12 +50,38 @@ FocusScope {
         font: UI.fonts.mainMenu
         color: UI.colors.label
         text: playlistModel.name
+        elide: Text.ElideRight
         anchors {
             top: root.top
             left: header.right
             right: root.right
             margins: UI.globalSpacing
         }
+    }
+
+    Text {
+        id: selectedPlaylistHeader
+        font: UI.fonts.mainMenu
+        text: "Selected playlist"
+        color: UI.colors.darkLabel
+        anchors {
+            top: header.top
+            left: playlistInformation.left
+            right: playlistInformation.right
+        }
+    }
+
+    PlaylistInformation {
+        id: playlistInformation
+        width: 350
+        anchors {
+            top: header.bottom
+            left: root.left
+            bottom: root.bottom
+            margins: UI.globalSpacing
+        }
+
+        playlist: container.currentPlaylist
     }
 
     PlaylistContainer {
@@ -67,7 +93,7 @@ FocusScope {
         }
         anchors {
             top: header.bottom
-            left: root.left
+            left: playlistInformation.right
             right: root.right
             bottom: root.bottom
             margins: UI.globalSpacing
@@ -85,7 +111,7 @@ FocusScope {
         focus: true
         anchors {
             top: header.bottom
-            left: root.left
+            left: playlistInformation.right
             right: root.right
             bottom: root.bottom
             margins: UI.globalSpacing

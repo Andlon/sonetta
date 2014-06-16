@@ -14,8 +14,8 @@ class MosaicGenerator : public QObject {
 
     Q_PROPERTY(Spotinetta::Playlist playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
     Q_PROPERTY(QStringList mosaic READ mosaic NOTIFY mosaicChanged)
-    Q_PROPERTY(ImageSize singleCoverSize READ singleCoverSize NOTIFY singleCoverSizeChanged)
-    Q_PROPERTY(ImageSize collageCoverSize READ collageCoverSize NOTIFY collageCoverSizeChanged)
+    Q_PROPERTY(ImageSize singleCoverSize READ singleCoverSize WRITE setSingleCoverSize NOTIFY singleCoverSizeChanged)
+    Q_PROPERTY(ImageSize collageCoverSize READ collageCoverSize WRITE setCollageCoverSize NOTIFY collageCoverSizeChanged)
 
 public:
     enum ImageSize {

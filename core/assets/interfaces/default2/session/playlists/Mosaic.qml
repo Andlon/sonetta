@@ -5,6 +5,8 @@ import "../../common"
 
 Item {
     property alias playlist: generator.playlist
+    property alias singleCoverSize: generator.singleCoverSize
+    property alias collageCoverSize: generator.collageCoverSize
 
     states: [
         State {

@@ -61,7 +61,8 @@ HEADERS += \
     src/navigation/windowsnavigationfilter.h \
     src/navigation/navigationcontroller.h \
     src/quick/quickartistsynopsis.h \
-    src/quick/quickglobalstatemachine.h
+    src/quick/quickglobalstatemachine.h \
+    src/quick/quickplaylistsynopsis.h
 
 SOURCES += \
     $$PWD/../appkey.c \
@@ -91,7 +92,8 @@ SOURCES += \
     src/navigation/lircclient.cpp \
     src/navigation/navigationcontroller.cpp \
     src/quick/quickartistsynopsis.cpp \
-    src/quick/quickglobalstatemachine.cpp
+    src/quick/quickglobalstatemachine.cpp \
+    src/quick/quickplaylistsynopsis.cpp
 
 OTHER_FILES += \
     assets/interfaces/default/main.qml \
@@ -205,4 +207,5 @@ OTHER_FILES += \
     assets/interfaces/default2/session/playlists/Mosaic.qml \
     assets/interfaces/default2/common/FocusText.qml \
     assets/interfaces/default2/common/CollectionHighlight.qml \
-    assets/interfaces/default2/session/playlists/PlaylistView.qml
+    assets/interfaces/default2/session/playlists/PlaylistView.qml \
+    assets/interfaces/default2/session/playlists/PlaylistInformation.qml

@@ -23,12 +23,23 @@ PlaylistModel::PlaylistModel(ObjectSharedPointer<const Spotinetta::Session> sess
     connect(m_watcher.data(), &sp::PlaylistWatcher::tracksRemoved,
             this, &PlaylistModel::onTracksRemoved);
 
+    // Name signals
     connect(this, &PlaylistModel::playlistChanged,
             this, &PlaylistModel::nameChanged);
     connect(m_watcher.data(), &sp::PlaylistWatcher::renamed,
             this, &PlaylistModel::nameChanged);
     connect(m_watcher.data(), &sp::PlaylistWatcher::stateChanged,
             this, &PlaylistModel::nameChanged);
+
+    // Track count signals
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksAdded,
+            this, &PlaylistModel::trackCountChanged);
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksMoved,
+            this, &PlaylistModel::trackCountChanged);
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksRemoved,
+            this, &PlaylistModel::trackCountChanged);
+    connect(this, &PlaylistModel::playlistChanged,
+            this, &PlaylistModel::trackCountChanged);
 }
 
 sp::Playlist PlaylistModel::playlist() const
@@ -62,6 +73,11 @@ void PlaylistModel::setPlaylist(const Spotinetta::Playlist &playlist)
 QString PlaylistModel::name() const
 {
     return playlist().name();
+}
+
+int PlaylistModel::trackCount() const
+{
+    return m_tracks.count();
 }
 
 Spotinetta::Track PlaylistModel::getTrackAt(int index) const

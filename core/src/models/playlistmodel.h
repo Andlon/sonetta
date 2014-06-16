@@ -15,6 +15,7 @@ class PlaylistModel : public AbstractTrackCollectionModel
 
     Q_PROPERTY(Spotinetta::Playlist playlist READ playlist WRITE setPlaylist NOTIFY playlistChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(int trackCount READ trackCount NOTIFY trackCountChanged)
 
 public:
     explicit PlaylistModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent = 0);
@@ -23,10 +24,12 @@ public:
     void setPlaylist(const Spotinetta::Playlist &playlist);
 
     QString name() const;
+    int trackCount() const;
 
 signals:
     void playlistChanged();
     void nameChanged();
+    void trackCountChanged();
 
 protected:
     Spotinetta::Track getTrackAt(int index) const;
