@@ -9,7 +9,7 @@ class AlbumModel : public AbstractTrackCollectionModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(Spotinetta::Album album READ album WRITE setAlbum NOTIFY albumChanged)
+    Q_PROPERTY(Spotinetta::Album album READ album WRITE setAlbum RESET resetAlbum NOTIFY albumChanged)
     Q_PROPERTY(Spotinetta::Artist artist READ artist NOTIFY albumMetadataChanged)
     Q_PROPERTY(QString name READ name NOTIFY albumMetadataChanged)
     Q_PROPERTY(QString artistName READ artistName NOTIFY albumMetadataChanged)
@@ -51,6 +51,8 @@ private slots:
 
 private:
     Q_DISABLE_COPY(AlbumModel)
+    void resetAlbum() { setAlbum(Spotinetta::Album()); }
+
     ObjectSharedPointer<const Spotinetta::Session>      m_session;
     ObjectScopedPointer<Spotinetta::AlbumBrowseWatcher> m_watcher;
     Spotinetta::TrackList               m_tracks;

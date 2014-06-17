@@ -17,13 +17,13 @@ CollectionView {
         focus: true
 
         property var playlist: model ? model.playlist : undefined
-        onPlaylistChanged: if (playlist) mosaic.playlist = playlist
         onHeightChanged: root.delegateHeight = height
 
         Mosaic {
             id: mosaic
             width: UI.playlistContainer.mosaicSize
             height: UI.playlistContainer.mosaicSize
+            playlist: delegateRoot.playlist
 
             anchors {
                 left: parent.left

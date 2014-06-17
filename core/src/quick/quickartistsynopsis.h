@@ -14,7 +14,7 @@ namespace Sonetta
 class QuickArtistSynopsis : public QObject {
     Q_OBJECT
 
-    Q_PROPERTY(Spotinetta::Artist artist READ artist WRITE setArtist NOTIFY artistChanged)
+    Q_PROPERTY(Spotinetta::Artist artist READ artist WRITE setArtist RESET resetArtist NOTIFY artistChanged)
     Q_PROPERTY(QString name READ name NOTIFY artistDataChanged)
     Q_PROPERTY(QString biography READ biography NOTIFY browseDataChanged)
     Q_PROPERTY(QObject * similarArtists READ similarArtists CONSTANT)
@@ -68,6 +68,8 @@ private slots:
 private:
     template <typename T>
     void connectModel(T * model);
+    void resetArtist() { setArtist(Spotinetta::Artist()); }
+
     ObjectSharedPointer<const Spotinetta::Session>          m_session;
     ObjectScopedPointer<Spotinetta::ArtistWatcher>          m_artistWatcher;
     ObjectScopedPointer<Spotinetta::ArtistBrowseWatcher>    m_browseWatcher;
