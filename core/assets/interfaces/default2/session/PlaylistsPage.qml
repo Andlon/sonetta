@@ -12,25 +12,44 @@ FocusScope {
     states: [
         State {
             name: "container"
-            PropertyChanges { target: container; visible: true; focus: true }
-            PropertyChanges { target: playlistView; visible: false; focus: false }
-            PropertyChanges { target: header; color: UI.colors.label }
+            PropertyChanges { target: container; opacity: 1; focus: true }
+            PropertyChanges { target: playlistView; opacity: 0; focus: false }
+            PropertyChanges { target: header; opacity: 1 }
             PropertyChanges { target: playlistHeader; opacity: 0 }
+            PropertyChanges { target: playlistModel; playlist: undefined }
         },
         State {
             name: "playlist"
-            PropertyChanges { target: container; visible: false; focus: false }
-            PropertyChanges { target: playlistView; visible: true; focus: true; }
+            PropertyChanges { target: container; opacity: 0; focus: false }
+            PropertyChanges { target: playlistView; opacity: 1; focus: true; }
             PropertyChanges { target: playlistModel; playlist: container.model.playlistAt(root.index) }
-            PropertyChanges { target: header; color: UI.colors.darkLabel }
+            PropertyChanges { target: header; opacity: 0 }
             PropertyChanges { target: playlistHeader; opacity: 1 }
         }
     ]
 
     transitions: [
         Transition {
-            ColorAnimation { duration: UI.timing.highlightMove }
-            OpacityAnimator { target: header; duration: UI.timing.highlightMove }
+            from: "container"
+            to: "playlist"
+            ColorAnimation { duration: UI.playlistPage.fadeTime }
+            SequentialAnimation {
+                SmoothedAnimation { targets: [container, header]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+                SmoothedAnimation { targets: [playlistView, playlistHeader]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+            }
+            //            OpacityAnimator { target: container; duration: UI.timing.highlightMove }
+            //            OpacityAnimator { target: playlistView; duration: UI.timing.highlightMove }
+            //            OpacityAnimator { target: header; duration: UI.timing.highlightMove }
+            //            OpacityAnimator { target: playlistHeader; duration: UI.timing.highlightMove }
+        },
+        Transition {
+            from: "playlist"
+            to: "container"
+            ColorAnimation { duration: UI.playlistPage.fadeTime }
+            SequentialAnimation {
+                SmoothedAnimation { targets: [playlistView, playlistHeader]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+                SmoothedAnimation { targets: [container, header]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+            }
         }
     ]
 
@@ -38,9 +57,12 @@ FocusScope {
         id: header
         font: UI.fonts.mainMenu
         text: "Your Playlists"
+        color: UI.colors.label
+        elide: Text.ElideRight
         anchors {
             top: root.top
             left: container.left
+            right: container.right
             topMargin: UI.globalSpacing
         }
     }
@@ -53,9 +75,9 @@ FocusScope {
         elide: Text.ElideRight
         anchors {
             top: root.top
-            left: header.right
-            right: root.right
-            margins: UI.globalSpacing
+            left: container.left
+            right: container.right
+            topMargin: UI.globalSpacing
         }
     }
 

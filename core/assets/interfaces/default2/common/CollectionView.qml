@@ -99,12 +99,6 @@ FocusScope {
         }
 
         Navigation.onOk: root.itemPressed(list.currentIndex, list.currentItem.internalModel)
-
-        displaced: move
-        move: Transition { SmoothedAnimation { property: "y"; duration: UI.timing.highlightMove; velocity: -1 } }
-        add: Transition { SmoothedAnimation { property: "opacity"; from: 0; to: 1; duration: 500; velocity: -1 } }
-        remove: Transition { SmoothedAnimation { property: "opacity"; from: 1; to: 0; duration: 500; velocity: -1 } }
-        populate: Transition { SmoothedAnimation { property: "opacity"; from: 0; to: 1; duration: 500; velocity: -1 } }
     }
 
     VerticalScrollbar {
@@ -126,6 +120,7 @@ FocusScope {
             id: delegateRoot
             height: delegateLoader.height
             width: list.width
+            visible: delegateLoader.status === Loader.Ready
 
             property int internalIndex: index
             property var internalModel: model

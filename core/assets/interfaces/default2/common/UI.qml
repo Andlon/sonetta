@@ -54,7 +54,8 @@ Item {
         readonly property int frameSpacing: 3
     }
 
-    property QtObject playlistContainer: QtObject {
+    property QtObject playlistPage: QtObject {
         readonly property int mosaicSize: 96
+        readonly property int fadeTime: 300
     }
 }

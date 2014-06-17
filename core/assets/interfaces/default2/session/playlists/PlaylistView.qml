@@ -41,6 +41,7 @@ CollectionView {
             font: root.font
             elide: Text.ElideRight
             width: delegateRoot.width * 0.4
+            color: UI.colors.text
 
             anchors {
                 left: parent.left
@@ -55,6 +56,7 @@ CollectionView {
             text: model ? Time.formatTime(model.duration) : ""
             width: 60
             font: root.font
+            color: UI.colors.label
             anchors {
                 left: track.right
                 top: track.top
@@ -67,6 +69,7 @@ CollectionView {
             text: model ? model.artistNames.join(", ") : ""
             font: root.font
             elide: Text.ElideRight
+            color: UI.colors.text
             anchors {
                 left: duration.right
                 top: duration.top

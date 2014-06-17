@@ -21,8 +21,8 @@ CollectionView {
 
         Mosaic {
             id: mosaic
-            width: UI.playlistContainer.mosaicSize
-            height: UI.playlistContainer.mosaicSize
+            width: UI.playlistPage.mosaicSize
+            height: UI.playlistPage.mosaicSize
             playlist: delegateRoot.playlist
 
             anchors {
