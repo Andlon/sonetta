@@ -1,6 +1,7 @@
 import QtQuick 2.3
 
 Item {
+    id: root
     property url uri
     property alias placeholder: placeholder.source
 
@@ -8,16 +9,17 @@ Item {
     property alias sourceSize: image.sourceSize
     property alias verticalAlignment: image.verticalAlignment
     property alias horizontalAlignment: image.horizontalAlignment
+    property alias status: image.status
 
     width: image.sourceSize.width
     height: image.sourceSize.height
 
     Image {
         id: placeholder
-        visible: image.status != Image.Ready
+        visible: source != "" && image.status != Image.Ready
         cache: true
         fillMode: image.fillMode
-
+        asynchronous: false
         anchors.fill: parent
     }
 

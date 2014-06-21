@@ -13,34 +13,33 @@ Item {
 
     states: [
         State {
-            name: "single"
-            PropertyChanges { target: topleft; anchors.right: root.right; anchors.bottom: root.bottom }
-            PropertyChanges { target: bottomleft; visible: false; restoreEntryValues: true }
-            PropertyChanges { target: topright; visible: false; restoreEntryValues: true}
-            PropertyChanges { target: bottomright; visible: false; restoreEntryValues: true }
-
-            PropertyChanges { target: topright; uri: "" }
-            PropertyChanges { target: bottomleft; uri: "" }
-            PropertyChanges { target: bottomright; uri: "" }
+            name: "singleBase"
+            AnchorChanges { target: topleft; anchors { right: root.right; bottom: root.bottom } }
+            PropertyChanges { target: topleft; visible: true; sourceUri: generator.mosaic[0] }
+            PropertyChanges { target: bottomleft; visible: false; sourceUri: "" }
+            PropertyChanges { target: topright; visible: false; sourceUri: "" }
+            PropertyChanges { target: bottomright; visible: false; sourceUri: "" }
+        },
+        State {
+            name: "collageBase"
+            PropertyChanges { target: topleft; visible: true; sourceUri: generator.mosaic[0] }
+            PropertyChanges { target: topright; visible: true; sourceUri: generator.mosaic[1] }
+            PropertyChanges { target: bottomleft; visible: true; sourceUri: generator.mosaic[2] }
+            PropertyChanges { target: bottomright; visible: true; sourceUri: generator.mosaic[3] }
         },
         State {
             when: generator.mosaic.length >= 4
-            PropertyChanges { target: topleft; uri: generator.mosaic[0] }
-            PropertyChanges { target: topright; uri: generator.mosaic[1] }
-            PropertyChanges { target: bottomleft; uri: generator.mosaic[2] }
-            PropertyChanges { target: bottomright; uri: generator.mosaic[3] }
+            extend: "collageBase"
         },
         State {
-            extend: "single"
+            extend: "singleBase"
             when: generator.mosaic.length > 0 && generator.mosaic.length < 4
-            PropertyChanges { target: topleft; uri: generator.mosaic[0] }
         },
         State {
             extend: "single"
             when: generator.mosaic.length === 0
-            PropertyChanges { target: topleft; uri: "" }
+            PropertyChanges { target: topleft; visible: false; sourceUri: "" }
         }
-
     ]
 
     Image {
@@ -49,8 +48,10 @@ Item {
         fillMode: Image.PreserveAspectCrop
     }
 
-    SpotifyImage {
+    Image {
         id: bottomleft
+        property url sourceUri
+        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
         anchors {
             top: parent.verticalCenter
             left: parent.left
@@ -60,8 +61,10 @@ Item {
         fillMode: Image.PreserveAspectCrop
     }
 
-    SpotifyImage {
+    Image {
         id: topright
+        property url sourceUri
+        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
         anchors {
             top: parent.top
             left: parent.horizontalCenter
@@ -71,8 +74,10 @@ Item {
         fillMode: Image.PreserveAspectCrop
     }
 
-    SpotifyImage {
+    Image {
         id: bottomright
+        property url sourceUri
+        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
         anchors {
             top: parent.verticalCenter
             left: parent.horizontalCenter
@@ -82,8 +87,10 @@ Item {
         fillMode: Image.PreserveAspectCrop
     }
 
-    SpotifyImage {
+    Image {
         id: topleft
+        property url sourceUri
+        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
         anchors {
             top: parent.top
             left: parent.left
