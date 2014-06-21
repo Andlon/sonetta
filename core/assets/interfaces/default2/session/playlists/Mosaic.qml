@@ -11,36 +11,71 @@ Item {
     property alias collageCoverSize: generator.collageCoverSize
     property alias placeholder: placeholder.source
 
+    property bool _allFourCollagesLoaded: topleft.status === Image.Ready && topright.status === Image.Ready &&
+                                          bottomleft.status === Image.Ready && bottomright.status === Image.Ready
+
     states: [
         State {
             name: "singleBase"
             AnchorChanges { target: topleft; anchors { right: root.right; bottom: root.bottom } }
-            PropertyChanges { target: topleft; visible: true; sourceUri: generator.mosaic[0] }
-            PropertyChanges { target: bottomleft; visible: false; sourceUri: "" }
-            PropertyChanges { target: topright; visible: false; sourceUri: "" }
-            PropertyChanges { target: bottomright; visible: false; sourceUri: "" }
+            PropertyChanges { target: topleft; visible: true; }
+            PropertyChanges { target: bottomleft; visible: false; }
+            PropertyChanges { target: topright; visible: false; }
+            PropertyChanges { target: bottomright; visible: false; }
         },
         State {
             name: "collageBase"
-            PropertyChanges { target: topleft; visible: true; sourceUri: generator.mosaic[0] }
-            PropertyChanges { target: topright; visible: true; sourceUri: generator.mosaic[1] }
-            PropertyChanges { target: bottomleft; visible: true; sourceUri: generator.mosaic[2] }
-            PropertyChanges { target: bottomright; visible: true; sourceUri: generator.mosaic[3] }
+            PropertyChanges { target: topleft; visible: true; }
+            PropertyChanges { target: topright; visible: true; }
+            PropertyChanges { target: bottomleft; visible: true; }
+            PropertyChanges { target: bottomright; visible: true; }
         },
         State {
-            when: generator.mosaic.length >= 4
+            name: "collageLoading"
+            when: generator.mosaic.length >= 4 && !_allFourCollagesLoaded
             extend: "collageBase"
+            PropertyChanges { target: topleft; opacity: 0 }
+            PropertyChanges { target: topright; opacity: 0 }
+            PropertyChanges { target: bottomleft; opacity: 0 }
+            PropertyChanges { target: bottomright; opacity: 0 }
         },
         State {
+            name: "collage"
+            extend: "collageBase"
+            when: generator.mosaic.length >= 4 && _allFourCollagesLoaded
+            PropertyChanges { target: topleft; opacity: 1 }
+            PropertyChanges { target: topright; opacity: 1 }
+            PropertyChanges { target: bottomleft; opacity: 1 }
+            PropertyChanges { target: bottomright; opacity: 1 }
+        },
+        State {
+            name: "singleLoading"
             extend: "singleBase"
-            when: generator.mosaic.length > 0 && generator.mosaic.length < 4
+            when: generator.mosaic.length > 0 && generator.mosaic.length < 4 && topleft.status !== Image.Ready
+            PropertyChanges { target: topleft; opacity: 0 }
+            PropertyChanges { target: topright; opacity: 0 }
+            PropertyChanges { target: bottomleft; opacity: 0 }
+            PropertyChanges { target: bottomright; opacity: 0 }
         },
         State {
-            extend: "single"
+            name: "single"
+            extend: "singleBase"
+            when: generator.mosaic.length > 0 && generator.mosaic.length < 4 && topleft.status === Image.Ready
+            PropertyChanges { target: topleft; opacity: 1 }
+            PropertyChanges { target: topright; opacity: 0 }
+            PropertyChanges { target: bottomleft; opacity: 0 }
+            PropertyChanges { target: bottomright; opacity: 0 }
+        },
+        State {
+            name: "unloaded"
             when: generator.mosaic.length === 0
-            PropertyChanges { target: topleft; visible: false; sourceUri: "" }
+            PropertyChanges { target: topleft; visible: false; }
         }
     ]
+
+    transitions: Transition {
+        SmoothedAnimation { property: "opacity"; duration: UI.timing.fade; velocity: -1 }
+    }
 
     Image {
         id: placeholder
@@ -50,8 +85,7 @@ Item {
 
     Image {
         id: bottomleft
-        property url sourceUri
-        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
+        source: generator.mosaic.length > 3 ? "image://sp/" + generator.mosaic[2] : ""
         anchors {
             top: parent.verticalCenter
             left: parent.left
@@ -63,8 +97,7 @@ Item {
 
     Image {
         id: topright
-        property url sourceUri
-        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
+        source: generator.mosaic.length > 3 ? "image://sp/" + generator.mosaic[1] : ""
         anchors {
             top: parent.top
             left: parent.horizontalCenter
@@ -76,8 +109,7 @@ Item {
 
     Image {
         id: bottomright
-        property url sourceUri
-        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
+        source: generator.mosaic.length > 3 ? "image://sp/" + generator.mosaic[3] : ""
         anchors {
             top: parent.verticalCenter
             left: parent.horizontalCenter
@@ -89,8 +121,7 @@ Item {
 
     Image {
         id: topleft
-        property url sourceUri
-        source: sourceUri != "" ? "image://sp/" + sourceUri : ""
+        source: generator.mosaic.length > 0 ? "image://sp/" + generator.mosaic[0] : ""
         anchors {
             top: parent.top
             left: parent.left

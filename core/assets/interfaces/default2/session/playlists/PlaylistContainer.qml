@@ -19,6 +19,21 @@ CollectionView {
         property var playlist: model ? model.playlist : undefined
         onHeightChanged: root.delegateHeight = height
 
+        states: [
+            State {
+                when: delegateRoot.activeFocus
+                PropertyChanges { target: filter; desaturation: 0.0 }
+            },
+            State {
+                when: !delegateRoot.activeFocus
+                PropertyChanges { target: filter; desaturation: 1.0 }
+            }
+        ]
+
+        transitions: Transition {
+            SmoothedAnimation { property: "desaturation"; duration: UI.timing.highlightMove; velocity: -1 }
+        }
+
         Mosaic {
             id: mosaic
             width: UI.playlistPage.mosaicSize
@@ -34,9 +49,9 @@ CollectionView {
         }
 
         Desaturate {
+            id: filter
             anchors.fill: mosaic
             source: mosaic
-            desaturation: delegateRoot.activeFocus ? 0.0 : 1.0
         }
 
         FocusText {
