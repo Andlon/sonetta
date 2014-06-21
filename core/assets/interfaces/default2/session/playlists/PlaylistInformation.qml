@@ -12,6 +12,7 @@ FocusScope {
         singleCoverSize: MosaicGenerator.Large
         collageCoverSize: MosaicGenerator.Normal
         height: width
+        placeholder: "../../images/disc_placeholder_large.png"
 
         anchors {
             top: root.top

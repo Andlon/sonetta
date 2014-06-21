@@ -16,12 +16,11 @@ FocusScope {
             PropertyChanges { target: playlistView; opacity: 0; focus: false }
             PropertyChanges { target: header; opacity: 1 }
             PropertyChanges { target: playlistHeader; opacity: 0 }
-            PropertyChanges { target: playlistModel; playlist: undefined }
         },
         State {
             name: "playlist"
             PropertyChanges { target: container; opacity: 0; focus: false }
-            PropertyChanges { target: playlistView; opacity: 1; focus: true; }
+            PropertyChanges { target: playlistView; opacity: 1; currentIndex: 0; focus: true; }
             PropertyChanges { target: playlistModel; playlist: container.model.playlistAt(root.index) }
             PropertyChanges { target: header; opacity: 0 }
             PropertyChanges { target: playlistHeader; opacity: 1 }
@@ -37,10 +36,6 @@ FocusScope {
                 SmoothedAnimation { targets: [container, header]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
                 SmoothedAnimation { targets: [playlistView, playlistHeader]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
             }
-            //            OpacityAnimator { target: container; duration: UI.timing.highlightMove }
-            //            OpacityAnimator { target: playlistView; duration: UI.timing.highlightMove }
-            //            OpacityAnimator { target: header; duration: UI.timing.highlightMove }
-            //            OpacityAnimator { target: playlistHeader; duration: UI.timing.highlightMove }
         },
         Transition {
             from: "playlist"
@@ -109,9 +104,9 @@ FocusScope {
     PlaylistContainer {
         id: container
         focus: true
+        visible: opacity != 0
         model: PlaylistContainerModel {
             playlistContainer: session.playlistContainer
-            onLoadedChanged: playlistModel.playlist = playlistAt(root.index)
         }
         anchors {
             top: header.bottom
@@ -126,11 +121,11 @@ FocusScope {
 
     PlaylistView {
         id: playlistView
+        focus: true
+        visible: opacity != 0
         model: PlaylistModel {
             id: playlistModel
-            onPlaylistChanged: playlistView.currentIndex = 0
         }
-        focus: true
         anchors {
             top: header.bottom
             left: playlistInformation.right

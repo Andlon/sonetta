@@ -24,6 +24,7 @@ CollectionView {
             width: UI.playlistPage.mosaicSize
             height: UI.playlistPage.mosaicSize
             playlist: delegateRoot.playlist
+            placeholder: "../../images/disc_placeholder_small.png"
 
             anchors {
                 left: parent.left
