@@ -2,7 +2,7 @@ import QtQuick 2.2
 import Sonetta 0.1
 import Navigation 0.1
 
-import "."
+import ".."
 
 /*
   - CollectionView:

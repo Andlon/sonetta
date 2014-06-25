@@ -2,7 +2,7 @@ import QtQuick 2.3
 import Navigation 0.1
 import Sonetta 0.1
 
-import "."
+import ".."
 
 MenuItem {
     id: root

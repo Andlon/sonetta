@@ -1,1 +1,28 @@
+# Base common types
 singleton UI 0.1 UI.qml
+Box 0.1 Box.qml
+FocusText 0.1 FocusText.qml
+Pattern 0.1 Pattern.qml
+SpotifyImage 0.1 SpotifyImage.qml
+VirtualDialog 0.1 VirtualDialog.qml
+
+# Scripts
+Time 0.1 Time.js
+Dialog 0.1 Dialog.js
+
+# Keyboard
+VirtualKeyboard 0.1 keyboard/VirtualKeyboard.qml
+VirtualKeyboardDialog 0.1 keyboard/VirtualKeyboardDialog.qml
+
+# Menu
+Menu 0.1 menu/Menu.qml
+MenuCheckableItem 0.1 menu/MenuCheckableItem.qml
+MenuInputItem 0.1 menu/MenuInputItem.qml
+MenuItem 0.1 menu/MenuItem.qml
+MenuTextItem 0.1 menu/MenuTextItem.qml
+
+# Views
+CollectionView 0.1 views/CollectionView.qml
+CollectionHighlight 0.1 views/CollectionHighlight.qml
+PageView 0.1 views/PageView.qml
+VerticalScrollbar 0.1 views/VerticalScrollbar.qml

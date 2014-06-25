@@ -1,5 +1,7 @@
 import QtQuick 2.3
 
+import ".."
+
 FocusScope {
     id: root
 

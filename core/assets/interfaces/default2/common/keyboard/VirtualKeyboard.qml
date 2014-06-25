@@ -2,7 +2,7 @@ import QtQuick 2.3
 import QtQuick.Layouts 1.1
 import Navigation 0.1
 
-import "."
+import ".."
 import "VirtualKeyboard.js" as VK
 
 FocusScope {
@@ -305,7 +305,7 @@ FocusScope {
             sourceSize: Qt.size(width, height)
             fillMode: Image.PreserveAspectFit
             mipmap: true
-            source: hasFocus ? "../images/keys/backspace_focus.png" : "../images/keys/backspace.png"
+            source: hasFocus ? "../../images/keys/backspace_focus.png" : "../../images/keys/backspace.png"
         }
     }
 
@@ -317,7 +317,7 @@ FocusScope {
             sourceSize: Qt.size(width, height)
             fillMode: Image.PreserveAspectFit
             mipmap: !capsTransition.running
-            source: hasFocus ? "../images/keys/caps_focus.png" : "../images/keys/caps.png"
+            source: hasFocus ? "../../images/keys/caps_focus.png" : "../../images/keys/caps.png"
 
             states: [
                 State {

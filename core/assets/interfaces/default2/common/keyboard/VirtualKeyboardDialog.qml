@@ -1,6 +1,6 @@
-import QtQuick 2.2
+import QtQuick 2.3
 
-import "."
+import ".."
 
 VirtualDialog {
     id: root

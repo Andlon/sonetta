@@ -171,7 +171,6 @@ OTHER_FILES += \
     assets/interfaces/default2/images/playback/pause.svg \
     assets/interfaces/default2/images/playback/play.svg \
     assets/interfaces/default2/common/UI.qml \
-    assets/interfaces/default2/common/Box.qml \
     assets/interfaces/default2/common/Pattern.qml \
     assets/interfaces/default2/common/qmldir \
     assets/interfaces/default2/common/MenuItem.qml \
@@ -206,4 +205,17 @@ OTHER_FILES += \
     assets/interfaces/default2/common/FocusText.qml \
     assets/interfaces/default2/common/CollectionHighlight.qml \
     assets/interfaces/default2/session/playlists/PlaylistView.qml \
-    assets/interfaces/default2/session/playlists/PlaylistInformation.qml
+    assets/interfaces/default2/session/playlists/PlaylistInformation.qml \
+    assets/interfaces/default2/common/Box.qml \
+    assets/interfaces/default2/common/keyboard/VirtualKeyboard.js \
+    assets/interfaces/default2/common/keyboard/VirtualKeyboard.qml \
+    assets/interfaces/default2/common/keyboard/VirtualKeyboardDialog.qml \
+    assets/interfaces/default2/common/menu/Menu.qml \
+    assets/interfaces/default2/common/menu/MenuCheckableItem.qml \
+    assets/interfaces/default2/common/menu/MenuInputItem.qml \
+    assets/interfaces/default2/common/menu/MenuItem.qml \
+    assets/interfaces/default2/common/menu/MenuTextItem.qml \
+    assets/interfaces/default2/common/views/CollectionHighlight.qml \
+    assets/interfaces/default2/common/views/CollectionView.qml \
+    assets/interfaces/default2/common/views/PageView.qml \
+    assets/interfaces/default2/common/views/VerticalScrollbar.qml

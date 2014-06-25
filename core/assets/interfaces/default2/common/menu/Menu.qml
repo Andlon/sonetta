@@ -2,7 +2,7 @@ import QtQuick 2.3
 import QtQml.Models 2.1
 import Navigation 0.1
 
-import "."
+import ".."
 
 ListView {
     id: root
