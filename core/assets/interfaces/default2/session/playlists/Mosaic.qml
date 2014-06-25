@@ -6,74 +6,64 @@ import "../../common"
 Item {
     id: root
 
-    property alias playlist: generator.playlist
+    property var playlist
     property alias singleCoverSize: generator.singleCoverSize
     property alias collageCoverSize: generator.collageCoverSize
     property alias placeholder: placeholder.source
 
-    property bool _allFourCollagesLoaded: topleft.status === Image.Ready && topright.status === Image.Ready &&
-                                          bottomleft.status === Image.Ready && bottomright.status === Image.Ready
-
     states: [
         State {
-            name: "singleBase"
-            AnchorChanges { target: topleft; anchors { right: root.right; bottom: root.bottom } }
-            PropertyChanges { target: topleft; visible: true; }
-            PropertyChanges { target: bottomleft; visible: false; }
-            PropertyChanges { target: topright; visible: false; }
-            PropertyChanges { target: bottomright; visible: false; }
-        },
-        State {
-            name: "collageBase"
-            PropertyChanges { target: topleft; visible: true; }
-            PropertyChanges { target: topright; visible: true; }
-            PropertyChanges { target: bottomleft; visible: true; }
-            PropertyChanges { target: bottomright; visible: true; }
-        },
-        State {
             name: "collageLoading"
-            when: generator.mosaic.length >= 4 && !_allFourCollagesLoaded
-            extend: "collageBase"
-            PropertyChanges { target: topleft; opacity: 0 }
-            PropertyChanges { target: topright; opacity: 0 }
-            PropertyChanges { target: bottomleft; opacity: 0 }
-            PropertyChanges { target: bottomright; opacity: 0 }
+            when: generator.mosaic.length > 0 && generator.collagePreferred && !generator.collageLoaded
+            PropertyChanges { target: topleft; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: topright; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomleft; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomright; opacity: 0; restoreEntryValues: false }
+            AnchorChanges { target: topleft; anchors { right: root.horizontalCenter; bottom: root.verticalCenter } }
         },
         State {
             name: "collage"
-            extend: "collageBase"
-            when: generator.mosaic.length >= 4 && _allFourCollagesLoaded
-            PropertyChanges { target: topleft; opacity: 1 }
-            PropertyChanges { target: topright; opacity: 1 }
-            PropertyChanges { target: bottomleft; opacity: 1 }
-            PropertyChanges { target: bottomright; opacity: 1 }
+            when: generator.mosaic.length > 0 && generator.collagePreferred && generator.collageLoaded
+            PropertyChanges { target: topleft; opacity: 1; restoreEntryValues: false }
+            PropertyChanges { target: topright; opacity: 1; restoreEntryValues: false }
+            PropertyChanges { target: bottomleft; opacity: 1; restoreEntryValues: false }
+            PropertyChanges { target: bottomright; opacity: 1; restoreEntryValues: false }
+            AnchorChanges { target: topleft; anchors { right: root.horizontalCenter; bottom: root.verticalCenter } }
         },
         State {
             name: "singleLoading"
-            extend: "singleBase"
-            when: generator.mosaic.length > 0 && generator.mosaic.length < 4 && topleft.status !== Image.Ready
-            PropertyChanges { target: topleft; opacity: 0 }
-            PropertyChanges { target: topright; opacity: 0 }
-            PropertyChanges { target: bottomleft; opacity: 0 }
-            PropertyChanges { target: bottomright; opacity: 0 }
+            when: generator.mosaic.length > 0 && !generator.collagePreferred && !generator.singleLoaded
+            PropertyChanges { target: topleft; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: topright; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomleft; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomright; opacity: 0; restoreEntryValues: false }
+            AnchorChanges { target: topleft; anchors { right: root.right; bottom: root.bottom } }
         },
         State {
             name: "single"
-            extend: "singleBase"
-            when: generator.mosaic.length > 0 && generator.mosaic.length < 4 && topleft.status === Image.Ready
-            PropertyChanges { target: topleft; opacity: 1 }
-            PropertyChanges { target: topright; opacity: 0 }
-            PropertyChanges { target: bottomleft; opacity: 0 }
-            PropertyChanges { target: bottomright; opacity: 0 }
+            when: generator.mosaic.length > 0 && !generator.collagePreferred && generator.singleLoaded
+            PropertyChanges { target: topleft; opacity: 1; restoreEntryValues: false }
+            PropertyChanges { target: topright; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomleft; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomright; opacity: 0; restoreEntryValues: false }
+            AnchorChanges { target: topleft; anchors { right: root.right; bottom: root.bottom } }
         },
         State {
             name: "unloaded"
             when: generator.mosaic.length === 0
-            PropertyChanges { target: topleft; visible: false; }
+            PropertyChanges { target: topleft; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: topright; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomleft; opacity: 0; restoreEntryValues: false }
+            PropertyChanges { target: bottomright; opacity: 0; restoreEntryValues: false }
+            AnchorChanges { target: topleft; anchors { right: root.right; bottom: root.bottom } }
         }
     ]
+    state: "unloaded"
 
     transitions: Transition {
+        // Make sure to exclude the unloaded state
+        to: "collage,single"
+        from: "collageLoading,collage,singleLoading,single"
         SmoothedAnimation { property: "opacity"; duration: UI.timing.fade; velocity: -1 }
     }
 
@@ -93,6 +83,7 @@ Item {
             bottom: parent.bottom
         }
         fillMode: Image.PreserveAspectCrop
+        visible: opacity != 0
     }
 
     Image {
@@ -105,6 +96,7 @@ Item {
             bottom: parent.verticalCenter
         }
         fillMode: Image.PreserveAspectCrop
+        visible: opacity != 0
     }
 
     Image {
@@ -117,6 +109,7 @@ Item {
             bottom: parent.bottom
         }
         fillMode: Image.PreserveAspectCrop
+        visible: opacity != 0
     }
 
     Image {
@@ -125,13 +118,30 @@ Item {
         anchors {
             top: parent.top
             left: parent.left
-            right: parent.horizontalCenter
-            bottom: parent.verticalCenter
         }
         fillMode: Image.PreserveAspectCrop
+        visible: opacity != 0
     }
 
     MosaicGenerator {
         id: generator
+
+        // NOTE: We use generator to hold private helper variables to avoid
+        // the (small) overhead of an extra object, as Mosaic is used in
+        // playlist delegates, which need to remain as simple as possible
+        // to load fast
+
+        readonly property bool collagePreferred: mosaic.length >= 4
+        readonly property bool singleLoaded: topleft.status === Image.Ready
+        readonly property bool collageLoaded: topleft.status === Image.Ready && topright.status === Image.Ready &&
+                                              bottomleft.status === Image.Ready && bottomright.status === Image.Ready
+    }
+
+    onPlaylistChanged: {
+        // Force a reset of generator before setting the playlist, so that we make sure we
+        // go through the 'unloaded' state, and hence guarantee a transition between 0 and 1 opacity
+        // (if not, we'd sometimes skip the singleLoading or collageLoading states if the images are cached)
+        generator.playlist = undefined
+        generator.playlist = root.playlist
     }
 }

@@ -44,7 +44,7 @@ signals:
     void collageCoverSizeChanged();
 
 private:
-    void updateMosaic();
+    bool updateMosaic();
     void resetPlaylist() { setPlaylist(Spotinetta::Playlist()); }
 
     QStringList                     m_mosaic;

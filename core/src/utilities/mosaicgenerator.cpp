@@ -18,8 +18,10 @@ sp::AlbumList analyzePlaylist(const Spotinetta::Playlist & playlist, unsigned in
     {
         const sp::Album album = track.album();
 
-        if (!track.isLoaded() || !album.isLoaded())
-            break;
+        // If we encounter an album that is not loaded, return an empty list,
+        // signalling we failed further processing
+        if (!album.isLoaded())
+            return sp::AlbumList();
 
         if (!albums.contains(album))
             albums.append(album);
@@ -57,9 +59,7 @@ void MosaicGenerator::setPlaylist(const Spotinetta::Playlist &playlist)
     m_watcher->watch(playlist);
     emit playlistChanged();
 
-    if (playlist.isLoaded())
-        updateMosaic();
-    else
+    if (!updateMosaic())
         emit mosaicChanged();
 }
 
@@ -85,7 +85,7 @@ void MosaicGenerator::setCollageCoverSize(ImageSize size)
     emit collageCoverSizeChanged();
 }
 
-void MosaicGenerator::updateMosaic()
+bool MosaicGenerator::updateMosaic()
 {
     sp::Playlist pl = playlist();
     if (m_mosaic.count() < PREFERRED_TILECOUNT && pl.isLoaded())
@@ -93,15 +93,23 @@ void MosaicGenerator::updateMosaic()
         m_mosaic.clear();
 
         auto albums = analyzePlaylist(pl, PREFERRED_TILECOUNT);
-        sp::ImageSize size = albums.count() == 1 ? m_singleSize : m_collageSize;
 
+        // Cancel operation if analysis failed
+        if (albums.empty())
+            return false;
+
+        sp::ImageSize size = albums.count() == 1 ? m_singleSize : m_collageSize;
         for (const sp::Album & album : albums)
         {
             const QString uri = sp::Link::fromAlbumCover(album, size).uri();
             m_mosaic.append(uri);
         }
+
         emit mosaicChanged();
+        return true;
     }
+
+    return false;
 }
 
 }
