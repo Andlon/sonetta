@@ -204,7 +204,6 @@ OTHER_FILES += \
     assets/interfaces/default2/session/playlists/Mosaic.qml \
     assets/interfaces/default2/common/FocusText.qml \
     assets/interfaces/default2/common/CollectionHighlight.qml \
-    assets/interfaces/default2/session/playlists/PlaylistView.qml \
     assets/interfaces/default2/session/playlists/PlaylistInformation.qml \
     assets/interfaces/default2/common/Box.qml \
     assets/interfaces/default2/common/keyboard/VirtualKeyboard.js \
@@ -218,4 +217,12 @@ OTHER_FILES += \
     assets/interfaces/default2/common/views/CollectionHighlight.qml \
     assets/interfaces/default2/common/views/CollectionView.qml \
     assets/interfaces/default2/common/views/PageView.qml \
-    assets/interfaces/default2/common/views/VerticalScrollbar.qml
+    assets/interfaces/default2/common/views/VerticalScrollbar.qml \
+    assets/interfaces/default2/common/delegates/SingleRowTrackDelegate.qml \
+    assets/interfaces/default2/common/views/PlaylistView.qml \
+    assets/interfaces/default2/session/playback/CurrentTrackInformation.qml \
+    assets/interfaces/default2/common/SimpleHighlight.qml \
+    assets/interfaces/default2/session/playback/RightColumn.qml \
+    assets/interfaces/default2/session/playback/PlaybackControls.qml \
+    assets/interfaces/default2/session/playback/ColoredIcon.qml \
+    assets/interfaces/default2/session/playback/Trackbar.qml

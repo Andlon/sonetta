@@ -15,31 +15,65 @@ FocusScope {
             name: "playback"
             PropertyChanges { target: pager; currentIndex: 0 }
             PropertyChanges { target: mainMenu; currentIndex: 0 }
+            PropertyChanges { target: topRow; opacity: 0 }
+            PropertyChanges { target: rightSeparator; opacity: 0 }
+            PropertyChanges { target: playbackPage; opacity: 1 }
+            PropertyChanges { target: playlistsPage; opacity: 0 }
+            PropertyChanges { target: explorePage; opacity: 0 }
+            PropertyChanges { target: settingsPage; opacity: 0 }
         },
         State {
             name: "playlists"
             PropertyChanges { target: pager; currentIndex: 1 }
             PropertyChanges { target: mainMenu; currentIndex: 1 }
             PropertyChanges { target: playlistsPage; state: "container" }
+            PropertyChanges { target: topRow; opacity: 1 }
+            PropertyChanges { target: rightSeparator; opacity: 1 }
+            PropertyChanges { target: playbackPage; opacity: 0 }
+            PropertyChanges { target: playlistsPage; opacity: 1 }
+            PropertyChanges { target: explorePage; opacity: 0 }
+            PropertyChanges { target: settingsPage; opacity: 0 }
         },
         State {
             name: "playlist"
             PropertyChanges { target: pager; currentIndex: 1 }
             PropertyChanges { target: mainMenu; currentIndex: 1 }
             PropertyChanges { target: playlistsPage; state: "playlist" }
+            PropertyChanges { target: topRow; opacity: 1 }
+            PropertyChanges { target: rightSeparator; opacity: 1 }
+            PropertyChanges { target: playbackPage; opacity: 0 }
+            PropertyChanges { target: playlistsPage; opacity: 1 }
+            PropertyChanges { target: explorePage; opacity: 0 }
+            PropertyChanges { target: settingsPage; opacity: 0 }
         },
         State {
             name: "explore"
             PropertyChanges { target: pager; currentIndex: 2 }
             PropertyChanges { target: mainMenu; currentIndex: 2 }
+            PropertyChanges { target: topRow; opacity: 1 }
+            PropertyChanges { target: rightSeparator; opacity: 1 }
+            PropertyChanges { target: playbackPage; opacity: 0 }
+            PropertyChanges { target: playlistsPage; opacity: 0 }
+            PropertyChanges { target: explorePage; opacity: 1 }
+            PropertyChanges { target: settingsPage; opacity: 0 }
         },
         State {
             name: "settings"
             PropertyChanges { target: pager; currentIndex: 3 }
             PropertyChanges { target: mainMenu; currentIndex: 3 }
+            PropertyChanges { target: topRow; opacity: 1 }
+            PropertyChanges { target: rightSeparator; opacity: 1 }
+            PropertyChanges { target: playbackPage; opacity: 0 }
+            PropertyChanges { target: playlistsPage; opacity: 0 }
+            PropertyChanges { target: explorePage; opacity: 0 }
+            PropertyChanges { target: settingsPage; opacity: 1 }
         }
     ]
     state: controller.initialStateName
+
+    transitions: Transition {
+        SmoothedAnimation { property: "opacity"; duration: UI.timing.highlightMove; velocity: -1 }
+    }
 
     Pattern {
         id: logoContainer
@@ -111,32 +145,12 @@ FocusScope {
         }
     }
 
-    Pattern {
-        id: topRow
-        height: childrenRect.height + 2 * UI.globalSpacing
-        pattern: "light"
-        anchors {
-            left: leftColumn.right
-            right: root.right
-            top: root.top
-        }
-
-        NowPlaying {
-            anchors {
-                left: topRow.left
-                top: topRow.top
-                right: topRow.right
-                margins: UI.globalSpacing
-            }
-        }
-    }
-
     PageView {
         id: pager
         anchors {
             left: leftColumn.right
             right: root.right
-            top: rightSeparator.bottom
+            top: root.top
             bottom: root.bottom
         }
         clip: true
@@ -160,12 +174,14 @@ FocusScope {
             }
 
             ExplorePage {
+                id: explorePage
                 width: pager.width
                 height: pager.height
                 focus: true
             }
 
             SettingsPage {
+                id: settingsPage
                 width: pager.width
                 height: pager.height
                 focus: true
@@ -173,6 +189,32 @@ FocusScope {
         }
 
         KeyNavigation.left: mainMenu
+    }
+
+    Pattern {
+        id: topRow
+        height: childrenRect.height + 2 * UI.globalSpacing
+        pattern: "light"
+        anchors {
+            left: leftColumn.right
+            right: root.right
+            top: root.top
+        }
+
+        NowPlaying {
+            anchors {
+                left: topRow.left
+                top: topRow.top
+                right: topRow.right
+                margins: UI.globalSpacing
+            }
+        }
+
+        Binding {
+            target: UI
+            property: "pageTopMargin"
+            value: topRow.height + rightSeparator.height
+        }
     }
 
     SessionStateController {

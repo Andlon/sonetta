@@ -19,6 +19,7 @@ FocusScope {
     id: root
 
     property Component delegate
+
     property alias model: list.model
     property alias currentIndex: list.currentIndex
     property alias currentItem: list.currentItem

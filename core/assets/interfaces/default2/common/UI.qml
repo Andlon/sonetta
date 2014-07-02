@@ -27,7 +27,8 @@ Item {
         readonly property color focus: "#ffc000"
         readonly property color focusText: light
         readonly property color focusLabel: Qt.tint(label, Qt.rgba(focusText.r, focusText.g, focusText.b, 0.75))
-        readonly property color currentUnfocused: "#666666"
+        readonly property color darkFocusLabel: Qt.darker(darkLabel, 0.75)
+        readonly property color currentUnfocused: "#555555"
     }
 
     property QtObject fonts: QtObject {
@@ -58,4 +59,7 @@ Item {
         readonly property int mosaicSize: 96
         readonly property int fadeTime: 300
     }
+
+    // Live bindings below
+    property int pageTopMargin: 0
 }

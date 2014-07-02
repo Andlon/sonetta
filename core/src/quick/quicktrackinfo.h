@@ -13,9 +13,11 @@ class QuickTrackInfo : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(Spotinetta::Track track READ track WRITE setTrack RESET resetTrack NOTIFY trackChanged)
+    Q_PROPERTY(Spotinetta::Album album READ album NOTIFY dataUpdated)
     Q_PROPERTY(Spotinetta::ArtistList artists READ artists NOTIFY artistsChanged)
     Q_PROPERTY(QString name READ name NOTIFY dataUpdated)
-    Q_PROPERTY(QStringList artistNames READ artistNames NOTIFY artistsChanged)
+    Q_PROPERTY(QString albumName READ albumName NOTIFY dataUpdated)
+    Q_PROPERTY(QStringList artistNames READ artistNames NOTIFY dataUpdated)
     Q_PROPERTY(bool isValid READ isValid NOTIFY trackChanged)
     Q_PROPERTY(bool isLoaded READ isLoaded NOTIFY dataUpdated)
     Q_PROPERTY(bool isAutoLinked READ isAutoLinked NOTIFY dataUpdated)
@@ -35,6 +37,9 @@ public:
 
     Spotinetta::Track track() const;
     void setTrack(const Spotinetta::Track &track);
+
+    Spotinetta::Album album() const;
+    QString albumName() const;
 
     QString name() const;
     QStringList artistNames() const;

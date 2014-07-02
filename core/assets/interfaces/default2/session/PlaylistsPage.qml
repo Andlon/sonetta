@@ -58,7 +58,7 @@ FocusScope {
             top: root.top
             left: container.left
             right: container.right
-            topMargin: UI.globalSpacing
+            topMargin: UI.globalSpacing + UI.pageTopMargin
         }
     }
 
@@ -72,7 +72,7 @@ FocusScope {
             top: root.top
             left: container.left
             right: container.right
-            topMargin: UI.globalSpacing
+            topMargin: UI.globalSpacing + UI.pageTopMargin
         }
     }
 
@@ -132,11 +132,6 @@ FocusScope {
             right: root.right
             bottom: root.bottom
             margins: UI.globalSpacing
-        }
-
-        onItemPressed: {
-            player.play(model.track)
-            player.queue.updateContext(playlistModel.playlist, index)
         }
     }
 

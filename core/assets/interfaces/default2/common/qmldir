@@ -5,6 +5,7 @@ FocusText 0.1 FocusText.qml
 Pattern 0.1 Pattern.qml
 SpotifyImage 0.1 SpotifyImage.qml
 VirtualDialog 0.1 VirtualDialog.qml
+SimpleHighlight 0.1 SimpleHighlight.qml
 
 # Scripts
 Time 0.1 Time.js
@@ -26,3 +27,8 @@ CollectionView 0.1 views/CollectionView.qml
 CollectionHighlight 0.1 views/CollectionHighlight.qml
 PageView 0.1 views/PageView.qml
 VerticalScrollbar 0.1 views/VerticalScrollbar.qml
+PlaylistView 0.1 views/PlaylistView.qml
+
+# Delegates
+TwoRowTrackDelegate 0.1 delegates/TwoRowTrackDelegate.qml
+SingleRowTrackDelegate 0.1 delegates/SingleRowTrackDelegate.qml
