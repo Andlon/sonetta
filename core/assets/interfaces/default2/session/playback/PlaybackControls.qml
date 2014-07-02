@@ -118,11 +118,11 @@ FocusScope {
             left: root.left
             right: root.right
             top: root.top
-            margins: UI.globalSpacing / 2
+            margins: UI.globalSpacing
         }
 
         height: childrenRect.height
-        spacing: anchors.margins
+        spacing: UI.globalSpacing / 2
 
         Item {
             id: controls
@@ -240,6 +240,9 @@ FocusScope {
                 left: parent.left
                 right: parent.right
             }
+
+            fillColor: UI.colors.currentUnfocused
+            barColor: UI.colors.medium
         }
     }
 }

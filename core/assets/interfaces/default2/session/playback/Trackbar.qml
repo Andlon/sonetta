@@ -10,6 +10,8 @@ Item {
     height: position.height + 2 * position.anchors.margins
 
     property real seekInterval: 10000
+    property alias barColor: bar.color
+    property alias fillColor: fill.color
 
     states: [
         State {
@@ -46,7 +48,7 @@ Item {
         }
 
         color: UI.colors.medium
-        border.width: 2
+        border.width: 1
         border.color: UI.colors.light
     }
 
