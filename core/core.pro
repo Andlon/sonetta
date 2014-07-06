@@ -225,4 +225,5 @@ OTHER_FILES += \
     assets/interfaces/default2/session/playback/RightColumn.qml \
     assets/interfaces/default2/session/playback/PlaybackControls.qml \
     assets/interfaces/default2/session/playback/ColoredIcon.qml \
-    assets/interfaces/default2/session/playback/Trackbar.qml
+    assets/interfaces/default2/session/playback/Trackbar.qml \
+    assets/interfaces/default2/session/playback/QueueView.qml

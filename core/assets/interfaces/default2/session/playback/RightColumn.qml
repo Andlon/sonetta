@@ -19,7 +19,7 @@ FocusScope {
             PropertyChanges { target: queueView; focus: true; currentIndex: 0 }
         }
     ]
-    state: "current"
+    state: "queue"
 
     Text {
         id: currentHeader
@@ -41,9 +41,6 @@ FocusScope {
             right: root.right
             topMargin: UI.globalSpacing / 2
         }
-
-        //Navigation.onUp: root.state = "previous"
-        Navigation.onDown: root.state = "queue"
     }
 
     Text {
@@ -59,10 +56,7 @@ FocusScope {
         }
     }
 
-    PlaylistView {
-        id: queueView
-        model: player.queue
-        delegate: SingleRowTrackDelegate { }
+    Box {
         anchors {
             top: queueHeader.bottom
             left: root.left
@@ -71,6 +65,12 @@ FocusScope {
             topMargin: UI.globalSpacing / 2
         }
 
-        Navigation.onUp: root.state ="current"
+        QueueView {
+            id: queueView
+            model: player.queue
+            anchors.fill: parent
+            anchors.margins: UI.globalSpacing
+        }
+
     }
 }

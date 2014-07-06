@@ -37,6 +37,8 @@ Item {
         readonly property font header: Qt.font({ family: "Roboto", pointSize: 32, weight: 50 })
         readonly property font input: Qt.font({ family: "Roboto", pointSize: 32, weight: 40 })
         readonly property font mainMenu: Qt.font({ family: "Roboto", pointSize: 26, weight: 9, capitalization: Font.AllUppercase })
+        readonly property font major: Qt.font({ family: "Roboto", pointSize: 25, weight: 35 })
+        readonly property font minor: Qt.font({ family: "Roboto", pointSize: 21, weight: 35 })
     }
 
     property QtObject box: QtObject {
@@ -58,6 +60,13 @@ Item {
     property QtObject playlistPage: QtObject {
         readonly property int mosaicSize: 96
         readonly property int fadeTime: 300
+    }
+
+    property QtObject playlist: QtObject {
+        readonly property font defaultFont: fonts.standard
+        readonly property font singleRowFont: defaultFont
+        readonly property font doubleRowTrackFont: fonts.major
+        readonly property font doubleRowArtistFont: fonts.minor
     }
 
     // Live bindings below

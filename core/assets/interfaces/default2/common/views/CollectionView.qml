@@ -40,6 +40,10 @@ FocusScope {
 
     property alias verticalLayoutDirection: list.verticalLayoutDirection
 
+    property string primaryBackgroundPattern :"dark"
+    property string alternateBackgroundPattern: "medium"
+    property bool displayAlternateBackground: false
+
     property QtObject contextModel: null
 
     signal itemPressed(var index, var model)
@@ -54,7 +58,6 @@ FocusScope {
             top: root.top
             bottom: root.bottom
             left: root.left
-            right: scrollbar.left
         }
 
         delegate: delegateComponent
@@ -111,6 +114,24 @@ FocusScope {
             top: root.top
         }
 
+        states: [
+            State {
+                name: "active"
+                when: scrollbar.activeFocus || list.visibleArea.heightRatio < 1
+                AnchorChanges { target: list; anchors.right: scrollbar.left }
+                PropertyChanges { target: list; anchors.rightMargin: UI.globalSpacing / 2 }
+                PropertyChanges { target: scrollbar; visible: true }
+            },
+            State {
+                name: "inactive"
+                when: !(scrollbar.activeFocus || list.visibleArea.heightRatio < 1)
+                AnchorChanges { target: list; anchors.right: root.right }
+                PropertyChanges { target: list; anchors.rightMargin: 0 }
+                PropertyChanges { target: scrollbar; visible: false }
+            }
+
+        ]
+
         Navigation.onLeft: list.focus = true
     }
 
@@ -127,9 +148,10 @@ FocusScope {
             property var internalModel: model
 
             Pattern {
+                property bool isPrimary: internalIndex % 2 == 0
                 anchors.fill: delegateRoot
-                pattern: "dark"
-                visible: internalIndex % 2 == 0
+                pattern: isPrimary ? root.primaryBackgroundPattern : root.alternateBackgroundPattern
+                visible: internalIndex % 2 == 0 || displayAlternateBackground
                 z: -1
                 parent: delegateRoot.parent
             }
@@ -141,6 +163,7 @@ FocusScope {
                 focus: true
 
                 property alias model: delegateRoot.internalModel
+                property alias index: delegateRoot.internalIndex
             }
         }
     }
