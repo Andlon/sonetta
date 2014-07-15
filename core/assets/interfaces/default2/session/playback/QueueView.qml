@@ -5,7 +5,6 @@ import "../../common/Time.js" as Time
 
 PlaylistView {
     id: root
-
     primaryBackgroundPattern: "medium"
 
     delegate: Item {

@@ -108,26 +108,21 @@ FocusScope {
         AnchorAnimation { duration: UI.timing.highlightMove }
     }
 
-    Box {
-        anchors.fill: parent
-    }
-
     Column {
         id: col
         anchors {
             left: root.left
             right: root.right
             top: root.top
-            margins: UI.globalSpacing
         }
 
-        height: childrenRect.height
+        height: controls.height + trackbar.height + spacing
         spacing: UI.globalSpacing / 2
 
         Item {
             id: controls
 
-            height: childrenRect.height
+            height: play.height
             focus: true
             anchors {
                 left: parent.left

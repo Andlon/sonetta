@@ -4,6 +4,7 @@ import Sonetta 0.1
 FocusScope {
     id: root
     width: 300
+    height: childrenRect.height
 
     property alias playlist: mosaic.playlist
 

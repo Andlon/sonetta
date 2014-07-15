@@ -6,8 +6,7 @@ import "../../common/Time.js" as Time
 
 Item {
     id: root
-
-    height: position.height + 2 * position.anchors.margins
+    height: position.height //+ 2 * position.anchors.margins
 
     property real seekInterval: 10000
     property alias barColor: bar.color
@@ -81,7 +80,7 @@ Item {
             onTriggered: {
                 if (player.playing)
                 {
-                    interval = Math.min(500, track.duration - player.position)
+                    interval = Math.max(0, Math.min(500, track.duration - player.position))
                     fillAnimation.to = calculateFillWidth(player.position + interval)
                     fillAnimation.restart()
                     restart()
@@ -111,8 +110,6 @@ Item {
             bottom: position.bottom
         }
 
-        width: 60
-        height: 35
         font: UI.fonts.standard
         color: UI.colors.label
         fontSizeMode: Text.Fit

@@ -9,21 +9,22 @@ FocusScope {
     property int index: 0
     signal playlistRequested(var index)
 
+    readonly property int topMargin: UI.pageTopMargin + UI.globalSpacing
+
     states: [
         State {
             name: "container"
-            PropertyChanges { target: container; opacity: 1; focus: true }
-            PropertyChanges { target: playlistView; opacity: 0; focus: false }
-            PropertyChanges { target: header; opacity: 1 }
-            PropertyChanges { target: playlistHeader; opacity: 0 }
+            PropertyChanges { target: containerSection; opacity: 1 }
+            PropertyChanges { target: playlistSection; opacity: 0 }
+            PropertyChanges { target: container; focus: true }
         },
         State {
             name: "playlist"
-            PropertyChanges { target: container; opacity: 0; focus: false }
-            PropertyChanges { target: playlistView; opacity: 1; currentIndex: 0; focus: true; }
-            PropertyChanges { target: playlistModel; playlist: container.model.playlistAt(root.index) }
-            PropertyChanges { target: header; opacity: 0 }
-            PropertyChanges { target: playlistHeader; opacity: 1 }
+            PropertyChanges { target: playlistSection; opacity: 1 }
+            PropertyChanges { target: containerSection; opacity: 0 }
+            PropertyChanges { target: playlistView; focus: true}
+            //PropertyChanges { target: playlistView; currentIndex: 0 }
+            PropertyChanges { target: playlistModel; playlist: containerModel.playlistAt(root.index) }
         }
     ]
 
@@ -33,8 +34,8 @@ FocusScope {
             to: "playlist"
             ColorAnimation { duration: UI.playlistPage.fadeTime }
             SequentialAnimation {
-                SmoothedAnimation { targets: [container, header]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
-                SmoothedAnimation { targets: [playlistView, playlistHeader]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+                SmoothedAnimation { targets: [container]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+                SmoothedAnimation { targets: [playlistSection]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
             }
         },
         Transition {
@@ -42,97 +43,83 @@ FocusScope {
             to: "container"
             ColorAnimation { duration: UI.playlistPage.fadeTime }
             SequentialAnimation {
-                SmoothedAnimation { targets: [playlistView, playlistHeader]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
-                SmoothedAnimation { targets: [container, header]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+                SmoothedAnimation { targets: [playlistSection]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
+                SmoothedAnimation { targets: [container]; property: "opacity"; duration: UI.playlistPage.fadeTime / 2; velocity: -1 }
             }
         }
     ]
 
-    Text {
-        id: header
-        font: UI.fonts.mainMenu
-        text: "Your Playlists"
-        color: UI.colors.label
-        elide: Text.ElideRight
-        anchors {
-            top: root.top
-            left: container.left
-            right: container.right
-            topMargin: UI.globalSpacing + UI.pageTopMargin
-        }
-    }
-
-    Text {
-        id: playlistHeader
-        font: UI.fonts.mainMenu
-        color: UI.colors.label
-        text: playlistModel.name
-        elide: Text.ElideRight
-        anchors {
-            top: root.top
-            left: container.left
-            right: container.right
-            topMargin: UI.globalSpacing + UI.pageTopMargin
-        }
-    }
-
-    Text {
-        id: selectedPlaylistHeader
-        font: UI.fonts.mainMenu
-        text: "Selected playlist"
+    Section {
+        id: selectedPlaylistSection
+        header: "Selected Playlist"
         color: UI.colors.darkLabel
         anchors {
-            top: header.top
-            left: playlistInformation.left
-            right: playlistInformation.right
-        }
-    }
-
-    PlaylistInformation {
-        id: playlistInformation
-        width: 350
-        anchors {
-            top: header.bottom
+            top: root.top
             left: root.left
-            bottom: root.bottom
             margins: UI.globalSpacing
+            topMargin: root.topMargin
         }
+        contentWidth: selectedPlaylist.width
+        contentHeight: selectedPlaylist.height
 
-        playlist: container.currentPlaylist
+        PlaylistInformation {
+            id: selectedPlaylist
+            width: 350
+            playlist: container.currentPlaylist
+        }
     }
 
-    PlaylistContainer {
-        id: container
-        focus: true
-        visible: opacity != 0
-        model: PlaylistContainerModel {
-            playlistContainer: session.playlistContainer
-        }
+    Section {
+        id: containerSection
+        header: "Your Playlists"
         anchors {
-            top: header.bottom
-            left: playlistInformation.right
+            top: root.top
+            left: selectedPlaylistSection.right
             right: root.right
             bottom: root.bottom
             margins: UI.globalSpacing
+            topMargin: root.topMargin
         }
 
-        onPlaylistRequested: root.playlistRequested(index)
+        PlaylistContainer {
+            id: container
+            anchors.fill: parent
+            visible: opacity != 0
+            primaryBackgroundPattern: "medium"
+            model: containerModel
+
+            onPlaylistRequested: root.playlistRequested(index)
+        }
     }
 
-    PlaylistView {
-        id: playlistView
-        focus: true
+    Section {
+        id: playlistSection
+        header: playlistModel.name
         visible: opacity != 0
-        model: PlaylistModel {
-            id: playlistModel
-        }
         anchors {
-            top: header.bottom
-            left: playlistInformation.right
+            top: root.top
+            left: selectedPlaylistSection.right
             right: root.right
             bottom: root.bottom
             margins: UI.globalSpacing
+            topMargin: root.topMargin
+        }
+
+        PlaylistView {
+            id: playlistView
+            anchors.fill: parent
+            visible: opacity != 0
+            model: playlistModel
+            primaryBackgroundPattern: "medium"
         }
     }
 
+    PlaylistContainerModel {
+        id: containerModel
+        playlistContainer: session.playlistContainer
+    }
+
+    PlaylistModel {
+        id: playlistModel
+    }
 }

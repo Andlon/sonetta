@@ -8,90 +8,104 @@ import "playback"
 FocusScope {
     id: root
 
-    readonly property int leftColumnWidth: 650
-
     TrackInfo {
         id: track
         track: player.track
     }
 
-    Text {
-        id: header
-        font: UI.fonts.mainMenu
-        text: "Album Art"
-        color: UI.colors.label
-        elide: Text.ElideRight
+    Section {
+        id: coverSection
+        header: "Album Art"
+        contentWidth: cover.width
         anchors {
             top: root.top
             left: root.left
-            right: coverContainer.right
+            bottom: controlsSection.top
             margins: UI.globalSpacing
         }
-    }
-
-    Box {
-        id: coverContainer
-        anchors {
-            top: header.bottom
-            left: controls.left
-            topMargin: UI.globalSpacing / 2
-        }
-
-        height: controlsLabel.y - 2.5 * UI.globalSpacing - header.height
-        width: height
 
         SpotifyImage {
             id: cover
             anchors {
-                fill: parent
-                margins: UI.globalSpacing
+                top: parent.top
+                bottom: parent.bottom
             }
 
+            width: height
             fillMode: Image.PreserveAspectFit
             uri: track.largeCoverUri
         }
     }
 
-    Text {
-        id: controlsLabel
-        font: UI.fonts.mainMenu
-        text: "Controls"
-        color: UI.colors.label
-        elide: Text.ElideRight
-        anchors {
-            bottom: controls.top
-            left: root.left
-            right: controls.right
-            margins: UI.globalSpacing
-            bottomMargin: UI.globalSpacing / 2
-        }
-    }
-
-    PlaybackControls {
-        id: controls
-        focus: true
+    Section {
+        id: controlsSection
+        header: "Controls"
+        contentHeight: controls.height
         anchors {
             bottom: root.bottom
             left: root.left
-            right: coverContainer.right
+            right: coverSection.right
             margins: UI.globalSpacing
             rightMargin: 0
         }
 
-        KeyNavigation.right: rightColumn
+
+        PlaybackControls {
+            id: controls
+            focus: true
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+
+            KeyNavigation.right: queue
+        }
     }
 
-    RightColumn {
-        id: rightColumn
-        focus: true
+    Section {
+        id: nowplayingSection
+        header: "Now Playing"
+        contentHeight: nowplaying.height
         anchors {
+            left: coverSection.right
             top: root.top
             right: root.right
-            bottom: root.bottom
-            left: coverContainer.right
             margins: UI.globalSpacing
         }
 
-        KeyNavigation.left: controls
+        CurrentTrackInformation {
+            id: nowplaying
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+
+            trackName: track.name
+            albumName: track.albumName
+            artistName: track.artistNames.join(', ')
+            albumYear: track.albumYear
+        }
+    }
+
+    Section {
+        id: queueSection
+        header: "Coming Up"
+        anchors {
+            top: nowplayingSection.bottom
+            left: coverSection.right
+            right: root.right
+            bottom: root.bottom
+            margins: UI.globalSpacing
+        }
+
+        QueueView {
+            id: queue
+            anchors.fill: parent
+            model: player.queue
+
+            KeyNavigation.left: controls
+        }
+
+
     }
 }

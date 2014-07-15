@@ -222,8 +222,8 @@ OTHER_FILES += \
     assets/interfaces/default2/common/views/PlaylistView.qml \
     assets/interfaces/default2/session/playback/CurrentTrackInformation.qml \
     assets/interfaces/default2/common/SimpleHighlight.qml \
-    assets/interfaces/default2/session/playback/RightColumn.qml \
     assets/interfaces/default2/session/playback/PlaybackControls.qml \
     assets/interfaces/default2/session/playback/ColoredIcon.qml \
     assets/interfaces/default2/session/playback/Trackbar.qml \
-    assets/interfaces/default2/session/playback/QueueView.qml
+    assets/interfaces/default2/session/playback/QueueView.qml \
+    assets/interfaces/default2/common/Section.qml

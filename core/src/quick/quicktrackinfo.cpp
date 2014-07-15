@@ -87,6 +87,11 @@ QString QuickTrackInfo::albumName() const
     return album().name();
 }
 
+int QuickTrackInfo::albumYear() const
+{
+    return album().year();
+}
+
 QString QuickTrackInfo::name() const
 {
     return track().name();
