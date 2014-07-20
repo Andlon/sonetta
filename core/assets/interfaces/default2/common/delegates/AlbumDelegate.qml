@@ -12,5 +12,6 @@ ComponentAndTextDelegate {
     component: SpotifyImage {
         anchors.fill: parent
         uri: root.portrait
+        fillMode: Image.PreserveAspectCrop
     }
 }

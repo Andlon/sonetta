@@ -66,7 +66,7 @@ FocusScope {
                 id: query
                 label: "Query"
 
-                onInputChanged: search.go(input)
+                onInputChanged: performSearch(input)
             }
 
             MenuChildTextItem {
@@ -155,24 +155,15 @@ FocusScope {
 
         clip: true
         model: ObjectModel {
-            FocusScope {
+            SearchHistory {
+                id: searchHistory
+
+                focus: true
                 width: pager.width
                 height: pager.height
-                Section {
-                    id: historySection
-                    header: "Search History"
-                    showFrame: false
-                    padding: 0
-                    anchors.fill: parent
+                model: search.history
 
-                    CollectionView {
-                        id: history
-                        anchors.fill: parent
-                        model: search.history
-                        focus: true
-                        delegate: SimpleTextDelegate { text: model && model.modelData ? model.modelData : "" }
-                    }
-                }
+                onQueryRequested: performSearch(query)
             }
 
             TrackResults {
@@ -181,7 +172,6 @@ FocusScope {
                 focus: true
                 width: pager.width
                 height: pager.height
-
                 model: search.tracks
             }
 
@@ -191,7 +181,6 @@ FocusScope {
                 focus: true
                 width: pager.width
                 height: pager.height
-
                 model: search.artists
             }
 
@@ -201,11 +190,16 @@ FocusScope {
                 focus: true
                 width: pager.width
                 height: pager.height
-
                 model: search.albums
             }
         }
 
         KeyNavigation.left: searchMenu.currentIndex >= 0 ? searchMenu : topLists
+    }
+
+    function performSearch(query) {
+        search.go(query)
+        searchMenu.currentIndex = 1
+        searchMenu.focus = true
     }
 }
