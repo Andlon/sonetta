@@ -21,14 +21,21 @@ MenuCheckableItem 0.1 menu/MenuCheckableItem.qml
 MenuInputItem 0.1 menu/MenuInputItem.qml
 MenuItem 0.1 menu/MenuItem.qml
 MenuTextItem 0.1 menu/MenuTextItem.qml
+MenuChildTextItem 0.1 menu/MenuChildTextItem.qml
 
 # Views
 CollectionView 0.1 views/CollectionView.qml
 CollectionHighlight 0.1 views/CollectionHighlight.qml
 PageView 0.1 views/PageView.qml
 VerticalScrollbar 0.1 views/VerticalScrollbar.qml
-PlaylistView 0.1 views/PlaylistView.qml
+TrackView 0.1 views/TrackView.qml
+ArtistView 0.1 views/ArtistView.qml
+AlbumView 0.1 views/AlbumView.qml
 
 # Delegates
-TwoRowTrackDelegate 0.1 delegates/TwoRowTrackDelegate.qml
+#TwoRowTrackDelegate 0.1 delegates/TwoRowTrackDelegate.qml
 SingleRowTrackDelegate 0.1 delegates/SingleRowTrackDelegate.qml
+SimpleTextDelegate 0.1 delegates/SimpleTextDelegate.qml
+ArtistDelegate 0.1 delegates/ArtistDelegate.qml
+AlbumDelegate 0.1 delegates/AlbumDelegate.qml
+internal ComponentAndTextDelegate delegates/ComponentAndTextDelegate.qml

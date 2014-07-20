@@ -60,6 +60,7 @@ Item {
         readonly property int verticalMargins: globalSpacing / 2
         readonly property int checkboxMargin: 8
         readonly property int frameSpacing: 3
+        readonly property int indentation: 2 * globalSpacing
     }
 
     property QtObject playlistPage: QtObject {
@@ -72,6 +73,10 @@ Item {
         readonly property font singleRowFont: defaultFont
         readonly property font doubleRowTrackFont: fonts.major
         readonly property font doubleRowArtistFont: fonts.minor
+    }
+
+    property QtObject views: QtObject {
+        readonly property size imageSize: Qt.size(96, 96)
     }
 
     // Live bindings below

@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQuick 2.3
 import Sonetta 0.1
 import Navigation 0.1
 
@@ -20,25 +20,25 @@ FocusScope {
 
     property Component delegate
 
-    property alias model: list.model
-    property alias currentIndex: list.currentIndex
-    property alias currentItem: list.currentItem
+    property alias model: view.model
+    property alias currentIndex: view.currentIndex
+    property alias currentItem: view.currentItem
     property alias delegateHeight: scrollbar.delegateHeight
-    property alias count: list.count
+    property alias count: view.count
 
-    property alias add: list.add
-    property alias addDisplaced: list.addDisplaced
-    property alias displaced: list.displaced
-    property alias move: list.move
-    property alias moveDisplaced: list.moveDisplaced
-    property alias populate: list.populate
-    property alias remove: list.remove
-    property alias removeDisplaced: list.removeDisplaced
+    property alias add: view.add
+    property alias addDisplaced: view.addDisplaced
+    property alias displaced: view.displaced
+    property alias move: view.move
+    property alias moveDisplaced: view.moveDisplaced
+    property alias populate: view.populate
+    property alias remove: view.remove
+    property alias removeDisplaced: view.removeDisplaced
 
-    property alias snapMode: list.snapMode
-    property alias section: list.section
+    property alias snapMode: view.snapMode
+    property alias section: view.section
 
-    property alias verticalLayoutDirection: list.verticalLayoutDirection
+    property alias verticalLayoutDirection: view.verticalLayoutDirection
 
     property string primaryBackgroundPattern :"dark"
     property string alternateBackgroundPattern: "medium"
@@ -50,10 +50,10 @@ FocusScope {
     signal contextPressed(string name, var data)
     clip: true
 
-    height: list.contentHeight
+    height: view.contentHeight
 
     ListView {
-        id: list
+        id: view
         anchors {
             top: root.top
             bottom: root.bottom
@@ -61,7 +61,7 @@ FocusScope {
         }
 
         delegate: delegateComponent
-        highlight: CollectionHighlight { listView: list }
+        highlight: CollectionHighlight { list: view }
         highlightFollowsCurrentItem: true
         highlightMoveDuration: UI.timing.highlightMove
         highlightResizeDuration: UI.timing.highlightMove
@@ -73,22 +73,22 @@ FocusScope {
         currentIndex: 0
 
         Navigation.onDown: {
-            if (list.currentIndex < list.count - 1) {
-                if (list.verticalLayoutDirection == ListView.TopToBottom)
-                    list.incrementCurrentIndex()
+            if (view.currentIndex < view.count - 1) {
+                if (view.verticalLayoutDirection == ListView.TopToBottom)
+                    view.incrementCurrentIndex()
                 else
-                    list.decrementCurrentIndex()
+                    view.decrementCurrentIndex()
             }
             else
                 event.accepted = false
         }
 
         Navigation.onUp: {
-            if (list.currentIndex > 0) {
-                if (list.verticalLayoutDirection == ListView.TopToBottom)
-                    list.decrementCurrentIndex()
+            if (view.currentIndex > 0) {
+                if (view.verticalLayoutDirection == ListView.TopToBottom)
+                    view.decrementCurrentIndex()
                 else
-                    list.incrementCurrentIndex()
+                    view.incrementCurrentIndex()
             }
             else {
                 event.accepted = false
@@ -102,12 +102,12 @@ FocusScope {
                 event.accepted = false
         }
 
-        Navigation.onOk: root.itemPressed(list.currentIndex, list.currentItem.internalModel)
+        Navigation.onOk: root.itemPressed(view.currentIndex, view.currentItem.internalModel)
     }
 
     VerticalScrollbar {
         id: scrollbar
-        list: list
+        list: view
         anchors {
             right: root.right
             bottom: root.bottom
@@ -117,22 +117,22 @@ FocusScope {
         states: [
             State {
                 name: "active"
-                when: scrollbar.activeFocus || list.visibleArea.heightRatio < 1
-                AnchorChanges { target: list; anchors.right: scrollbar.left }
-                PropertyChanges { target: list; anchors.rightMargin: UI.globalSpacing / 2 }
+                when: scrollbar.activeFocus || view.visibleArea.heightRatio < 1
+                AnchorChanges { target: view; anchors.right: scrollbar.left }
+                PropertyChanges { target: view; anchors.rightMargin: UI.globalSpacing / 2 }
                 PropertyChanges { target: scrollbar; visible: true }
             },
             State {
                 name: "inactive"
-                when: !(scrollbar.activeFocus || list.visibleArea.heightRatio < 1)
-                AnchorChanges { target: list; anchors.right: root.right }
-                PropertyChanges { target: list; anchors.rightMargin: 0 }
+                when: !(scrollbar.activeFocus || view.visibleArea.heightRatio < 1)
+                AnchorChanges { target: view; anchors.right: root.right }
+                PropertyChanges { target: view; anchors.rightMargin: 0 }
                 PropertyChanges { target: scrollbar; visible: false }
             }
 
         ]
 
-        Navigation.onLeft: list.focus = true
+        Navigation.onLeft: view.focus = true
     }
 
     Component {
@@ -141,7 +141,7 @@ FocusScope {
         FocusScope {
             id: delegateRoot
             height: delegateLoader.height
-            width: list.width
+            width: view.width
             visible: delegateLoader.status === Loader.Ready
 
             property int internalIndex: index
@@ -158,7 +158,7 @@ FocusScope {
 
             Loader {
                 id: delegateLoader
-                width: list.width
+                width: view.width
                 sourceComponent: root.delegate
                 focus: true
 

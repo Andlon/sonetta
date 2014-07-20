@@ -219,11 +219,21 @@ OTHER_FILES += \
     assets/interfaces/default2/common/views/PageView.qml \
     assets/interfaces/default2/common/views/VerticalScrollbar.qml \
     assets/interfaces/default2/common/delegates/SingleRowTrackDelegate.qml \
-    assets/interfaces/default2/common/views/PlaylistView.qml \
     assets/interfaces/default2/session/playback/CurrentTrackInformation.qml \
     assets/interfaces/default2/common/SimpleHighlight.qml \
     assets/interfaces/default2/session/playback/PlaybackControls.qml \
     assets/interfaces/default2/session/playback/ColoredIcon.qml \
     assets/interfaces/default2/session/playback/Trackbar.qml \
     assets/interfaces/default2/session/playback/QueueView.qml \
-    assets/interfaces/default2/common/Section.qml
+    assets/interfaces/default2/common/Section.qml \
+    assets/interfaces/default2/common/menu/MenuChildTextItem.qml \
+    assets/interfaces/default2/common/views/TrackView.qml \
+    assets/interfaces/default2/common/delegates/SimpleTextDelegate.qml \
+    assets/interfaces/default2/common/delegates/ArtistDelegate.qml \
+    assets/interfaces/default2/common/delegates/ComponentAndTextDelegate.qml \
+    assets/interfaces/default2/common/views/ArtistView.qml \
+    assets/interfaces/default2/session/explore/TrackResults.qml \
+    assets/interfaces/default2/session/explore/ArtistResults.qml \
+    assets/interfaces/default2/common/delegates/AlbumDelegate.qml \
+    assets/interfaces/default2/common/views/AlbumView.qml \
+    assets/interfaces/default2/session/explore/AlbumResults.qml

@@ -2,26 +2,44 @@ import QtQuick 2.3
 
 import ".."
 
-Rectangle {
+Item {
     id: root
-    property ListView listView: null
+    property ListView list: null
+    property double indentation: 0
+
+    Behavior on indentation {
+        SmoothedAnimation { duration: UI.timing.highlightMove }
+    }
 
     states: [
         State {
-            when: listView === null || !listView.currentItem
-            PropertyChanges { target: root; visible: false }
+            when: list === null || !list.currentItem
+            PropertyChanges { target: root; opacity: 0 }
         },
         State {
-            when: listView && listView.currentItem && listView.activeFocus
-            PropertyChanges { target: root; visible: true; width: listView.currentItem.width; height: listView.currentItem.height; color: UI.colors.focus }
+            when: list && list.currentItem && list.activeFocus
+            PropertyChanges { target: root; opacity: 1; width: list.currentItem.width; height: list.currentItem.height }
+            PropertyChanges { target: highlight; color: UI.colors.focus }
         },
         State {
-            when: listView && listView.currentItem && !listView.activeFocus
-            PropertyChanges { target: root; visible: true; width: listView.currentItem.width; height: listView.currentItem.height; color: UI.colors.currentUnfocused }
+            when: list && list.currentItem && !list.activeFocus
+            PropertyChanges { target: root; opacity: 1; width: list.currentItem.width; height: list.currentItem.height }
+            PropertyChanges { target: highlight; color: UI.colors.currentUnfocused }
         }
     ]
 
     transitions: Transition {
         ColorAnimation { duration: UI.timing.highlightMove }
+    }
+
+    Rectangle {
+        id: highlight
+        anchors {
+            right: root.right
+            top: root.top
+            bottom: root.bottom
+        }
+
+        width: root.width - root.indentation
     }
 }

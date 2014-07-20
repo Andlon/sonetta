@@ -18,6 +18,7 @@ Item {
     // Spacing between header and container
     property int spacing: UI.globalSpacing / 2
 
+    property alias showFrame: frame.visible
     property int contentWidth: 100
     property int contentHeight: 100
 
@@ -47,13 +48,13 @@ Item {
             right: root.right
             bottom: root.bottom
         }
+    }
 
-        Item {
-            id: container
-            anchors {
-                fill: frame
-                margins: root.padding
-            }
+    Item {
+        id: container
+        anchors {
+            fill: frame
+            margins: root.padding
         }
     }
 }

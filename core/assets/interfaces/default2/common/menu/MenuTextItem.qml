@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQuick 2.3
 
 import ".."
 
@@ -14,7 +14,7 @@ MenuItem {
         anchors {
             left: parent.left
             right: parent.right
-            leftMargin: UI.menu.horizontalMargins
+            leftMargin: UI.menu.horizontalMargins + root.indentation
             rightMargin: UI.menu.horizontalMargins
         }
 

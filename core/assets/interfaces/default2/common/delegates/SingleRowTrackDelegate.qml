@@ -4,7 +4,7 @@ import "../."
 import "../Time.js" as Time
 
 Item {
-    id: delegateRoot
+    id: root
     height: trackLabel.height + UI.globalSpacing
     focus: true
 
@@ -14,13 +14,13 @@ Item {
 
     states: [
         State {
-            when: delegateRoot.activeFocus
+            when: root.activeFocus
             PropertyChanges { target: trackLabel; color: UI.colors.focusText }
             PropertyChanges { target: durationLabel; color: UI.colors.focusLabel }
             PropertyChanges { target: artistLabel; color: UI.colors.focusText }
         },
         State {
-            when: !delegateRoot.activeFocus
+            when: !root.activeFocus
             PropertyChanges { target: trackLabel; color: UI.colors.text }
             PropertyChanges { target: durationLabel; color: UI.colors.label }
             PropertyChanges { target: artistLabel; color: UI.colors.text }
@@ -36,7 +36,7 @@ Item {
         text: track
         font: UI.fonts.standard
         elide: Text.ElideRight
-        width: delegateRoot.width * 0.4
+        width: root.width * 0.4
         color: UI.colors.text
 
         anchors {
@@ -70,7 +70,7 @@ Item {
         anchors {
             left: durationLabel.right
             top: durationLabel.top
-            right: delegateRoot.right
+            right: root.right
             leftMargin: UI.globalSpacing
             rightMargin: UI.globalSpacing
         }

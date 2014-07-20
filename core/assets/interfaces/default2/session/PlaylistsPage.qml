@@ -72,6 +72,8 @@ FocusScope {
     Section {
         id: containerSection
         header: "Your Playlists"
+        showFrame: false
+        padding: 0
         anchors {
             top: root.top
             left: selectedPlaylistSection.right
@@ -85,7 +87,6 @@ FocusScope {
             id: container
             anchors.fill: parent
             visible: opacity != 0
-            primaryBackgroundPattern: "medium"
             model: containerModel
 
             onPlaylistRequested: root.playlistRequested(index)
@@ -95,6 +96,8 @@ FocusScope {
     Section {
         id: playlistSection
         header: playlistModel.name
+        showFrame: false
+        padding: 0
         visible: opacity != 0
         anchors {
             top: root.top
@@ -105,12 +108,11 @@ FocusScope {
             topMargin: root.topMargin
         }
 
-        PlaylistView {
+        TrackView {
             id: playlistView
             anchors.fill: parent
             visible: opacity != 0
             model: playlistModel
-            primaryBackgroundPattern: "medium"
         }
     }
 

@@ -4,32 +4,48 @@ import Navigation 0.1
 
 import ".."
 
-ListView {
+FocusScope {
     id: root
-
     // This works, but as it's not documented it MAY break in the future
     // ... but let's hope not
     default property alias menuItems: objects.children
     property bool navigationEnabled: true
 
-    height: contentItem.childrenRect.height
+    property alias currentIndex: view.currentIndex
+    property alias currentItem: view.currentItem
+    property alias count: view.count
+
+    property string pattern: "dark"
+    property int indentation: UI.menu.indentation
+
+    height: view.contentItem.childrenRect.height
     width: UI.menu.defaultWidth
-    highlightMoveDuration: UI.timing.highlightMove
-    currentIndex: 0
-    highlight: CollectionHighlight { listView: root }
 
-    model: ObjectModel { id: objects }
+    ListView {
+        id: view
+        focus: true
 
-    Navigation.onDown: {
-        if (navigationEnabled && root.currentIndex < root.count - 1)
-            root.incrementCurrentIndex()
-        else
-            event.accepted = false
-    }
-    Navigation.onUp: {
-        if (navigationEnabled && root.currentIndex > 0)
-            root.decrementCurrentIndex()
-        else
-            event.accepted = false
+        anchors.fill: root
+        highlightMoveDuration: UI.timing.highlightMove
+        currentIndex: 0
+        highlight: CollectionHighlight {
+            list: view
+            indentation: view.currentItem && view.currentItem.indentation ? view.currentItem.indentation : 0
+        }
+
+        model: ObjectModel { id: objects }
+
+        Navigation.onDown: {
+            if (navigationEnabled && root.currentIndex < root.count - 1)
+                view.incrementCurrentIndex()
+            else
+                event.accepted = false
+        }
+        Navigation.onUp: {
+            if (navigationEnabled && root.currentIndex > 0)
+                view.decrementCurrentIndex()
+            else
+                event.accepted = false
+        }
     }
 }
