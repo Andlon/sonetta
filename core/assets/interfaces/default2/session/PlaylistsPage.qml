@@ -113,6 +113,7 @@ FocusScope {
             anchors.fill: parent
             visible: opacity != 0
             model: playlistModel
+            context: playlistModel.playlist
         }
     }
 

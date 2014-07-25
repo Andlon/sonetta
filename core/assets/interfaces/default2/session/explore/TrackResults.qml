@@ -17,6 +17,7 @@ FocusScope {
             id: view
             anchors.fill: parent
             focus: true
+            context: model.list
         }
     }
 }

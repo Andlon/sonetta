@@ -6,13 +6,16 @@ import "../Time.js" as Time
 
 CollectionView {
     id: root
+
+    property var context
+
     delegate: SingleRowTrackDelegate {
         onHeightChanged: root.delegateHeight = height
     }
 
     onItemPressed: {
         player.play(model.track)
-        if (root.model.playlist)
-            player.queue.updateContext(root.model.playlist, index)
+        if (context)
+            player.queue.updateContext(context, index)
     }
 }
