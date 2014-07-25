@@ -25,6 +25,8 @@ FocusScope {
     property alias currentItem: view.currentItem
     property alias delegateHeight: scrollbar.delegateHeight
     property alias count: view.count
+    property alias contentItem: view.contentItem
+    property alias viewItem: view
 
     property alias add: view.add
     property alias addDisplaced: view.addDisplaced
@@ -44,12 +46,9 @@ FocusScope {
     property string alternateBackgroundPattern: "medium"
     property bool displayAlternateBackground: false
 
-    property QtObject contextModel: null
-
     signal itemPressed(var index, var model)
-    signal contextPressed(string name, var data)
-    clip: true
 
+    clip: true
     height: view.contentHeight
 
     ListView {

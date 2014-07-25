@@ -18,6 +18,10 @@ FocusScope {
     property string pattern: "dark"
     property int indentation: UI.menu.indentation
 
+    // delegate and model need not typically be used
+    property alias delegate: view.delegate
+    property alias model: view.model
+
     height: view.contentItem.childrenRect.height
     width: UI.menu.defaultWidth
 

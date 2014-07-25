@@ -39,3 +39,6 @@ SimpleTextDelegate 0.1 delegates/SimpleTextDelegate.qml
 ArtistDelegate 0.1 delegates/ArtistDelegate.qml
 AlbumDelegate 0.1 delegates/AlbumDelegate.qml
 internal ComponentAndTextDelegate delegates/ComponentAndTextDelegate.qml
+
+# Dialogs
+ContextMenuDialog 0.1 dialogs/ContextMenuDialog.qml

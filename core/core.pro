@@ -237,4 +237,5 @@ OTHER_FILES += \
     assets/interfaces/default2/common/delegates/AlbumDelegate.qml \
     assets/interfaces/default2/common/views/AlbumView.qml \
     assets/interfaces/default2/session/explore/AlbumResults.qml \
-    assets/interfaces/default2/session/explore/SearchHistory.qml
+    assets/interfaces/default2/session/explore/SearchHistory.qml \
+    assets/interfaces/default2/common/dialogs/ContextMenuDialog.qml
