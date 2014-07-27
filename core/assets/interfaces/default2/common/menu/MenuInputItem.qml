@@ -12,21 +12,23 @@ MenuItem {
     property alias inputHeader: keyboard.header
     property alias password: keyboard.password
 
-    height: inputItem.height + UI.menu.verticalMargins * 2
+    height: childrenRect.height + 2 * UI.menu.verticalMargins
 
     Text {
         id: labelItem
 
         anchors {
-            top: inputItem.top
-            bottom: inputItem.bottom
+            top: root.top
             left: root.left
+            right: root.right
             leftMargin: UI.menu.horizontalMargins
+            rightMargin: UI.menu.horizontalMargins
+            topMargin: UI.menu.verticalMargins
         }
 
         width: UI.menu.defaultLabelWidth
-        font: UI.fonts.standard
-        color: root.activeFocus ? UI.colors.focusText : UI.colors.text
+        font: UI.menu.labelFont
+        color: root.activeFocus ? UI.colors.focusLabel : UI.colors.label
         elide: Text.ElideRight
 
         Behavior on color {
@@ -36,16 +38,18 @@ MenuItem {
 
     Text {
         id: inputItem
-        y: UI.menu.verticalMargins
         anchors {
-            left: labelItem.right
+            top: labelItem.bottom
+            left: root.left
             right: root.right
-            margins: UI.menu.horizontalMargins
+            leftMargin: UI.menu.horizontalMargins
+            rightMargin: UI.menu.horizontalMargins
+            topMargin: UI.menu.verticalSpacing
         }
 
         text: root.password ? createPasswordCharacters(root.input.length) : root.input
         font: UI.fonts.standard
-        color: root.activeFocus ? UI.colors.focusLabel : UI.colors.label
+        color: root.activeFocus ? UI.colors.focusText : UI.colors.text
         elide: Text.ElideRight
 
         Behavior on color {

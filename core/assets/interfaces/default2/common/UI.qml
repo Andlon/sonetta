@@ -58,9 +58,11 @@ Item {
         readonly property int defaultLabelWidth: 160
         readonly property int horizontalMargins: globalSpacing
         readonly property int verticalMargins: globalSpacing / 2
+        readonly property int verticalSpacing: globalSpacing / 4
         readonly property int checkboxMargin: 8
         readonly property int frameSpacing: 3
         readonly property int indentation: 2 * globalSpacing
+        readonly property font labelFont: Qt.font({ family: "Roboto", pointSize: 21, weight: 9, capitalization: Font.AllUppercase })
     }
 
     property QtObject playlistPage: QtObject {
