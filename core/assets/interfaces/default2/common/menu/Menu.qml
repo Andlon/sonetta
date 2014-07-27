@@ -31,6 +31,9 @@ FocusScope {
 
         anchors.fill: root
         highlightMoveDuration: UI.timing.highlightMove
+        highlightMoveVelocity: -1
+        highlightResizeDuration: UI.timing.highlightMove
+        highlightResizeVelocity: -1
         currentIndex: 0
         highlight: CollectionHighlight {
             list: view

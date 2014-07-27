@@ -7,8 +7,10 @@ Item {
     property ListView list: null
     property double indentation: 0
 
+    // Keep behavior no indentation rather than highlight.width
+    // to avoid animation when the width is explicitly set
     Behavior on indentation {
-        SmoothedAnimation { duration: UI.timing.highlightMove }
+        SmoothedAnimation { duration: UI.timing.highlightMove; velocity: -1 }
     }
 
     states: [
@@ -18,18 +20,18 @@ Item {
         },
         State {
             when: list && list.currentItem && list.activeFocus
-            PropertyChanges { target: root; opacity: 1; width: list.currentItem.width; height: list.currentItem.height }
+            PropertyChanges { target: root; opacity: 1 }
             PropertyChanges { target: highlight; color: UI.colors.focus }
         },
         State {
             when: list && list.currentItem && !list.activeFocus
-            PropertyChanges { target: root; opacity: 1; width: list.currentItem.width; height: list.currentItem.height }
+            PropertyChanges { target: root; opacity: 1 }
             PropertyChanges { target: highlight; color: UI.colors.currentUnfocused }
         }
     ]
 
     transitions: Transition {
-        ColorAnimation { duration: UI.timing.highlightMove }
+        ColorAnimation { property: "color"; duration: UI.timing.highlightMove }
     }
 
     Rectangle {

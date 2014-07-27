@@ -63,7 +63,9 @@ FocusScope {
         highlight: CollectionHighlight { list: view }
         highlightFollowsCurrentItem: true
         highlightMoveDuration: UI.timing.highlightMove
+        highlightMoveVelocity: -1
         highlightResizeDuration: UI.timing.highlightMove
+        highlightResizeVelocity: -1
 
         clip: true
         boundsBehavior: Flickable.StopAtBounds

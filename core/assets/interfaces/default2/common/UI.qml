@@ -6,7 +6,7 @@ Item {
     readonly property string globalBackgroundPattern: "medium"
 
     property QtObject timing: QtObject {
-        readonly property int highlightMove: 150
+        readonly property int highlightMove: 200
         readonly property int dialogPopup: 250
         readonly property int fade: 500
     }

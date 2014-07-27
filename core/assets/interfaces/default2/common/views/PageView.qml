@@ -11,7 +11,7 @@ FocusScope {
     property alias delegate: repeater.delegate
     property alias model: repeater.model
     property alias count: repeater.count
-    property int scrollAnimationTime: 100
+    property int scrollAnimationTime: UI.timing.highlightMove
 
     property bool vertical: true
     property int currentIndex: 0
