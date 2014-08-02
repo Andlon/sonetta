@@ -8,7 +8,15 @@ CollectionView {
     id: root
 
     property var context
-    property alias actions: contextMenu.actions
+
+    readonly property var defaultActions: [ [ "play", "Play now" ],
+        [ "playpreserve", "Play now, keep queue" ],
+        [ "enqueue", "Add to queue" ],
+        [ "browsealbum", "Browse album" ],
+        [ "browseartist", "Browse artist" ] ]
+
+    property var actions: defaultActions
+    property var disabledActionIdentifiers: []
 
     signal unhandledAction(var id)
     signal artistBrowseRequested(var artist)
@@ -35,11 +43,7 @@ CollectionView {
         property var artist
         property int index
 
-        actions: [ [ "play", "Play now" ],
-            [ "playpreserve", "Play now, keep queue" ],
-            [ "enqueue", "Add to queue" ],
-            [ "browsealbum", "Browse album" ],
-            [ "browseartist", "Browse artist" ] ]
+        actions: filter(root.actions)
 
         onActionSelected: {
             switch (id) {
@@ -70,6 +74,18 @@ CollectionView {
         function updateContext() {
             if (root.context) {
                 player.queue.updateContext(root.context, index)
+            }
+        }
+
+        function filter(actions) {
+            if (actions instanceof Array) {
+                return actions.filter(function (action) {
+                    return disabledActionIdentifiers.indexOf(action[0]) === -1
+                })
+            } else {
+                // The underlying functionality of 'actions' will log an error
+                // that actions is not a valid array
+                return actions
             }
         }
     }
