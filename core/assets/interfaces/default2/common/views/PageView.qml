@@ -17,8 +17,10 @@ FocusScope {
     property int currentIndex: 0
     readonly property Item currentItem: repeater.getCurrentItem()
 
-    onActiveFocusChanged: if (activeFocus) repeater.getCurrentItem().focus = true
+    onCurrentItemChanged: if (currentItem) currentItem.focus = true
     onVerticalChanged: repeater.repositionItems()
+    onWidthChanged: repeater.repositionItems()
+    onHeightChanged: repeater.repositionItems()
 
     Flickable {
         id: flickable
@@ -68,7 +70,4 @@ FocusScope {
             }
         }
     }
-
-    onWidthChanged: repeater.repositionItems()
-    onHeightChanged: repeater.repositionItems()
 }

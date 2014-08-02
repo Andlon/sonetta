@@ -186,9 +186,6 @@ FocusScope {
 
             PlaylistsPage {
                 id: playlistsPage
-                width: pager.width
-                height: pager.height
-                focus: true
 
                 onPlaylistRequested: controller.playlist(index)
                 onAlbumBrowseRequested: controller.browseAlbum(album)
@@ -197,9 +194,6 @@ FocusScope {
 
             ExplorePage {
                 id: explorePage
-                width: pager.width
-                height: pager.height
-                focus: true
 
                 onAlbumBrowseRequested: controller.browseAlbum(album)
                 onArtistBrowseRequested: controller.browseArtist(artist)
@@ -207,16 +201,10 @@ FocusScope {
 
             SettingsPage {
                 id: settingsPage
-                width: pager.width
-                height: pager.height
-                focus: true
             }
 
             BrowsePage {
                 id: browsePage
-                width: pager.width
-                height: pager.height
-                focus: true
             }
         }
 
