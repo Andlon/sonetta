@@ -239,4 +239,8 @@ OTHER_FILES += \
     assets/interfaces/default2/session/explore/AlbumResults.qml \
     assets/interfaces/default2/session/explore/SearchHistory.qml \
     assets/interfaces/default2/common/dialogs/ContextMenuDialog.qml \
-    assets/interfaces/default2/session/BrowsePage.qml
+    assets/interfaces/default2/session/BrowsePage.qml \
+    assets/interfaces/default2/session/browse/artistbrowse.qml \
+    assets/interfaces/default2/session/browse/albumbrowse.qml \
+    assets/interfaces/default2/common/FramelessSection.qml \
+    assets/interfaces/default2/common/delegates/DoubleRowTrackDelegate.qml
