@@ -72,10 +72,5 @@ CollectionView {
                 player.queue.updateContext(root.context, index)
             }
         }
-
-        onActivating: contextMenu.focus = true
-
-        // This likely causes issues when browsing. Please fix
-        onDeactivating: root.viewItem.forceActiveFocus()
     }
 }

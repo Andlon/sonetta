@@ -31,9 +31,10 @@ FocusScope {
         SmoothedAnimation { property: "opacity"; duration: UI.timing.fade; velocity: -1 }
     }
 
-    Item {
+    FocusScope {
         id: mainContent
         anchors.fill: parent
+        focus: true
 
         Pattern {
             // Background

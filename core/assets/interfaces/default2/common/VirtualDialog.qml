@@ -21,7 +21,7 @@ FocusScope {
             name: "activating"
             PropertyChanges { target: loader; active: true }
             PropertyChanges { target: root; visible: true }
-            StateChangeScript { script: root.activating() }
+            StateChangeScript { script: { root.activating();  root.forceActiveFocus() } }
         },
         State {
             name: "active"
@@ -34,11 +34,11 @@ FocusScope {
             name: "deactivating"
             PropertyChanges { target: loader; active: true }
             PropertyChanges { target: Dialog.contentItem(); visible: true }
-            StateChangeScript { script: root.deactivating() }
+            StateChangeScript { script: { root.deactivating(); Dialog.contentItem().forceActiveFocus() } }
         },
         State {
             name: "inactive"
-            PropertyChanges { target: root; focus: false; visible: false }
+            PropertyChanges { target: root; visible: false }
             PropertyChanges { target: loader; active: false }
         }
     ]
@@ -72,7 +72,6 @@ FocusScope {
                     PropertyChanges { target: blur; radius: UI.dialog.blurRadius }
                     PropertyChanges { target: brightness; brightness: UI.dialog.brightnessDelta }
                     PropertyChanges { target: dialogLoader; scale: 1; opacity: 1 }
-                    StateChangeScript { script: dialogLoader.forceActiveFocus() }
                 },
                 State {
                     name : "deactivating"

@@ -66,7 +66,7 @@ MenuItem {
         id: keyboard
         onDeactivating: {
             root.input = keyboard.text
-            root.forceActiveFocus()
+            //root.focus = true
         }
     }
 
