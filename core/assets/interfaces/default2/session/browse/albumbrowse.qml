@@ -45,6 +45,7 @@ FocusScope {
         TrackView {
             id: view
             model: model
+            context: root.album
             focus: true
             anchors.fill: parent
             delegate: DoubleRowTrackDelegate {
