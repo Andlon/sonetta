@@ -9,11 +9,9 @@ FocusScope {
 
     signal browseRequested(var album)
 
-    Section {
+    FramelessSection {
         header: "Results - Albums"
         anchors.fill: parent
-        showFrame: false
-        padding: 0
 
         AlbumView {
             id: view

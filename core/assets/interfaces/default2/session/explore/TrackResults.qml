@@ -10,11 +10,9 @@ FocusScope {
     signal albumBrowseRequested(var album)
     signal artistBrowseRequested(var artist)
 
-    Section {
+    FramelessSection {
         header: "Results - Tracks"
         anchors.fill: parent
-        showFrame: false
-        padding: 0
 
         TrackView {
             id: view

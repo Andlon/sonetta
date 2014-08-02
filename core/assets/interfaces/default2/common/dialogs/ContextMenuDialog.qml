@@ -27,13 +27,11 @@ VirtualDialog {
             sourceComponent: context
         }
 
-        Section {
+        FramelessSection {
             anchors.centerIn: parent
             contentHeight: menu.height
             contentWidth: menu.width
             header: root.menuHeader
-            showFrame: false
-            padding: 0
 
             Menu {
                 id: menu

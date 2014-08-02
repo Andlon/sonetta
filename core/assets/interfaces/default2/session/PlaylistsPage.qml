@@ -72,11 +72,9 @@ FocusScope {
         }
     }
 
-    Section {
+    FramelessSection {
         id: containerSection
         header: "Your Playlists"
-        showFrame: false
-        padding: 0
         anchors {
             top: root.top
             left: selectedPlaylistSection.right

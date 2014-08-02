@@ -8,11 +8,9 @@ FocusScope {
 
     signal queryRequested(var query)
 
-    Section {
+    FramelessSection {
         id: historySection
         header: "History - Recent Queries"
-        showFrame: false
-        padding: 0
         anchors.fill: parent
 
         CollectionView {

@@ -6,6 +6,8 @@ Pattern 0.1 Pattern.qml
 SpotifyImage 0.1 SpotifyImage.qml
 VirtualDialog 0.1 VirtualDialog.qml
 SimpleHighlight 0.1 SimpleHighlight.qml
+Section 0.1 Section.qml
+FramelessSection 0.1 FramelessSection.qml
 
 # Scripts
 Time 0.1 Time.js

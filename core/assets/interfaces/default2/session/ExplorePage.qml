@@ -45,7 +45,7 @@ FocusScope {
         }
     ]
 
-    Section {
+    FramelessSection {
         id: searchMenuSection
 
         anchors {
@@ -57,8 +57,6 @@ FocusScope {
         contentHeight: searchMenu.height
         contentWidth: searchMenu.width
         header: "Search"
-        showFrame: false
-        padding: 0
 
         Menu {
             id: searchMenu
@@ -104,7 +102,7 @@ FocusScope {
         KeyNavigation.right: pager
     }
 
-    Section {
+    FramelessSection {
         id: topListsSection
 
         anchors {
@@ -112,8 +110,6 @@ FocusScope {
             left: root.left
             margins: UI.globalSpacing
         }
-        showFrame: false
-        padding: 0
 
         contentHeight: topLists.height
         contentWidth: topLists.width
