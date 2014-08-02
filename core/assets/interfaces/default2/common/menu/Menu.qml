@@ -22,6 +22,9 @@ FocusScope {
     property alias delegate: view.delegate
     property alias model: view.model
 
+    property alias highlightMoveDuration: view.highlightMoveDuration
+    property alias highlightResizeDuration: view.highlightResizeDuration
+
     height: view.contentItem.childrenRect.height
     width: UI.menu.defaultWidth
 
@@ -35,6 +38,7 @@ FocusScope {
         highlightResizeDuration: UI.timing.highlightMove
         highlightResizeVelocity: -1
         currentIndex: 0
+        interactive: false
         highlight: CollectionHighlight {
             list: view
             indentation: view.currentItem && view.currentItem.indentation ? view.currentItem.indentation : 0

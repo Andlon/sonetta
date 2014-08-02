@@ -8,6 +8,9 @@ import "playback"
 FocusScope {
     id: root
 
+    signal albumBrowseRequested(var album)
+    signal artistBrowseRequested(var artist)
+
     TrackInfo {
         id: track
         track: player.track
@@ -104,8 +107,9 @@ FocusScope {
             model: player.queue
 
             KeyNavigation.left: controls
+
+            onAlbumBrowseRequested: root.albumBrowseRequested(album)
+            onArtistBrowseRequested: root.artistBrowseRequested(artist)
         }
-
-
     }
 }

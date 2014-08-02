@@ -25,6 +25,8 @@ QtObject {
     signal settingsRequested()
 
     signal playlistRequested(var index)
+    signal artistBrowseRequested(var artist)
+    signal albumBrowseRequested(var album)
 
     /* Specialized state transition functions */
     function playlistsOverview() {
@@ -42,13 +44,13 @@ QtObject {
         State.push(state)
     }
 
-    function browseArtist(uri) {
-        var state = State.create("browse", { type: "artist", uri: uri })
+    function browseArtist(artist) {
+        var state = State.create("browse", { type: "artist", artist: artist })
         State.push(state)
     }
 
-    function browseAlbum(uri) {
-        var state = State.create("browse", { type: "album", uri: uri })
+    function browseAlbum(album) {
+        var state = State.create("browse", { type: "album", album: album })
         State.push(state)
     }
 
@@ -89,6 +91,22 @@ QtObject {
             break
         case "settings":
             settingsRequested()
+            break
+        case "browse":
+            switch (parameters.type) {
+            case "album":
+                albumBrowseRequested(parameters.album);
+                break
+            case "artist":
+                artistBrowseRequested(parameters.artist);
+                break
+            default:
+                console.error("SessionStateController: Unknown browse type requested.");
+                break
+            }
+            break
+        default:
+            console.error("SessionStateController: Unknown state name requested.")
             break
         }
     }

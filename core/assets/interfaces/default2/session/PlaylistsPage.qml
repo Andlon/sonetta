@@ -9,6 +9,9 @@ FocusScope {
     property int index: 0
     signal playlistRequested(var index)
 
+    signal albumBrowseRequested(var album)
+    signal artistBrowseRequested(var artist)
+
     readonly property int topMargin: UI.pageTopMargin + UI.globalSpacing
 
     states: [
@@ -114,6 +117,9 @@ FocusScope {
             visible: opacity != 0
             model: playlistModel
             context: playlistModel.playlist
+
+            onArtistBrowseRequested: root.artistBrowseRequested(artist)
+            onAlbumBrowseRequested: root.albumBrowseRequested(album)
         }
     }
 

@@ -14,6 +14,9 @@ FocusScope {
     readonly property string childPattern: "dark"
     readonly property color childBorderColor: UI.colors.light
 
+    signal artistBrowseRequested(var artist)
+    signal albumBrowseRequested(var album)
+
     states: [
         State {
             name: "history"
@@ -173,6 +176,9 @@ FocusScope {
                 width: pager.width
                 height: pager.height
                 model: search.tracks
+
+                onAlbumBrowseRequested: root.albumBrowseRequested(album)
+                onArtistBrowseRequested: root.artistBrowseRequested(artist)
             }
 
             ArtistResults {
@@ -182,6 +188,8 @@ FocusScope {
                 width: pager.width
                 height: pager.height
                 model: search.artists
+
+                onBrowseRequested: root.artistBrowseRequested(artist)
             }
 
             AlbumResults {
@@ -191,6 +199,8 @@ FocusScope {
                 width: pager.width
                 height: pager.height
                 model: search.albums
+
+                onBrowseRequested: root.albumBrowseRequested(album)
             }
         }
 

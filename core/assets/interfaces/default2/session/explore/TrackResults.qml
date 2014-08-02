@@ -4,10 +4,13 @@ import Sonetta 0.1
 import "../../common"
 
 FocusScope {
+    id: root
     property alias model: view.model
 
+    signal albumBrowseRequested(var album)
+    signal artistBrowseRequested(var artist)
+
     Section {
-        id: root
         header: "Results - Tracks"
         anchors.fill: parent
         showFrame: false
@@ -18,6 +21,9 @@ FocusScope {
             anchors.fill: parent
             focus: true
             context: model.list
+
+            onAlbumBrowseRequested: root.albumBrowseRequested(album)
+            onArtistBrowseRequested: root.artistBrowseRequested(artist)
         }
     }
 }

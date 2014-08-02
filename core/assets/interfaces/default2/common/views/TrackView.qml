@@ -11,6 +11,8 @@ CollectionView {
     property alias actions: contextMenu.actions
 
     signal unhandledAction(var id)
+    signal artistBrowseRequested(var artist)
+    signal albumBrowseRequested(var album)
 
     delegate: SingleRowTrackDelegate {
         onHeightChanged: root.delegateHeight = height
@@ -18,6 +20,8 @@ CollectionView {
 
     onItemPressed: {
         contextMenu.track = model.track
+        contextMenu.artist = model.artist
+        contextMenu.album = model.album
         contextMenu.index = index
         contextMenu.activate()
     }
@@ -27,6 +31,8 @@ CollectionView {
         menuHeader: "Track Actions"
 
         property var track
+        property var album
+        property var artist
         property int index
 
         actions: [ [ "play", "Play now" ],
@@ -47,6 +53,12 @@ CollectionView {
             case "enqueue":
                 player.enqueue(track)
                 break;
+            case "browsealbum":
+                root.albumBrowseRequested(album)
+                break
+            case "browseartist":
+                root.artistBrowseRequested(artist)
+                break
             default:
                 root.unhandledAction(id)
                 break;
@@ -62,6 +74,8 @@ CollectionView {
         }
 
         onActivating: contextMenu.focus = true
+
+        // This likely causes issues when browsing. Please fix
         onDeactivating: root.viewItem.forceActiveFocus()
     }
 }

@@ -13,19 +13,20 @@ FocusScope {
     states: [
         State {
             name: "playback"
+            PropertyChanges { target: mainMenu; state: "playback" }
             PropertyChanges { target: pager; currentIndex: 0 }
-            PropertyChanges { target: mainMenu; currentIndex: 0 }
             PropertyChanges { target: topRow; opacity: 0 }
             PropertyChanges { target: rightSeparator; opacity: 0 }
             PropertyChanges { target: playbackPage; opacity: 1 }
             PropertyChanges { target: playlistsPage; opacity: 0 }
             PropertyChanges { target: explorePage; opacity: 0 }
             PropertyChanges { target: settingsPage; opacity: 0 }
+            PropertyChanges { target: browsePage; opacity: 0 }
         },
         State {
             name: "playlists"
+            PropertyChanges { target: mainMenu; state: "playlists" }
             PropertyChanges { target: pager; currentIndex: 1 }
-            PropertyChanges { target: mainMenu; currentIndex: 1 }
             PropertyChanges { target: playlistsPage; state: "container" }
             PropertyChanges { target: topRow; opacity: 1 }
             PropertyChanges { target: rightSeparator; opacity: 1 }
@@ -33,11 +34,12 @@ FocusScope {
             PropertyChanges { target: playlistsPage; opacity: 1 }
             PropertyChanges { target: explorePage; opacity: 0 }
             PropertyChanges { target: settingsPage; opacity: 0 }
+            PropertyChanges { target: browsePage; opacity: 0 }
         },
         State {
             name: "playlist"
+            PropertyChanges { target: mainMenu; state: "playlists" }
             PropertyChanges { target: pager; currentIndex: 1 }
-            PropertyChanges { target: mainMenu; currentIndex: 1 }
             PropertyChanges { target: playlistsPage; state: "playlist" }
             PropertyChanges { target: topRow; opacity: 1 }
             PropertyChanges { target: rightSeparator; opacity: 1 }
@@ -45,28 +47,43 @@ FocusScope {
             PropertyChanges { target: playlistsPage; opacity: 1 }
             PropertyChanges { target: explorePage; opacity: 0 }
             PropertyChanges { target: settingsPage; opacity: 0 }
+            PropertyChanges { target: browsePage; opacity: 0 }
         },
         State {
             name: "explore"
+            PropertyChanges { target: mainMenu; state: "explore" }
             PropertyChanges { target: pager; currentIndex: 2 }
-            PropertyChanges { target: mainMenu; currentIndex: 2 }
             PropertyChanges { target: topRow; opacity: 1 }
             PropertyChanges { target: rightSeparator; opacity: 1 }
             PropertyChanges { target: playbackPage; opacity: 0 }
             PropertyChanges { target: playlistsPage; opacity: 0 }
             PropertyChanges { target: explorePage; opacity: 1 }
             PropertyChanges { target: settingsPage; opacity: 0 }
+            PropertyChanges { target: browsePage; opacity: 0 }
         },
         State {
             name: "settings"
+            PropertyChanges { target: mainMenu; state: "settings" }
             PropertyChanges { target: pager; currentIndex: 3 }
-            PropertyChanges { target: mainMenu; currentIndex: 3 }
             PropertyChanges { target: topRow; opacity: 1 }
             PropertyChanges { target: rightSeparator; opacity: 1 }
             PropertyChanges { target: playbackPage; opacity: 0 }
             PropertyChanges { target: playlistsPage; opacity: 0 }
             PropertyChanges { target: explorePage; opacity: 0 }
             PropertyChanges { target: settingsPage; opacity: 1 }
+            PropertyChanges { target: browsePage; opacity: 0 }
+        },
+        State {
+            name: "browse"
+            PropertyChanges { target: mainMenu; state: "browse" }
+            PropertyChanges { target: pager; currentIndex: 4 }
+            PropertyChanges { target: topRow; opacity: 1 }
+            PropertyChanges { target: rightSeparator; opacity: 1 }
+            PropertyChanges { target: playbackPage; opacity: 0 }
+            PropertyChanges { target: playlistsPage; opacity: 0 }
+            PropertyChanges { target: explorePage; opacity: 0 }
+            PropertyChanges { target: settingsPage; opacity: 0 }
+            PropertyChanges { target: browsePage; opacity: 1 }
         }
     ]
     state: controller.initialStateName
@@ -162,6 +179,9 @@ FocusScope {
                 width: pager.width
                 height: pager.height
                 focus: true
+
+                onAlbumBrowseRequested: controller.browseAlbum(album)
+                onArtistBrowseRequested: controller.browseArtist(artist)
             }
 
             PlaylistsPage {
@@ -171,6 +191,8 @@ FocusScope {
                 focus: true
 
                 onPlaylistRequested: controller.playlist(index)
+                onAlbumBrowseRequested: controller.browseAlbum(album)
+                onArtistBrowseRequested: controller.browseArtist(artist)
             }
 
             ExplorePage {
@@ -178,10 +200,20 @@ FocusScope {
                 width: pager.width
                 height: pager.height
                 focus: true
+
+                onAlbumBrowseRequested: controller.browseAlbum(album)
+                onArtistBrowseRequested: controller.browseArtist(artist)
             }
 
             SettingsPage {
                 id: settingsPage
+                width: pager.width
+                height: pager.height
+                focus: true
+            }
+
+            BrowsePage {
+                id: browsePage
                 width: pager.width
                 height: pager.height
                 focus: true
@@ -224,6 +256,16 @@ FocusScope {
         onPlaylistsOverviewRequested: root.state = "playlists"
         onExploreRequested: root.state = "explore"
         onSettingsRequested: root.state = "settings"
+
+        onArtistBrowseRequested: {
+            browsePage.loadArtist(artist)
+            root.state = "browse"
+        }
+
+        onAlbumBrowseRequested: {
+            browsePage.loadAlbum(album)
+            root.state = "browse"
+        }
 
         onPlaylistRequested: {
             playlistsPage.index = index

@@ -23,6 +23,8 @@ MenuItem {
             right: root.right
         }
 
+        opacity: root.opacity
+        visible: root.visible
         height: 1
         color: UI.colors.light
 
