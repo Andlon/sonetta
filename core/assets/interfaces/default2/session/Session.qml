@@ -246,11 +246,19 @@ FocusScope {
         onSettingsRequested: root.state = "settings"
 
         onArtistBrowseRequested: {
+            if (root.state !== "browse") {
+                browsePage.reset()
+            }
+
             browsePage.loadArtist(artist)
             root.state = "browse"
         }
 
         onAlbumBrowseRequested: {
+            if (root.state !== "browse") {
+                browsePage.reset()
+            }
+
             browsePage.loadAlbum(album)
             root.state = "browse"
         }
