@@ -68,6 +68,12 @@ FocusScope {
         }
     }
 
+    Navigation.onPlay: player.play()
+    Navigation.onPlayPause: player.playPause()
+    Navigation.onPause: player.pause()
+    Navigation.onStop: player.pause()
+    Navigation.onNext: player.next()
+
     Component.onCompleted: {
         Dialog.setRootItem(root)
         Dialog.setContentItem(mainContent)
