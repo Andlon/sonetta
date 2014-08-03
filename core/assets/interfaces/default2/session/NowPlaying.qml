@@ -70,7 +70,7 @@ Item {
             }
             font: UI.fonts.standard
             color: UI.colors.text
-            text: Time.formatTime(player.position) + " / " + Time.formatTime(track.duration)
+            text: Time.formatTrackDuration(player.position) + " / " + Time.formatTrackDuration(track.duration)
             opacity: 0.6
         }
     }

@@ -32,7 +32,7 @@ Item {
         font: UI.fonts.standard
         color: UI.colors.label
         fontSizeMode: Text.Fit
-        text: Time.formatTime(player.position)
+        text: Time.formatTrackDuration(player.position)
     }
 
     Rectangle {
@@ -113,7 +113,7 @@ Item {
         font: UI.fonts.standard
         color: UI.colors.label
         fontSizeMode: Text.Fit
-        text: Time.formatTime(track.duration)
+        text: Time.formatTrackDuration(track.duration)
     }
 
     TrackInfo {

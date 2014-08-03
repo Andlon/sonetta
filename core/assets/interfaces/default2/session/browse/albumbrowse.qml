@@ -2,6 +2,7 @@ import QtQuick 2.3
 import Sonetta 0.1
 
 import "../../common"
+import "../../common/Time.js" as Time
 
 FocusScope {
     id: root
@@ -33,7 +34,7 @@ FocusScope {
     Section {
         id: detailSection
         header: "Album"
-        contentHeight: detailsColumn.height
+        contentHeight: details.height
         anchors {
             left: coverSection.right
             right: root.right
@@ -41,9 +42,13 @@ FocusScope {
             leftMargin: UI.globalSpacing
         }
 
-        Column {
-            id: detailsColumn
+        Grid {
+            id: details
             height: childrenRect.height
+            columns: 2
+            verticalItemAlignment: Grid.AlignBottom
+            columnSpacing: UI.globalSpacing
+            horizontalItemAlignment: Grid.AlignRight
 
             anchors {
                 left: parent.left
@@ -51,10 +56,9 @@ FocusScope {
             }
 
             Row {
-                anchors.left: parent.left
-                anchors.right: parent.right
-
+                id: titleRow
                 height: childrenRect.height
+                width: details.width - details.columnSpacing - Math.max(totalDuration.width, trackCount.width)
 
                 Text {
                     id: title
@@ -62,46 +66,42 @@ FocusScope {
                     color: UI.colors.text
                     text: model.name
                     elide: Text.ElideRight
-                    width: Math.min(maxWidth, implicitWidth)
+                    width: Math.min(implicitWidth, maxWidth)
 
-                    property real maxWidth: parent.width - year.width
+                    readonly property real maxWidth: parent.width - year.width
                 }
 
                 Text {
                     id: year
                     font: UI.browse.albumHeaderMinor
                     color: UI.colors.label
-                    text: " (" + model.year + ")"
-                    visible: model.year > 0
+                    text: model.year > 0 ? " (" + model.year + ")" : ""
 
-                    anchors.verticalCenter: title.verticalCenter
+                    anchors.bottom: title.bottom
                 }
-
             }
 
-            Item {
-                anchors.left: parent.left
-                anchors.right: parent.right
+            Text {
+                id: trackCount
+                font: UI.browse.albumHeaderMinor
+                color: UI.colors.label
+                text: model.count + (model.count === 1 ? " track" : " tracks")
+                elide: Text.ElideRight
+            }
 
-                height: childrenRect.height
+            Text {
+                font: UI.browse.albumHeaderMinor
+                color: UI.colors.label
+                text: model.artistName
+                elide: Text.ElideRight
+                width: titleRow.width
+            }
 
-                Text {
-                    font: UI.browse.albumHeaderMinor
-                    color: UI.colors.label
-                    text: model.artistName
-                    anchors.left: parent.left
-                    anchors.right: trackCount.left
-                    elide: Text.ElideRight
-                }
-
-                Text {
-                    id: trackCount
-                    font: UI.browse.albumHeaderMinor
-                    color: UI.colors.label
-                    text: model.count + " tracks"
-                    anchors.right: parent.right
-                    elide: Text.ElideRight
-                }
+            Text {
+                id: totalDuration
+                font: UI.browse.albumHeaderMinor
+                color: UI.colors.label
+                text: Time.formatTotalCollectionDuration(model.totalDuration)
             }
         }
     }

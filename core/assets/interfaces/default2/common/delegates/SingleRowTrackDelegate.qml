@@ -50,7 +50,7 @@ Item {
 
     Text {
         id: durationLabel
-        text: Time.formatTime(duration)
+        text: Time.formatTrackDuration(duration)
         width: 60
         font: UI.fonts.standard
         color: UI.colors.label
