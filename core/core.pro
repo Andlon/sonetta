@@ -243,4 +243,4 @@ OTHER_FILES += \
     assets/interfaces/default2/session/browse/artistbrowse.qml \
     assets/interfaces/default2/session/browse/albumbrowse.qml \
     assets/interfaces/default2/common/FramelessSection.qml \
-    assets/interfaces/default2/common/delegates/DoubleRowTrackDelegate.qml
+    assets/interfaces/default2/common/delegates/NumberedDoubleRowTrackDelegate.qml

@@ -7,7 +7,7 @@ import "../../common/Time.js" as Time
 FocusScope {
     id: root
 
-    property alias album: model.album
+    property alias album: albumModel.album
 
     Section {
         id: coverSection
@@ -23,7 +23,7 @@ FocusScope {
 
         SpotifyImage {
             id: cover
-            uri: model.largeCoverUri
+            uri: albumModel.largeCoverUri
 
             // Temporary fixed dimensions
             width: 550
@@ -64,7 +64,7 @@ FocusScope {
                     id: title
                     font: UI.browse.albumHeaderMajor
                     color: UI.colors.text
-                    text: model.name
+                    text: albumModel.name
                     elide: Text.ElideRight
                     width: Math.min(implicitWidth, maxWidth)
 
@@ -75,7 +75,7 @@ FocusScope {
                     id: year
                     font: UI.browse.albumHeaderMinor
                     color: UI.colors.label
-                    text: model.year > 0 ? " (" + model.year + ")" : ""
+                    text: albumModel.year > 0 ? " (" + albumModel.year + ")" : ""
 
                     anchors.bottom: title.bottom
                 }
@@ -85,14 +85,14 @@ FocusScope {
                 id: trackCount
                 font: UI.browse.albumHeaderMinor
                 color: UI.colors.label
-                text: model.count + (model.count === 1 ? " track" : " tracks")
+                text: albumModel.count + (albumModel.count === 1 ? " track" : " tracks")
                 elide: Text.ElideRight
             }
 
             Text {
                 font: UI.browse.albumHeaderMinor
                 color: UI.colors.label
-                text: model.artistName
+                text: albumModel.artistName
                 elide: Text.ElideRight
                 width: titleRow.width
             }
@@ -101,14 +101,14 @@ FocusScope {
                 id: totalDuration
                 font: UI.browse.albumHeaderMinor
                 color: UI.colors.label
-                text: Time.formatTotalCollectionDuration(model.totalDuration)
+                text: Time.formatTotalCollectionDuration(albumModel.totalDuration)
             }
         }
     }
 
     TrackView {
         id: view
-        model: model
+        model: albumModel
         context: root.album
         focus: true
         anchors {
@@ -119,14 +119,15 @@ FocusScope {
             bottom: parent.bottom
         }
 
-        delegate: DoubleRowTrackDelegate {
+        delegate: NumberedDoubleRowTrackDelegate {
             onHeightChanged: view.delegateHeight = height
+            number: model ? model.albumIndex : ""
         }
 
         disabledActionIdentifiers: ["browsealbum"]
     }
 
     AlbumModel {
-        id: model
+        id: albumModel
     }
 }

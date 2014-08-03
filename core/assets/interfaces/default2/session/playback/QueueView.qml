@@ -7,7 +7,7 @@ TrackView {
     id: root
     primaryBackgroundPattern: "medium"
 
-    delegate: DoubleRowTrackDelegate {
+    delegate: NumberedDoubleRowTrackDelegate {
         onHeightChanged: root.delegateHeight = height
     }
 }

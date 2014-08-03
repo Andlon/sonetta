@@ -75,6 +75,7 @@ Item {
         readonly property font singleRowFont: defaultFont
         readonly property font doubleRowTrackFont: fonts.major
         readonly property font doubleRowArtistFont: fonts.minor
+        readonly property font doubleRowNumberFont: fonts.major
     }
 
     property QtObject views: QtObject {

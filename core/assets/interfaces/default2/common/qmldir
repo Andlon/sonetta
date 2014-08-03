@@ -35,7 +35,7 @@ ArtistView 0.1 views/ArtistView.qml
 AlbumView 0.1 views/AlbumView.qml
 
 # Delegates
-DoubleRowTrackDelegate 0.1 delegates/DoubleRowTrackDelegate.qml
+NumberedDoubleRowTrackDelegate 0.1 delegates/NumberedDoubleRowTrackDelegate.qml
 SingleRowTrackDelegate 0.1 delegates/SingleRowTrackDelegate.qml
 SimpleTextDelegate 0.1 delegates/SimpleTextDelegate.qml
 ArtistDelegate 0.1 delegates/ArtistDelegate.qml
