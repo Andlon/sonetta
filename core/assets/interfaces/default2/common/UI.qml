@@ -81,6 +81,11 @@ Item {
         readonly property size imageSize: Qt.size(96, 96)
     }
 
+    property QtObject browse: QtObject {
+        readonly property font albumHeaderMajor: Qt.font({ family: "Roboto", pointSize: 32, weight: 29 })
+        readonly property font albumHeaderMinor: Qt.font({ family: "Roboto", pointSize: 27, weight: 29 })
+    }
+
     // Live bindings below
     property int pageTopMargin: 0
 }

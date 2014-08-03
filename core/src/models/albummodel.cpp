@@ -8,7 +8,7 @@ namespace Sonetta {
 
 AlbumModel::AlbumModel(ObjectSharedPointer<const Spotinetta::Session> session, QObject *parent)
     :   AbstractTrackCollectionModel(session, parent), m_session(session),
-      m_watcher(new sp::AlbumBrowseWatcher(session.data()))
+      m_watcher(new sp::AlbumBrowseWatcher(session.data())), m_duration(0)
 {
     connect(m_watcher.data(), &sp::AlbumBrowseWatcher::loaded,
             this, &AlbumModel::onLoaded);
@@ -16,6 +16,8 @@ AlbumModel::AlbumModel(ObjectSharedPointer<const Spotinetta::Session> session, Q
             this, &AlbumModel::albumChanged);
     connect(this, &AlbumModel::albumChanged,
             this, &AlbumModel::albumMetadataChanged);
+    connect(this, &AlbumModel::modelReset,
+            this, &AlbumModel::tracksChanged);
 }
 
 QString AlbumModel::name() const
@@ -48,6 +50,11 @@ Spotinetta::Artist AlbumModel::artist() const
     return album().artist();
 }
 
+Spotinetta::TrackList AlbumModel::tracks() const
+{
+    return m_tracks;
+}
+
 sp::Album AlbumModel::album() const
 {
     return m_watcher->watched().album();
@@ -55,9 +62,15 @@ sp::Album AlbumModel::album() const
 
 void AlbumModel::setAlbum(const sp::Album &album)
 {
+    if (album == m_watcher->watched().album())
+        return;
+
     if (m_session.isNull())
     {
+        beginResetModel();
         m_watcher->watch(sp::AlbumBrowse());
+        m_tracks.clear();
+        endResetModel();
         emit albumChanged();
     }
     else if (album != this->album())
@@ -69,6 +82,8 @@ void AlbumModel::setAlbum(const sp::Album &album)
         endResetModel();
         emit albumChanged();
     }
+
+    recalculateTotalDuration();
 }
 
 QString AlbumModel::smallCoverUri() const
@@ -87,11 +102,32 @@ QString AlbumModel::largeCoverUri() const
     return sp::Link::fromAlbumCover(album(), sp::ImageSize::Large).uri();
 }
 
+int AlbumModel::totalDuration() const
+{
+    return m_duration;
+}
+
+int AlbumModel::count() const
+{
+    return tracks().count();
+}
+
 void AlbumModel::onLoaded()
 {
     beginResetModel();
     m_tracks = m_watcher->watched().tracks();
     endResetModel();
+    recalculateTotalDuration();
+}
+
+void AlbumModel::recalculateTotalDuration()
+{
+    int duration = 0;
+    for (const sp::Track & track : m_tracks) {
+        duration += track.duration();
+    }
+    m_duration = duration;
+    emit totalDurationChanged();
 }
 
 sp::Track AlbumModel::getTrackAt(int index) const
