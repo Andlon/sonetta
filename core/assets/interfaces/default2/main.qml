@@ -2,6 +2,7 @@ import QtQuick 2.2
 import Sonetta 0.1
 import Sonetta.Utilities 0.1
 import Navigation 0.1
+import QtQuick.Window 2.1
 import "common" 0.1
 
 import "common/Dialog.js" as Dialog
@@ -12,6 +13,8 @@ import "session"
 FocusScope {
     id: root
     focus: true
+
+    property bool loaded: false
 
     states: [
         State {
@@ -68,6 +71,20 @@ FocusScope {
         }
     }
 
+    Binding {
+        target: UI
+        property: "screenHeight"
+        value: root.height
+        when: root.loaded
+    }
+
+    Binding {
+        target: UI
+        property: "screenWidth"
+        value: root.width
+        when: root.loaded
+    }
+
     Navigation.onPlay: player.play()
     Navigation.onPlayPause: player.playPause()
     Navigation.onPause: player.pause()
@@ -77,5 +94,6 @@ FocusScope {
     Component.onCompleted: {
         Dialog.setRootItem(root)
         Dialog.setContentItem(mainContent)
+        root.loaded = true
     }
 }

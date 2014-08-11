@@ -2,8 +2,10 @@ pragma Singleton
 import QtQuick 2.2
 
 Item {
-    readonly property int globalSpacing: 30
+    readonly property int globalSpacing: 30 * scale
     readonly property string globalBackgroundPattern: "medium"
+
+    readonly property real scale: calculateScaleFactor(screenWidth, screenHeight)
 
     property QtObject timing: QtObject {
         readonly property int highlightMove: 200
@@ -32,17 +34,17 @@ Item {
     }
 
     property QtObject fonts: QtObject {
-        readonly property font standard: Qt.font({ family: "Roboto", pointSize: 23, weight: 35 })
-        readonly property font major: Qt.font({ family: "Roboto", pointSize: 25, weight: 35 })
-        readonly property font minor: Qt.font({ family: "Roboto", pointSize: 21, weight: 35 })
-        readonly property font disclaimer: Qt.font({ family: "Roboto", pointSize: 17, weight: 40 })
-        readonly property font header: Qt.font({ family: "Roboto", pointSize: 26, weight: 9, capitalization: Font.AllUppercase })
+        readonly property font standard: Qt.font({ family: "Roboto", pointSize: 23 * scale, weight: 35 })
+        readonly property font major: Qt.font({ family: "Roboto", pointSize: 25 * scale, weight: 35 })
+        readonly property font minor: Qt.font({ family: "Roboto", pointSize: 21 * scale, weight: 35 })
+        readonly property font disclaimer: Qt.font({ family: "Roboto", pointSize: 17 * scale, weight: 40 })
+        readonly property font header: Qt.font({ family: "Roboto", pointSize: 26 * scale, weight: 9, capitalization: Font.AllUppercase })
 
-        readonly property font input: Qt.font({ family: "Roboto", pointSize: 32, weight: 40 })
+        readonly property font input: Qt.font({ family: "Roboto", pointSize: 32 * scale, weight: 40 })
         readonly property font mainMenu: header
 
-        readonly property font nowPlayingMajor: Qt.font({ family: "Roboto", pointSize: 32, weight: 35 })
-        readonly property font nowPlayingMinor: Qt.font({ family: "Roboto", pointSize: 22, weight: 35 })
+        readonly property font nowPlayingMajor: Qt.font({ family: "Roboto", pointSize: 32 * scale, weight: 35 })
+        readonly property font nowPlayingMinor: Qt.font({ family: "Roboto", pointSize: 22 * scale, weight: 35 })
 
     }
 
@@ -53,20 +55,20 @@ Item {
     }
 
     property QtObject menu: QtObject {
-        readonly property int defaultWidth: 450
-        readonly property int defaultHeight: 60
-        readonly property int defaultLabelWidth: 160
+        readonly property int defaultWidth: 450 * scale
+        readonly property int defaultHeight: 60 * scale
+        readonly property int defaultLabelWidth: 160 * scale
         readonly property int horizontalMargins: globalSpacing
         readonly property int verticalMargins: globalSpacing / 2
         readonly property int verticalSpacing: globalSpacing / 4
-        readonly property int checkboxMargin: 8
-        readonly property int frameSpacing: 3
+        readonly property int checkboxMargin: 8 * scale
+        readonly property int frameSpacing: 3 * scale
         readonly property int indentation: 2 * globalSpacing
-        readonly property font labelFont: Qt.font({ family: "Roboto", pointSize: 21, weight: 9, capitalization: Font.AllUppercase })
+        readonly property font labelFont: Qt.font({ family: "Roboto", pointSize: 21 * scale, weight: 9, capitalization: Font.AllUppercase })
     }
 
     property QtObject playlistPage: QtObject {
-        readonly property int mosaicSize: 96
+        readonly property int mosaicSize: 96 * scale
         readonly property int fadeTime: 300
     }
 
@@ -79,14 +81,22 @@ Item {
     }
 
     property QtObject views: QtObject {
-        readonly property size imageSize: Qt.size(96, 96)
+        readonly property size imageSize: Qt.size(96 * scale, 96 * scale)
     }
 
     property QtObject browse: QtObject {
-        readonly property font albumHeaderMajor: Qt.font({ family: "Roboto", pointSize: 32, weight: 29 })
-        readonly property font albumHeaderMinor: Qt.font({ family: "Roboto", pointSize: 27, weight: 29 })
+        readonly property font albumHeaderMajor: Qt.font({ family: "Roboto", pointSize: 32 * scale, weight: 29 })
+        readonly property font albumHeaderMinor: Qt.font({ family: "Roboto", pointSize: 27 * scale, weight: 29 })
+    }
+
+    function calculateScaleFactor(width, height) {
+        if (height <= 0)
+            return 1.0;
+        return height / 1080;
     }
 
     // Live bindings below
     property int pageTopMargin: 0
+    property int screenHeight: 1080
+    property int screenWidth: 1920
 }
