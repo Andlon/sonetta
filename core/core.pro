@@ -61,7 +61,15 @@ HEADERS += \
     src/navigation/windowsnavigationfilter.h \
     src/navigation/navigationcontroller.h \
     src/quick/quickartistsynopsis.h \
-    src/quick/quickglobalstatemachine.h
+    src/quick/quickglobalstatemachine.h \
+    include/track.h \
+    include/artist.h \
+    include/album.h \
+    include/metadataprovider.h \
+    include/userdataprovider.h \
+    include/user.h \
+    include/playlist.h \
+    include/playlistcontainer.h
 
 SOURCES += \
     $$PWD/../appkey.c \
