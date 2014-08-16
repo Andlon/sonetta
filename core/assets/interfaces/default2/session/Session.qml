@@ -127,7 +127,7 @@ FocusScope {
     Pattern {
         id: leftColumn
 
-        width: 250
+        width: UI.mainMenu.width
         pattern: "dark"
         anchors {
             left: root.left

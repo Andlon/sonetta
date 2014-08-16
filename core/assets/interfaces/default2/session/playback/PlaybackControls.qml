@@ -6,6 +6,8 @@ FocusScope {
     id: root
     height: col.height + col.anchors.topMargin + col.anchors.bottomMargin
 
+    readonly property size controlSize: UI.playback.controlSize
+
     onActiveFocusChanged: {
         if (activeFocus) {
             switch (state) {
@@ -143,8 +145,8 @@ FocusScope {
                     left: controls.left
                 }
 
-                height: 96
-                width: 96
+                height: controlSize.height
+                width: controlSize.width
                 unselectedColor: UI.colors.label
 
                 Navigation.onRight: root.state = "prevFocused"
@@ -159,8 +161,8 @@ FocusScope {
                     left: play.right
                 }
 
-                height: 96
-                width: 96
+                height: controlSize.height
+                width: controlSize.width
                 unselectedColor: UI.colors.label
 
                 Navigation.onLeft: root.state = "playFocused"
@@ -175,8 +177,8 @@ FocusScope {
                     left: prev.right
                 }
 
-                height: 96
-                width: 96
+                height: controlSize.height
+                width: controlSize.width
                 unselectedColor: UI.colors.label
 
                 Navigation.onLeft: root.state = "prevFocused"
@@ -191,8 +193,8 @@ FocusScope {
                     right: repeat.left
                 }
 
-                height: 72
-                width: 72
+                height: controlSize.height
+                width: controlSize.width
 
                 unselectedColor: UI.colors.label
                 selectedColor: UI.colors.label
@@ -206,8 +208,8 @@ FocusScope {
                     right: shuffle.left
                 }
 
-                height: 72
-                width: 72
+                height: controlSize.height
+                width: controlSize.width
 
                 unselectedColor: UI.colors.label
                 selectedColor: UI.colors.label
@@ -224,8 +226,8 @@ FocusScope {
                 unselectedColor: UI.colors.label
                 selectedColor: UI.colors.label
 
-                height: 72
-                width: 72
+                height: controlSize.height
+                width: controlSize.width
             }
         }
 

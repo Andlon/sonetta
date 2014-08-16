@@ -2,8 +2,17 @@ pragma Singleton
 import QtQuick 2.2
 
 Item {
+    FontLoader { id: robotoThin; source: "../fonts/Roboto-Thin-Modified.ttf" }
+    FontLoader { id: robotoLight; source: "../fonts/Roboto-Light-Modified.ttf" }
+    FontLoader { id: robotoRegular; source: "../fonts/Roboto-Regular-Modified.ttf" }
+
+    readonly property string thinFontFamily: robotoThin.name
+    readonly property string lightFontFamily: robotoLight.name
+    readonly property string regularFontFamily: robotoRegular.name
+
     readonly property int globalSpacing: 30 * scale
     readonly property string globalBackgroundPattern: "medium"
+    readonly property real defaultListFraction: 0.6
 
     readonly property real scale: calculateScaleFactor(screenWidth, screenHeight)
 
@@ -34,18 +43,16 @@ Item {
     }
 
     property QtObject fonts: QtObject {
-        readonly property font standard: Qt.font({ family: "Roboto", pointSize: 23 * scale, weight: 35 })
-        readonly property font major: Qt.font({ family: "Roboto", pointSize: 25 * scale, weight: 35 })
-        readonly property font minor: Qt.font({ family: "Roboto", pointSize: 21 * scale, weight: 35 })
-        readonly property font disclaimer: Qt.font({ family: "Roboto", pointSize: 17 * scale, weight: 40 })
-        readonly property font header: Qt.font({ family: "Roboto", pointSize: 26 * scale, weight: 9, capitalization: Font.AllUppercase })
+        readonly property font standard: createFont(lightFontFamily, scale * 32)
+        readonly property font major: createFont(lightFontFamily, scale * 34)
+        readonly property font minor: createFont(lightFontFamily, scale * 28)
+        readonly property font disclaimer: createFont(regularFontFamily, scale * 23)
+        readonly property font header: createFont(thinFontFamily, scale * 40, Font.AllUppercase)
 
-        readonly property font input: Qt.font({ family: "Roboto", pointSize: 32 * scale, weight: 40 })
-        readonly property font mainMenu: header
+        readonly property font input: createFont(regularFontFamily, scale * 42)
 
-        readonly property font nowPlayingMajor: Qt.font({ family: "Roboto", pointSize: 32 * scale, weight: 35 })
-        readonly property font nowPlayingMinor: Qt.font({ family: "Roboto", pointSize: 22 * scale, weight: 35 })
-
+        readonly property font nowPlayingMajor: createFont(regularFontFamily, scale * 42)
+        readonly property font nowPlayingMinor: createFont(regularFontFamily, scale * 32)
     }
 
     property QtObject box: QtObject {
@@ -64,12 +71,23 @@ Item {
         readonly property int checkboxMargin: 8 * scale
         readonly property int frameSpacing: 3 * scale
         readonly property int indentation: 2 * globalSpacing
-        readonly property font labelFont: Qt.font({ family: "Roboto", pointSize: 21 * scale, weight: 9, capitalization: Font.AllUppercase })
+        readonly property font labelFont: createFont(thinFontFamily, 27, Font.AllUppercase)
+    }
+
+    property QtObject mainMenu: QtObject {
+        readonly property font font: fonts.header
+        readonly property int itemHeight: scale * 180
+        readonly property int width: scale * 280
+    }
+
+    property QtObject playback: QtObject {
+        readonly property size controlSize: Qt.size(Math.round(96 * scale), Math.round(96 * scale))
     }
 
     property QtObject playlistPage: QtObject {
         readonly property int mosaicSize: 96 * scale
         readonly property int fadeTime: 300
+        readonly property real listFraction: defaultListFraction
     }
 
     property QtObject playlist: QtObject {
@@ -85,14 +103,22 @@ Item {
     }
 
     property QtObject browse: QtObject {
-        readonly property font albumHeaderMajor: Qt.font({ family: "Roboto", pointSize: 32 * scale, weight: 29 })
-        readonly property font albumHeaderMinor: Qt.font({ family: "Roboto", pointSize: 27 * scale, weight: 29 })
+        readonly property font albumHeaderMajor: createFont(lightFontFamily, scale * 42)
+        readonly property font albumHeaderMinor: createFont(lightFontFamily, scale * 39)
+        readonly property real listFraction: defaultListFraction
     }
 
     function calculateScaleFactor(width, height) {
-        if (height <= 0)
-            return 1.0;
-        return height / 1080;
+        return height <= 0 ? 1.0 : height / 1080.0;
+    }
+
+    function createFont(family, pixelSize, capitalization) {
+        var fontData = { family: family, pixelSize: Math.round(pixelSize)}
+        if (arguments.length >= 3) {
+            fontData.capitalization = capitalization
+        }
+
+        return Qt.font(fontData)
     }
 
     // Live bindings below

@@ -63,7 +63,6 @@ Application::~Application()
 
 bool Application::initialize()
 {
-    loadFonts();
     registerQmlTypes();
 
     if (m_session->error() == sp::Error::Ok)

@@ -12,22 +12,23 @@ FocusScope {
     Section {
         id: coverSection
         header: "Cover"
+        contentHeight: cover.height
 
         anchors {
             left: parent.left
+            right: detailSection.left
             top: parent.top
+            rightMargin: UI.globalSpacing
         }
-
-        contentWidth: cover.width
-        contentHeight: cover.height
 
         SpotifyImage {
             id: cover
             uri: albumModel.largeCoverUri
-
-            // Temporary fixed dimensions
-            width: 550
-            height: 550
+            height: width
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
         }
     }
 
@@ -36,11 +37,12 @@ FocusScope {
         header: "Album"
         contentHeight: details.height
         anchors {
-            left: coverSection.right
             right: root.right
             top: root.top
             leftMargin: UI.globalSpacing
         }
+
+        width: root.width * UI.browse.listFraction
 
         Grid {
             id: details

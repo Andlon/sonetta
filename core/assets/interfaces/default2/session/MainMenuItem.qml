@@ -4,7 +4,7 @@ import "../common"
 
 MenuItem {
     id: root
-    height: 165
+    height: UI.mainMenu.itemHeight
     visibleBox: false
 
     property alias label: labelItem.text
@@ -12,7 +12,7 @@ MenuItem {
     FocusText {
         id: labelItem
         anchors.centerIn: root
-        font: UI.fonts.mainMenu
+        font: UI.mainMenu.font
         hasFocus: root.activeFocus
     }
 

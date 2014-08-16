@@ -59,25 +59,29 @@ FocusScope {
         anchors {
             top: root.top
             left: root.left
+            right: containerSection.left
             margins: UI.globalSpacing
             topMargin: root.topMargin
         }
-        contentWidth: selectedPlaylist.width
         contentHeight: selectedPlaylist.height
 
         PlaylistInformation {
             id: selectedPlaylist
-            width: 350
             playlist: container.currentPlaylist
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
         }
     }
 
     FramelessSection {
         id: containerSection
         header: "Your Playlists"
+        visible: opacity != 0
+        width: UI.playlistPage.listFraction * root.width
         anchors {
             top: root.top
-            left: selectedPlaylistSection.right
             right: root.right
             bottom: root.bottom
             margins: UI.globalSpacing
@@ -87,22 +91,19 @@ FocusScope {
         PlaylistContainer {
             id: container
             anchors.fill: parent
-            visible: opacity != 0
             model: containerModel
 
             onPlaylistRequested: root.playlistRequested(index)
         }
     }
 
-    Section {
+    FramelessSection {
         id: playlistSection
         header: playlistModel.name
-        showFrame: false
-        padding: 0
         visible: opacity != 0
+        width: UI.playlistPage.listFraction * root.width
         anchors {
             top: root.top
-            left: selectedPlaylistSection.right
             right: root.right
             bottom: root.bottom
             margins: UI.globalSpacing
@@ -112,7 +113,6 @@ FocusScope {
         TrackView {
             id: playlistView
             anchors.fill: parent
-            visible: opacity != 0
             model: playlistModel
             context: playlistModel.playlist
 
