@@ -105,6 +105,7 @@ Item {
     property QtObject browse: QtObject {
         readonly property font albumHeaderMajor: createFont(lightFontFamily, scale * 42)
         readonly property font albumHeaderMinor: createFont(lightFontFamily, scale * 39)
+        readonly property font artistHeader: albumHeaderMajor
         readonly property real listFraction: defaultListFraction
     }
 

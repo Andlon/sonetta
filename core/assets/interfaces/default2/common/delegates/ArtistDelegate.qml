@@ -13,5 +13,6 @@ ComponentAndTextDelegate {
         anchors.fill: parent
         uri: root.portrait
         fillMode: Image.PreserveAspectCrop
+        placeholder: "../../images/disc_placeholder_small.png"
     }
 }
