@@ -9,6 +9,9 @@ FocusScope {
 
     property alias artist: synopsis.artist
 
+    signal artistBrowseRequested(var artist)
+    signal albumBrowseRequested(var album)
+
     states: [
         State {
             name: "hits"
@@ -142,20 +145,27 @@ FocusScope {
             TrackView {
                 id: tracks
                 model: synopsis.hits
-
+                disabledActionIdentifiers: [ "browseartist" ]
                 delegate: NumberedDoubleRowTrackDelegate {
                     onHeightChanged: tracks.delegateHeight = height
                 }
+
+                onArtistBrowseRequested: root.artistBrowseRequested(artist)
+                onAlbumBrowseRequested: root.albumBrowseRequested(album)
             }
 
             AlbumView {
                 id: albums
                 model: synopsis.albums
+
+                onBrowseRequested: root.albumBrowseRequested(album)
             }
 
             ArtistView {
                 id: artists
                 model: synopsis.similarArtists
+
+                onBrowseRequested: root.artistBrowseRequested(artist)
             }
         }
 

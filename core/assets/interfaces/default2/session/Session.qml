@@ -205,6 +205,9 @@ FocusScope {
 
             BrowsePage {
                 id: browsePage
+
+                onAlbumBrowseRequested: controller.browseAlbum(album)
+                onArtistBrowseRequested: controller.browseArtist(artist)
             }
         }
 

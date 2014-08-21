@@ -9,6 +9,9 @@ FocusScope {
 
     property alias album: albumModel.album
 
+    signal albumBrowseRequested(var album)
+    signal artistBrowseRequested(var artist)
+
     Section {
         id: coverSection
         header: "Cover"
@@ -127,6 +130,9 @@ FocusScope {
         }
 
         disabledActionIdentifiers: ["browsealbum"]
+
+        onAlbumBrowseRequested: root.albumBrowseRequested(album)
+        onArtistBrowseRequested: root.artistBrowseRequested(artist)
     }
 
     AlbumModel {

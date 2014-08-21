@@ -28,7 +28,7 @@ CollectionView {
 
     onItemPressed: {
         contextMenu.track = model.track
-        contextMenu.artist = model.artist
+        contextMenu.artist = model.artists[0]
         contextMenu.album = model.album
         contextMenu.index = index
         contextMenu.activate()
