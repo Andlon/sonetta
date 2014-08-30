@@ -1,0 +1,46 @@
+# Base common types
+singleton UI 0.1 UI.qml
+Box 0.1 Box.qml
+FocusText 0.1 FocusText.qml
+Pattern 0.1 Pattern.qml
+SpotifyImage 0.1 SpotifyImage.qml
+VirtualDialog 0.1 VirtualDialog.qml
+SimpleHighlight 0.1 SimpleHighlight.qml
+Section 0.1 Section.qml
+FramelessSection 0.1 FramelessSection.qml
+
+# Scripts
+Time 0.1 Time.js
+Dialog 0.1 Dialog.js
+
+# Keyboard
+VirtualKeyboard 0.1 keyboard/VirtualKeyboard.qml
+VirtualKeyboardDialog 0.1 keyboard/VirtualKeyboardDialog.qml
+
+# Menu
+Menu 0.1 menu/Menu.qml
+MenuCheckableItem 0.1 menu/MenuCheckableItem.qml
+MenuInputItem 0.1 menu/MenuInputItem.qml
+MenuItem 0.1 menu/MenuItem.qml
+MenuTextItem 0.1 menu/MenuTextItem.qml
+MenuChildTextItem 0.1 menu/MenuChildTextItem.qml
+
+# Views
+CollectionView 0.1 views/CollectionView.qml
+CollectionHighlight 0.1 views/CollectionHighlight.qml
+PageView 0.1 views/PageView.qml
+VerticalScrollbar 0.1 views/VerticalScrollbar.qml
+TrackView 0.1 views/TrackView.qml
+ArtistView 0.1 views/ArtistView.qml
+AlbumView 0.1 views/AlbumView.qml
+
+# Delegates
+NumberedDoubleRowTrackDelegate 0.1 delegates/NumberedDoubleRowTrackDelegate.qml
+SingleRowTrackDelegate 0.1 delegates/SingleRowTrackDelegate.qml
+SimpleTextDelegate 0.1 delegates/SimpleTextDelegate.qml
+ArtistDelegate 0.1 delegates/ArtistDelegate.qml
+AlbumDelegate 0.1 delegates/AlbumDelegate.qml
+internal ComponentAndTextDelegate delegates/ComponentAndTextDelegate.qml
+
+# Dialogs
+ContextMenuDialog 0.1 dialogs/ContextMenuDialog.qml

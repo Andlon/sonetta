@@ -22,6 +22,8 @@ QuickTrackInfo::QuickTrackInfo(QObject *parent)
     connect(m_albumWatcher.data(), &sp::AlbumWatcher::loaded,
             this, &QuickTrackInfo::dataUpdated);
     connect(this, &QuickTrackInfo::trackChanged,
+            this, &QuickTrackInfo::setupWatchers);
+    connect(this, &QuickTrackInfo::trackChanged,
             this, &QuickTrackInfo::dataUpdated);
 }
 
@@ -73,6 +75,21 @@ void QuickTrackInfo::setTrack(const sp::Track &track)
             onTrackLoaded();
         }
     }
+}
+
+Spotinetta::Album QuickTrackInfo::album() const
+{
+    return m_albumWatcher->watched();
+}
+
+QString QuickTrackInfo::albumName() const
+{
+    return album().name();
+}
+
+int QuickTrackInfo::albumYear() const
+{
+    return album().year();
 }
 
 QString QuickTrackInfo::name() const

@@ -39,6 +39,7 @@ public:
         IsLocal,
         IsAutoLinked,
         Availability,
+        CollectionIndexRole,
 
         // Used in subclasses
         LastTrackCollectionModelRole

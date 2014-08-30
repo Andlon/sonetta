@@ -40,7 +40,7 @@ Be sure to choose the appropriate package for your system architecture.
 For Linux, simply follow the instructions to install libspotify on your system. For Windows, extract the package to a directory of your choosing, and set the environment variable LIBSPOTIFY_PATH to the appropriate directory.
 
 #### Qt
-Sonetta requires Qt 5.2.0 or later, assuming this README is up-to-date. Usually, the safest route is to get the most recent version available from the Qt online maintenance kit.
+Sonetta requires Qt 5.3 or later, assuming this README is up-to-date. Usually, the safest route is to get the most recent version available from the Qt online maintenance kit.
 
 ### Steps
 #### Update submodules

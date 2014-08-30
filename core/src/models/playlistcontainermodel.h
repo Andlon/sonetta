@@ -15,7 +15,9 @@ class PlaylistContainerModel : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(Spotinetta::PlaylistContainer playlistContainer READ playlistContainer WRITE setPlaylistContainer NOTIFY playlistContainerChanged)
+    Q_PROPERTY(Spotinetta::PlaylistContainer playlistContainer READ playlistContainer WRITE setPlaylistContainer
+               RESET resetPlaylistContainer NOTIFY playlistContainerChanged)
+    Q_PROPERTY(bool loaded READ isLoaded NOTIFY isLoadedChanged)
 public:
     enum Role {
         PlaylistRole = Qt::UserRole,
@@ -35,8 +37,12 @@ public:
     QHash<int, QByteArray> roleNames() const;
     int rowCount(const QModelIndex &parent) const;
 
+    bool isLoaded() const;
+    Q_INVOKABLE Spotinetta::Playlist playlistAt(int index) const;
+
 signals:
     void playlistContainerChanged();
+    void isLoadedChanged();
 
 private slots:
     void onLoaded();
@@ -50,6 +56,7 @@ private slots:
     void onPlaylistImageChanged(int position);
 
 private:
+    void resetPlaylistContainer() { setPlaylistContainer(Spotinetta::PlaylistContainer()); }
     void updateWatcherIndices(int first, int last);
     void updateMappings(Spotinetta::PlaylistWatcher * watcher, int index);
     ObjectSharedPointer<Spotinetta::PlaylistWatcher> createWatcher(int index);

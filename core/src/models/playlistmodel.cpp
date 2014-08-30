@@ -23,12 +23,23 @@ PlaylistModel::PlaylistModel(ObjectSharedPointer<const Spotinetta::Session> sess
     connect(m_watcher.data(), &sp::PlaylistWatcher::tracksRemoved,
             this, &PlaylistModel::onTracksRemoved);
 
+    // Name signals
     connect(this, &PlaylistModel::playlistChanged,
             this, &PlaylistModel::nameChanged);
     connect(m_watcher.data(), &sp::PlaylistWatcher::renamed,
             this, &PlaylistModel::nameChanged);
     connect(m_watcher.data(), &sp::PlaylistWatcher::stateChanged,
             this, &PlaylistModel::nameChanged);
+
+    // Track count signals
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksAdded,
+            this, &PlaylistModel::trackCountChanged);
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksMoved,
+            this, &PlaylistModel::trackCountChanged);
+    connect(m_watcher.data(), &sp::PlaylistWatcher::tracksRemoved,
+            this, &PlaylistModel::trackCountChanged);
+    connect(this, &PlaylistModel::playlistChanged,
+            this, &PlaylistModel::trackCountChanged);
 }
 
 sp::Playlist PlaylistModel::playlist() const
@@ -64,6 +75,11 @@ QString PlaylistModel::name() const
     return playlist().name();
 }
 
+int PlaylistModel::trackCount() const
+{
+    return m_tracks.count();
+}
+
 Spotinetta::Track PlaylistModel::getTrackAt(int index) const
 {
     Q_ASSERT(index >= 0 && index < m_tracks.count());
@@ -97,6 +113,8 @@ void PlaylistModel::onTracksAdded(const sp::TrackList &tracks, int position)
 
     for (int i = position + tracks.count(); i < newCount; ++i)
         newTracks.append(m_tracks.at(i - position));
+
+    m_tracks.swap(newTracks);
 
     endInsertRows();
 }

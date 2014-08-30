@@ -15,8 +15,7 @@ void Navigation::dispatchNavigationEvent(Navigation::Button button, bool autoRep
 
 void Navigation::registerTypes()
 {
-    qmlRegisterType<QuickNavigation>("Navigation", 0, 1, "Nav");
-    qmlRegisterUncreatableType<Navigation>("Navigation", 0, 1, "Navigation", "CAnnot instantiate Navigation.");
+    qmlRegisterUncreatableType<Navigation>("Navigation", 0, 1, "Navigation", "Cannot instantiate Navigation.");
     qmlRegisterUncreatableType<QuickNavEvent>("Navigation", 0, 1, "NavEvent", "Cannot instantiate navigation event. ");
 }
 
@@ -104,60 +103,74 @@ Qt::Key Navigation::translateButton(Navigation::Button button)
     }
 }
 
-void QuickNavigation::keyPressEvent(QKeyEvent * e)
+NavigationAttachedType * Navigation::qmlAttachedProperties(QObject *object)
 {
+    auto attached = new NavigationAttachedType(object);
+    object->installEventFilter(attached);
+    return attached;
+}
+
+bool NavigationAttachedType::keyPressEvent(const QKeyEvent * e)
+{
+    if (e->modifiers() != Qt::NoModifier)
+        return false;
+
     Navigation::Button button = Navigation::translateKey(static_cast<Qt::Key>(e->key()));
+    if (button == Navigation::Button::Undefined)
+        return false;
+
     QuickNavEvent event(button, e->isAutoRepeat());
 
     switch (event.button())
     {
     case Navigation::Left:
-        acceptAndEmit(&QuickNavigation::left, &event);
+        acceptAndEmit(&NavigationAttachedType::left, &event);
         break;
     case Navigation::Right:
-        acceptAndEmit(&QuickNavigation::right, &event);
+        acceptAndEmit(&NavigationAttachedType::right, &event);
         break;
     case Navigation::Up:
-        acceptAndEmit(&QuickNavigation::up, &event);
+        acceptAndEmit(&NavigationAttachedType::up, &event);
         break;
     case Navigation::Down:
-        acceptAndEmit(&QuickNavigation::down, &event);
+        acceptAndEmit(&NavigationAttachedType::down, &event);
         break;
     case Navigation::OK:
-        acceptAndEmit(&QuickNavigation::ok, &event);
+        acceptAndEmit(&NavigationAttachedType::ok, &event);
         break;
     case Navigation::Back:
-        acceptAndEmit(&QuickNavigation::back, &event);
+        acceptAndEmit(&NavigationAttachedType::back, &event);
         break;
     case Navigation::Play:
-        acceptAndEmit(&QuickNavigation::play, &event);
+        acceptAndEmit(&NavigationAttachedType::play, &event);
         break;
     case Navigation::PlayPause:
-        acceptAndEmit(&QuickNavigation::playPause, &event);
+        acceptAndEmit(&NavigationAttachedType::playPause, &event);
         break;
     case Navigation::Pause:
-        acceptAndEmit(&QuickNavigation::pause, &event);
+        acceptAndEmit(&NavigationAttachedType::pause, &event);
         break;
     case Navigation::Stop:
-        acceptAndEmit(&QuickNavigation::stop, &event);
+        acceptAndEmit(&NavigationAttachedType::stop, &event);
         break;
     case Navigation::Next:
-        acceptAndEmit(&QuickNavigation::next, &event);
+        acceptAndEmit(&NavigationAttachedType::next, &event);
         break;
     case Navigation::Previous:
-        acceptAndEmit(&QuickNavigation::previous, &event);
+        acceptAndEmit(&NavigationAttachedType::previous, &event);
         break;
     case Navigation::Record:
-        acceptAndEmit(&QuickNavigation::record, &event);
+        acceptAndEmit(&NavigationAttachedType::record, &event);
         break;
     case Navigation::VolumeDown:
-        acceptAndEmit(&QuickNavigation::volumeDown, &event);
+        acceptAndEmit(&NavigationAttachedType::volumeDown, &event);
         break;
     case Navigation::VolumeUp:
-        acceptAndEmit(&QuickNavigation::volumeUp, &event);
+        acceptAndEmit(&NavigationAttachedType::volumeUp, &event);
         break;
     case Navigation::Mute:
-        acceptAndEmit(&QuickNavigation::mute, &event);
+        acceptAndEmit(&NavigationAttachedType::mute, &event);
+        break;
     default:
         break;
     }
@@ -167,11 +180,21 @@ void QuickNavigation::keyPressEvent(QKeyEvent * e)
         emit buttonPressed(&event);
     }
 
-    e->setAccepted(event.isAccepted());
+    return event.isAccepted();
+}
+
+bool NavigationAttachedType::eventFilter(QObject *, QEvent * event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent * keyEvent = static_cast<QKeyEvent *>(event);
+        return keyPressEvent(keyEvent);
+    }
+    return false;
 }
 
 template <typename MemberFunctionPointer>
-void QuickNavigation::acceptAndEmit(MemberFunctionPointer member, QuickNavEvent * event)
+void NavigationAttachedType::acceptAndEmit(MemberFunctionPointer member, QuickNavEvent * event)
 {
     QMetaMethod signal = QMetaMethod::fromSignal(member);
     if (isSignalConnected(signal))
