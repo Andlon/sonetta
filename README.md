@@ -1,6 +1,8 @@
 Sonetta
 ==========
 
+# This project is non-functional (and long since abandoned), as it relied on libspotify which is no longer supported by Spotify.
+
 Current status
 ----------
 Check out the following screenshots (admittedly not *entirely* up-to-date) for a taste of what Sonetta is.
